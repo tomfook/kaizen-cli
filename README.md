@@ -1,0 +1,119 @@
+# Kaizen-CLI
+
+**A knowledge-accumulating workflow framework for Claude Code**
+
+> Your AI gets smarter with every project.
+
+[日本語版 README](README.ja.md)
+
+---
+
+## What is Kaizen-CLI?
+
+Most Claude Code users treat it as a one-shot code generator. Knowledge is lost between sessions — the same research, the same mistakes, repeated over and over.
+
+Kaizen-CLI solves this by providing a **structured workflow** where knowledge accumulates across sessions and projects. The more you use it, the faster your AI works.
+
+```
+    ┌──────────────────────────────────────────────┐
+    │                                              │
+    ▼                                              │
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
+│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
+│         │    │ Decide  │    │         │    │         │
+│/kaizen  │    │         │    │skills   │    │/kaizen  │
+│-suggest │    │plan     │    │auto-    │    │-reflect │
+│-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │         │    │         │    │         │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘
+    ▲                                              │
+    │          Knowledge accumulates               │
+    │       in knowledge/ over cycles              │
+    └──────────────────────────────────────────────┘
+```
+
+## Key Concepts
+
+| Component | Role | Description |
+|-----------|------|-------------|
+| **knowledge/** | Reference knowledge | Domain-specific facts, patterns, and guidelines that persist across sessions |
+| **skills/** | Procedural knowledge | Step-by-step instructions that Claude Code auto-invokes for specific tasks |
+| **commands/** | Operations | Slash commands that trigger workflow actions (reflect, suggest, commit) |
+
+## Why Kaizen-CLI?
+
+- **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session
+- **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
+- **Structured improvement**: An explicit suggest → plan → execute → reflect cycle drives continuous improvement
+- **Faster over time**: Accumulated knowledge means Claude Code needs less context and makes fewer mistakes
+
+## Quick Start
+
+```bash
+# 1. Clone and set up Kaizen-CLI (one-time)
+git clone https://github.com/tomfook/kaizen-cli.git
+bash kaizen-cli/setup.sh
+
+# 2. Initialize your project
+cd your-project
+claude  # Start Claude Code, then:
+        # /kaizen-init-project    — set up knowledge/ symlink and project config
+
+# 3. Start the Kaizen cycle
+        # /kaizen-suggest-next    — get next step suggestions
+        # /kaizen-reflect-learning — capture lessons learned
+        # /kaizen-update-docs     — update documentation
+```
+
+`setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to this shared directory — knowledge accumulated in one project is automatically available to all others.
+
+For a detailed walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
+
+## Repository Structure
+
+```
+kaizen-cli/
+├── docs/                    # Methodology and guides
+│   ├── CONCEPT.md           # The Kaizen-CLI philosophy
+│   ├── DESIGN_PRINCIPLES.md # Design principles
+│   ├── QUICKSTART.md        # 5-minute getting started guide
+│   └── CUSTOMIZATION.md     # How to adapt for your domain
+│
+├── framework/               # Copy-and-use template set
+│   ├── CLAUDE.md.template   # CLAUDE.md template for projects
+│   ├── knowledge/           # Knowledge base templates
+│   │   └── meta/
+│   └── .claude/
+│       ├── commands/        # Workflow slash commands
+│       └── skills/          # Auto-invoked skill definitions
+│
+└── examples/                # Domain-specific examples
+    ├── data-analysis/       # Data analysis workflow
+    └── web-development/     # Web development workflow
+```
+
+## Documentation
+
+- [CONCEPT.md](docs/CONCEPT.md) — The philosophy behind Kaizen-CLI
+- [DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) — Design principles and patterns
+- [QUICKSTART.md](docs/QUICKSTART.md) — Get started in 5 minutes
+- [CUSTOMIZATION.md](docs/CUSTOMIZATION.md) — Adapt Kaizen-CLI for your domain
+
+## Who is this for?
+
+**Great fit:**
+- Individual developers or analysts juggling multiple small projects
+- Claude Code users who want knowledge to carry over between sessions
+- Anyone interested in structured AI-assisted development workflows
+
+**Not a fit:**
+- Single long-running project with no need for cross-project knowledge sharing
+- Teams not using Claude Code
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+[MIT](LICENSE)
