@@ -38,7 +38,7 @@ Kaizen-CLI solves this by providing a **structured workflow** where knowledge ac
 |-----------|------|-------------|
 | **knowledge/** | Reference knowledge | Domain-specific facts, patterns, and guidelines that persist across sessions |
 | **skills/** | Procedural knowledge | Step-by-step instructions that Claude Code auto-invokes for specific tasks |
-| **commands/** | Operations | Slash commands that trigger workflow actions (reflect, suggest, commit) |
+| **commands/** | Operations | Slash commands that trigger workflow actions (suggest, reflect, update) |
 
 ## Why Kaizen-CLI?
 

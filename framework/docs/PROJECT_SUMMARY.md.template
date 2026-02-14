@@ -1,0 +1,35 @@
+---
+project:
+  id: "{{PROJECT_ID}}"
+  name: "{{PROJECT_NAME}}"
+  status: planning          # planning | developing | released | completed | on-hold
+  keywords: []              # 検索用キーワード
+  created: "{{DATE}}"
+  updated: "{{DATE}}"
+---
+
+# {{PROJECT_NAME}}
+
+## 目的
+
+{{PROJECT_PURPOSE}}
+
+## 概要
+
+（プロジェクトの概要を記載）
+
+## 技術スタック
+
+- （使用言語・フレームワーク・サービス等）
+
+## 設計判断
+
+（重要な設計判断とその理由を記録）
+
+## 注意事項
+
+（運用・開発上の注意点）
+
+## プロジェクトドキュメント
+
+- `PROJECT_SUMMARY.md` - プロジェクト概要（本ファイル）
