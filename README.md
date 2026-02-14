@@ -62,7 +62,7 @@ claude  # Start Claude Code, then:
 # 3. Start the Kaizen cycle
         # /kaizen-suggest-next    — get next step suggestions
         # /kaizen-reflect-learning — capture lessons learned
-        # /kaizen-update-docs     — update documentation
+        # /kaizen-update-docs     — update project documentation
 ```
 
 `setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to this shared directory — knowledge accumulated in one project is automatically available to all others.
