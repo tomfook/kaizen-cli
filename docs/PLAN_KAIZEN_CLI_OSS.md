@@ -68,7 +68,7 @@ Claude Codeの利用者の多くは「単発のコード生成ツール」とし
 
 | 現行資産 | 公開版 | 変更内容 |
 |---------|--------|---------|
-| `init-usj/` skill | `kaizen-init-project/` | USJ固有のAWSリソース名・命名規則を除去 |
+| `init-usj/` skill | `kaizen-init-project/` | 社内固有のAWSリソース名・命名規則を除去 |
 | `editing-context/` skill | `kaizen-editing-knowledge/` に改名 | SSOT・行数管理。汎用的 |
 | `/usj-suggest-next` | `/kaizen-suggest-next` | `usj-`→`kaizen-`に変更、社内参照を除去 |
 | `/usj-reflect-learning` | `/kaizen-reflect-learning` | 同上 |
@@ -181,11 +181,11 @@ kaizen-cli/
   - [ ] kaizen-reflect-learning.md: 同上
   - [ ] kaizen-update-docs.md: ai-projects/連携の汎用化
 - [x] skills/ の汎用化
-  - [x] kaizen-init-project/: init-usjからUSJ固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
+  - [x] kaizen-init-project/: 社内版スキルから社内固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
   - [x] kaizen-editing-knowledge/: editing-contextから改名（SSOT・行数管理は汎用）
 - [x] knowledge/meta/ テンプレート作成
   - [x] INDEX.md.template: 構造のみ残し、内容をプレースホルダに
-  - [x] DOCUMENTATION_GUIDELINES.md: USJ固有ルール除去
+  - [x] DOCUMENTATION_GUIDELINES.md: 社内固有ルール除去
   - [x] GETTING_STARTED.md.template: 汎用版に書き換え
 - [x] CLAUDE.md.template 作成
 - [x] docs/PROJECT_SUMMARY.md.template 作成
@@ -202,7 +202,7 @@ kaizen-cli/
 
 ### Phase 2 参考: サニタイズガイド
 
-Phase 0 機密スキャンの結果を要約したもの。社内版（00_dsci_common）からの抽出時に参照する。
+Phase 0 機密スキャンの結果を要約したもの。社内版からの抽出時に参照する。
 
 #### アプローチ
 
@@ -294,6 +294,7 @@ Phase 0 機密スキャンの結果を要約したもの。社内版（00_dsci_c
 - [ ] 最終レビュー（機密情報の残存チェック）
   - ワーキングツリー上のファイル内容の確認
   - git履歴に残存する機密値（Phase 0スキャンレポート等）の除去要否を判断し、必要なら `git filter-repo` 等で履歴書き換え
+- [ ] PLAN_KAIZEN_CLI_OSS.md の削除またはアーカイブ（開発用文書であり公開ドキュメントではない）
 - [ ] v0.1.0 タグ作成・リリース
 - [ ] 告知
   - [ ] Zenn記事（日本語、方法論の解説）
@@ -371,9 +372,9 @@ your-project/
 ## 制約・前提条件
 
 - **Claude Code依存**: このフレームワークはClaude Codeのskills/commands機能を前提とする。他のAIツールへの移植は対象外
-- **社内版との関係**: OSSはフォーク。社内版（00_dsci_common）とは独立に管理。双方向の反映は手動判断
+- **社内版との関係**: OSSはフォーク。社内版とは独立に管理。双方向の反映は手動判断
 - **言語**: テンプレート・コマンド・スキル内の記述は英語。ドキュメント（docs/）は日英バイリンガル。コマンド・スキルには「ユーザーの言語に合わせて応答すること」という指示を含める
-- **個人プロジェクト**: 会社のOSSではなく個人GitHubアカウントで公開（社内固有情報を含まないため問題なし）
+- **個人プロジェクト**: 個人GitHubアカウントで公開
 
 ---
 
