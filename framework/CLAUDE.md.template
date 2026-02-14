@@ -43,4 +43,4 @@
 ### Kaizen-CLIワークフロー
 - `/kaizen-suggest-next` — 次のステップの提案を取得
 - `/kaizen-reflect-learning` — 学びをknowledgeファイルに記録
-- `/kaizen-update-docs` — ドキュメントを更新（PROJECT_SUMMARY同期含む）
+- `/kaizen-update-docs` — プロジェクトドキュメントを更新（PROJECT_SUMMARY同期含む）
