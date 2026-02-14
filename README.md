@@ -42,7 +42,7 @@ Kaizen-CLI solves this by providing a **structured workflow** that accumulates k
 
 ## Why Kaizen-CLI?
 
-- **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session
+- **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session and project
 - **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
 - **Structured improvement**: An explicit suggest → plan → execute → reflect cycle drives continuous improvement
 - **Faster over time**: Accumulated knowledge means less repeated explanations, fewer regressions, and fewer known pitfalls
