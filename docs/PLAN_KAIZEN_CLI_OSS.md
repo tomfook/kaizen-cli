@@ -199,6 +199,7 @@ kaizen-cli/
   - グローバルコマンドを ~/.claude/commands/ にコピー（既存コマンドの衝突チェック付き）
   - kaizen-init-project スキルを ~/.claude/skills/kaizen-init-project/ にグローバルリンク
   - $KAIZEN_KNOWLEDGE_DIR の git init はしない（ユーザー判断。QUICKSTART.md で案内）
+- [ ] Phase 2 完了時の整理: 本PLAN文書内のサニタイズガイドセクション削除、Layer 2テーブルの社内名を汎化
 
 ### Phase 2 参考: サニタイズガイド
 
