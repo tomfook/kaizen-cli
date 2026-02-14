@@ -177,7 +177,7 @@ kaizen-cli/
 **目的**: 現行資産から汎用フレームワークを抽出する。最も工数がかかるフェーズ。
 
 - [ ] commands/ の汎用化（`kaizen-` prefix で統一）
-  - [ ] kaizen-suggest-next.md: `usj-`→`kaizen-`、社内AWS参照除去
+  - [x] kaizen-suggest-next.md: `usj-`→`kaizen-`、社内AWS参照除去
   - [ ] kaizen-reflect-learning.md: 同上
   - [ ] kaizen-update-docs.md: ai-projects/連携の汎用化
 - [x] skills/ の汎用化
@@ -270,7 +270,7 @@ kaizen-cli/
 | **プロジェクト名** | Kaizen-CLI |
 | **リポジトリ名** | `kaizen-cli` |
 | **サブタイトル** | A knowledge-accumulating workflow framework for Claude Code |
-| **キャッチコピー（英語）** | Your AI gets smarter with every project |
+| **キャッチコピー（英語）** | Your AI gets smarter the more you use it |
 | **キャッチコピー（日本語）** | 使うほど速くなるAI開発ワークフロー |
 | **言語** | ドキュメント: 日英バイリンガル / コード・テンプレート: 英語 |
 
@@ -348,21 +348,21 @@ your-project/
 ## 補足: Kaizenサイクル図
 
 ```
-    ┌──────────────────────────────────────────────┐
-    │                                              │
-    ▼                                              │
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
-│         │    │ Decide  │    │         │    │         │
-│/kaizen  │    │         │    │skills   │    │/kaizen  │
-│-suggest │    │plan     │    │auto-    │    │-reflect │
-│-next    │    │mode     │    │invoke   │    │-learning│
-│         │    │         │    │         │    │         │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-    ▲                                              │
-    │          Knowledge accumulates               │
-    │       in knowledge/ over cycles              │
-    └──────────────────────────────────────────────┘
+                    ┌──────────────────────────────────────────────┐
+                    │                                              │
+                    ▼                                              │
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
+│         │    │         │    │ Decide  │    │         │    │         │
+│/kaizen  │    │/kaizen  │    │         │    │skills   │    │/kaizen  │
+│-init    │    │-suggest │    │plan     │    │auto-    │    │-reflect │
+│-project │    │-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │         │    │         │    │         │    │         │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
+                    ▲                                              │
+                    │          Knowledge accumulates               │
+                    │       in knowledge/ over cycles              │
+                    └──────────────────────────────────────────────┘
 ```
 
 ---
