@@ -1,0 +1,46 @@
+# CLAUDE.md
+
+このファイルはClaude Codeへの指示を提供します。
+
+## Claude Codeへの指示
+
+### 言語
+
+- ユーザーの言語に合わせて応答すること。
+
+### 日付の解釈
+
+- ユーザーが年を省略した場合（例:「3月5日」）、現在の年として解釈する。
+- 現在の年はメモリからではなく、ランタイムで動的に判定する。
+- ドキュメントに日付を記載する際は、必ず現在の年を確認する。
+
+### ドキュメント
+
+- 各ドキュメントは800行以内に収める。超える場合は別ファイルに分割する。
+- Single Source of Truth（SSOT）原則に従う: 各情報は1箇所にのみ記載する。
+
+## プロジェクト概要
+
+{{PROJECT_DESCRIPTION}}
+
+**現在のステータス**: 初期セットアップ完了
+
+## 次のステップ
+
+1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
+2. `knowledge/` の関連ファイルを確認する
+3. 実装を開始する — Claudeが必要なファイルを生成する
+4. セッション終了時に `/kaizen-reflect-learning` で学びを記録する
+
+## 参考ドキュメント
+
+### プロジェクト情報
+- **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — プロジェクト概要・目的・技術スタック
+
+### ナレッジベース
+- **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — やりたいことからドキュメントを探す
+
+### Kaizen-CLIワークフロー
+- `/kaizen-suggest-next` — 次のステップの提案を取得
+- `/kaizen-reflect-learning` — 学びをknowledgeファイルに記録
+- `/kaizen-update-docs` — ドキュメントを更新（PROJECT_SUMMARY同期含む）

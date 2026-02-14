@@ -61,15 +61,15 @@ Claude Codeの利用者の多くは「単発のコード生成ツール」とし
 - Kaizenサイクルの定義と解説
 - 設計原則（SSOT、INDEX逆引き、800行ルール、自動発動パターン）
 - ワークフロー図（init → plan → do → reflect → suggest-next）
-- 知識の層構造（skills = 手続き知識、knowledge = 参照知識、commands = 操作）
+- 知識の層構造（skills = 手続き知識（静的）、knowledge = 参照知識（蓄積される）、commands = 操作）
+- 知識蓄積の対象はknowledge/のみ（skills/は静的で変更しない）
 
 ### Layer 2: フレームワーク（汎用化して公開）
 
 | 現行資産 | 公開版 | 変更内容 |
 |---------|--------|---------|
-| `init-usj/` skill | `init-project/` | USJ固有のAWSリソース名・命名規則を除去 |
-| `committing-project/` skill | そのまま | Conventional Commits形式。汎用的 |
-| `editing-context/` skill | `editing-knowledge/` に改名 | SSOT・行数管理。汎用的 |
+| `init-usj/` skill | `kaizen-init-project/` | USJ固有のAWSリソース名・命名規則を除去 |
+| `editing-context/` skill | `kaizen-editing-knowledge/` に改名 | SSOT・行数管理。汎用的 |
 | `/usj-suggest-next` | `/kaizen-suggest-next` | `usj-`→`kaizen-`に変更、社内参照を除去 |
 | `/usj-reflect-learning` | `/kaizen-reflect-learning` | 同上 |
 | `/usj-update-docs` | `/kaizen-update-docs` | 同上、ai-projects/連携を汎用化 |
@@ -104,25 +104,24 @@ kaizen-cli/
 │
 ├── framework/                          # コピーして使うテンプレート一式
 │   ├── CLAUDE.md.template              # プロジェクト用CLAUDE.mdテンプレート
+│   ├── docs/
+│   │   └── PROJECT_SUMMARY.md.template # プロジェクト概要テンプレート
 │   ├── knowledge/
-│   │   └── meta/
-│   │       ├── INDEX.md.template       # 逆引きINDEXテンプレート
-│   │       ├── DOCUMENTATION_GUIDELINES.md  # 汎用版ドキュメントガイドライン
-│   │       └── GETTING_STARTED.md.template  # 使い方ガイドテンプレート
+│   │   ├── meta/
+│   │   │   ├── INDEX.md.template       # 逆引きINDEXテンプレート
+│   │   │   ├── DOCUMENTATION_GUIDELINES.md  # 汎用版ドキュメントガイドライン
+│   │   │   └── GETTING_STARTED.md.template  # 使い方ガイドテンプレート
+│   │   └── projects/
+│   │       └── INDEX.md.template       # プロジェクトレジストリテンプレート
 │   └── .claude/
 │       ├── commands/
-│       │   ├── kaizen-init-project.md  # プロジェクト初期化
 │       │   ├── kaizen-suggest-next.md  # 次ステップ提案
 │       │   ├── kaizen-reflect-learning.md # 知見反映
-│       │   ├── kaizen-update-docs.md   # ドキュメント更新
-│       │   └── kaizen-commit.md        # コミットフォーマット
+│       │   └── kaizen-update-docs.md   # ドキュメント更新
 │       └── skills/
-│           ├── init-project/           # プロジェクト初期化
+│           ├── kaizen-init-project/    # プロジェクト初期化（setup.shで~/.claude/skills/にグローバルリンク）
 │           │   └── SKILL.md
-│           ├── committing-project/     # コミット時ガイド
-│           │   ├── SKILL.md
-│           │   └── COMMIT_FORMAT.md
-│           └── editing-knowledge/      # ナレッジ編集ガードレール
+│           └── kaizen-editing-knowledge/  # ナレッジ編集ガードレール
 │               ├── SKILL.md
 │               └── FILE_OPERATIONS.md
 │
@@ -178,21 +177,28 @@ kaizen-cli/
 **目的**: 現行資産から汎用フレームワークを抽出する。最も工数がかかるフェーズ。
 
 - [ ] commands/ の汎用化（`kaizen-` prefix で統一）
-  - [ ] kaizen-init-project.md: init-projectスキルを呼び出すコマンド
   - [ ] kaizen-suggest-next.md: `usj-`→`kaizen-`、社内AWS参照除去
   - [ ] kaizen-reflect-learning.md: 同上
   - [ ] kaizen-update-docs.md: ai-projects/連携の汎用化
-  - [ ] kaizen-commit.md: Conventional Commits部分のみ抽出
-- [ ] skills/ の汎用化
-  - [ ] init-project/: init-usjからUSJ固有テンプレート参照を除去
-  - [ ] committing-project/: ほぼそのまま（Co-Authored-By等は汎用）
-  - [ ] editing-knowledge/: editing-contextから改名（SSOT・行数管理は汎用）
-- [ ] knowledge/meta/ テンプレート作成
-  - [ ] INDEX.md.template: 構造のみ残し、内容をプレースホルダに
-  - [ ] DOCUMENTATION_GUIDELINES.md: USJ固有ルール除去
-  - [ ] GETTING_STARTED.md.template: 汎用版に書き換え
-- [ ] CLAUDE.md.template 作成
-- [ ] setup.sh 作成（初回セットアップ: 環境変数設定、共有知識ディレクトリ作成、グローバルコマンド配置。既存コマンドの衝突チェック付き）
+- [x] skills/ の汎用化
+  - [x] kaizen-init-project/: init-usjからUSJ固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
+  - [x] kaizen-editing-knowledge/: editing-contextから改名（SSOT・行数管理は汎用）
+- [x] knowledge/meta/ テンプレート作成
+  - [x] INDEX.md.template: 構造のみ残し、内容をプレースホルダに
+  - [x] DOCUMENTATION_GUIDELINES.md: USJ固有ルール除去
+  - [x] GETTING_STARTED.md.template: 汎用版に書き換え
+- [x] CLAUDE.md.template 作成
+- [x] docs/PROJECT_SUMMARY.md.template 作成
+- [x] knowledge/projects/INDEX.md.template 作成（プロジェクトレジストリ）
+- [ ] setup.sh 作成（初回セットアップ）
+  - $KAIZEN_CLI_DIR を自動検出して環境変数に設定
+  - $KAIZEN_KNOWLEDGE_DIR ディレクトリ作成
+  - knowledge/meta/ テンプレートを $KAIZEN_KNOWLEDGE_DIR に展開
+  - knowledge/projects/ テンプレートを $KAIZEN_KNOWLEDGE_DIR に展開
+  - 両環境変数を ~/.bashrc 等に追記
+  - グローバルコマンドを ~/.claude/commands/ にコピー（既存コマンドの衝突チェック付き）
+  - kaizen-init-project スキルを ~/.claude/skills/kaizen-init-project/ にグローバルリンク
+  - $KAIZEN_KNOWLEDGE_DIR の git init はしない（ユーザー判断。QUICKSTART.md で案内）
 
 ### Phase 3: 方法論ドキュメント
 
@@ -290,20 +296,27 @@ kaizen-cli リポジトリは**配布専用（read-only）**。ユーザーの�
 kaizen-cli/                  ← upstream。git pull で安全に更新可能
   framework/
     .claude/commands/        ← ~/.claude/commands/ にコピーして使う
-    .claude/skills/          ← init-projectが各プロジェクトにリンク
+    .claude/skills/          ← kaizen-init-projectがグローバルリンク、他skillsは各プロジェクトにリンク
     knowledge/meta/          ← テンプレートのみ（知識の蓄積先ではない）
 
 $KAIZEN_KNOWLEDGE_DIR/       ← ユーザーが作成する共有知識リポジトリ
   meta/                      ← INDEX.md, DOCUMENTATION_GUIDELINES.md 等
-  （ドメイン別サブディレクトリ）← 蓄積される知識
+  projects/                  ← プロジェクトレジストリ（INDEX.md + 一覧）
+  （ドメイン別サブディレクトリ）← 蓄積される知識（reflect-learningの蓄積先）
 
 your-project/
   knowledge/                 ← $KAIZEN_KNOWLEDGE_DIR へのsymlink
   .claude/skills/            ← kaizen-cli/framework の skills へのsymlink
   CLAUDE.md                  ← プロジェクト固有の設定
+  docs/PROJECT_SUMMARY.md    ← プロジェクト概要（レジストリ同期対象）
 ```
 
-**環境変数 `KAIZEN_KNOWLEDGE_DIR`**: 共有知識ディレクトリのパスを指定。`/init-project` スキルがこの変数を参照して symlink を作成する。
+**環境変数**:
+
+| 変数 | 設定方法 | 用途 |
+|------|---------|------|
+| `KAIZEN_CLI_DIR` | setup.sh がクローン先パスを自動検出して設定 | kaizen-init-project が skills/ への symlink を張る |
+| `KAIZEN_KNOWLEDGE_DIR` | setup.sh がディレクトリ作成時に設定 | kaizen-init-project が knowledge/ への symlink を張る |
 
 ---
 
@@ -311,7 +324,7 @@ your-project/
 
 - **Claude Code依存**: このフレームワークはClaude Codeのskills/commands機能を前提とする。他のAIツールへの移植は対象外
 - **社内版との関係**: OSSはフォーク。社内版（00_dsci_common）とは独立に管理。双方向の反映は手動判断
-- **言語**: テンプレート・コマンド・スキル内の記述は英語。ドキュメント（docs/）は日英バイリンガル
+- **言語**: テンプレート・コマンド・スキル内の記述は英語。ドキュメント（docs/）は日英バイリンガル。コマンド・スキルには「ユーザーの言語に合わせて応答すること」という指示を含める
 - **個人プロジェクト**: 会社のOSSではなく個人GitHubアカウントで公開（社内固有情報を含まないため問題なし）
 
 ---
