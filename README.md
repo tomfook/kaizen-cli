@@ -10,7 +10,7 @@
 
 ## What is Kaizen-CLI?
 
-Most Claude Code users treat it as a one-shot code generator. In a large, long-running project, you can accumulate knowledge within the project itself (via CLAUDE.md, documentation, etc.). But when you juggle many smaller projects, knowledge is lost at every session and project boundary — the same research, the same mistakes, repeated over and over.
+With Claude Code, do you find yourself repeating the same explanations every time you switch projects? Project-specific rules can be handled with CLAUDE.md. But industry expertise, deep technical knowledge, and hard-won lessons from past mistakes — these should accumulate across projects, and there's currently no built-in mechanism for that.
 
 Kaizen-CLI solves this by providing a **structured workflow** where knowledge accumulates across sessions and projects. The more you use it, the faster your AI works.
 
