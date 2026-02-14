@@ -74,7 +74,7 @@ Claude Codeの利用者の多くは「単発のコード生成ツール」とし
 | `/usj-reflect-learning` | `/kaizen-reflect-learning` | 同上 |
 | `/usj-update-docs` | `/kaizen-update-docs` | 同上、ai-projects/連携を汎用化 |
 | `context/meta/INDEX.md` | `knowledge/meta/INDEX.md` テンプレート化 | 構造と書式のみ残す |
-| `context/meta/DOCUMENTATION_GUIDELINES.md` | `knowledge/meta/` に配置、軽微な編集 | USJ固有ルールの除去 |
+| `context/meta/DOCUMENTATION_GUIDELINES.md` | `knowledge/meta/` に配置、軽微な編集 | 社内固有ルールの除去 |
 | `CLAUDE.md` | テンプレート化 | 構造のみ残し、内容は空欄 |
 
 ### Layer 3: サンプルドメイン（新規作成）
