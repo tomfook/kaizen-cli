@@ -12,40 +12,40 @@
 
 With Claude Code, do you find yourself repeating the same explanations every time you switch projects? Project-specific rules can be handled with CLAUDE.md. But industry expertise, deep technical knowledge, and hard-won lessons from past mistakes — these should accumulate across projects, and there's currently no built-in mechanism for that.
 
-Kaizen-CLI solves this by providing a **structured workflow** where knowledge accumulates across sessions and projects. The more you use it, the faster your AI works.
+Kaizen-CLI solves this by providing a **structured workflow** that accumulates knowledge across sessions and projects, and leverages that knowledge to suggest your next actions. The more you use it, the faster your AI works.
 
 ```
-    ┌──────────────────────────────────────────────┐
-    │                                              │
-    ▼                                              │
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
-│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
-│         │    │ Decide  │    │         │    │         │
-│/kaizen  │    │         │    │skills   │    │/kaizen  │
-│-suggest │    │plan     │    │auto-    │    │-reflect │
-│-next    │    │mode     │    │invoke   │    │-learning│
-│         │    │         │    │         │    │         │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘
-    ▲                                              │
-    │          Knowledge accumulates               │
-    │       in knowledge/ over cycles              │
-    └──────────────────────────────────────────────┘
+                    ┌──────────────────────────────────────────────┐
+                    │                                              │
+                    ▼                                              │
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
+│         │    │         │    │ Decide  │    │         │    │         │
+│/kaizen  │    │/kaizen  │    │         │    │skills   │    │/kaizen  │
+│-init    │    │-suggest │    │plan     │    │auto-    │    │-reflect │
+│-project │    │-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │         │    │         │    │         │    │         │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
+                    ▲                                              │
+                    │          Knowledge accumulates               │
+                    │       in knowledge/ over cycles              │
+                    └──────────────────────────────────────────────┘
 ```
 
-## Key Concepts
+## What Kaizen-CLI Provides
 
-| Component | Role | Description |
-|-----------|------|-------------|
-| **knowledge/** | Shared knowledge | Cross-project knowledge, guidelines, and project context shared across all sessions via symlinks |
-| **skills/** | Procedural knowledge | Step-by-step instructions that Claude Code auto-invokes for specific tasks |
-| **commands/** | Operations | Slash commands that trigger workflow actions (suggest, reflect, update) |
+| Mechanism | Description |
+|-----------|-------------|
+| **Shared knowledge base** | `knowledge/` is symlinked across all projects. Industry expertise, technical insights, and hard-won lessons accumulate over time |
+| **Kaizen cycle** | A suggest → plan → execute → reflect cycle that drives continuous improvement |
+| **Project context** | PROJECT_SUMMARY and a project registry maintain cross-project context |
 
 ## Why Kaizen-CLI?
 
 - **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session
 - **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
 - **Structured improvement**: An explicit suggest → plan → execute → reflect cycle drives continuous improvement
-- **Faster over time**: Accumulated knowledge means Claude Code needs less context and makes fewer mistakes
+- **Faster over time**: Accumulated knowledge means less repeated explanations, fewer regressions, and fewer known pitfalls
 
 ## Quick Start
 
