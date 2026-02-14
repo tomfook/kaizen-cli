@@ -2,7 +2,7 @@
 
 **A knowledge-accumulating workflow framework for Claude Code**
 
-> Your AI gets smarter with every project.
+> Your AI gets smarter the more you use it.
 
 [日本語版 README](README.ja.md)
 
