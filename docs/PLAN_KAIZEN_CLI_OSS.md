@@ -159,7 +159,7 @@ kaizen-cli/
 - [x] 本計画書の策定（本ドキュメント）
 - [x] ライセンス選定の最終決定 → **MIT License**
 - [x] リポジトリ名・ブランディングの確定 → **kaizen-cli**
-- [x] 既存資産の機密情報スキャン（公開不可な情報の洗い出し）→ `docs/PHASE0_CONFIDENTIALITY_SCAN.md`
+- [x] 既存資産の機密情報スキャン（結果は Phase 2 サニタイズガイドに統合済み）
 
 ### Phase 1: リポジトリ基盤
 
@@ -199,6 +199,52 @@ kaizen-cli/
   - グローバルコマンドを ~/.claude/commands/ にコピー（既存コマンドの衝突チェック付き）
   - kaizen-init-project スキルを ~/.claude/skills/kaizen-init-project/ にグローバルリンク
   - $KAIZEN_KNOWLEDGE_DIR の git init はしない（ユーザー判断。QUICKSTART.md で案内）
+
+### Phase 2 参考: サニタイズガイド
+
+Phase 0 機密スキャンの結果を要約したもの。社内版（00_dsci_common）からの抽出時に参照する。
+
+#### アプローチ
+
+**コピー＆墨消しではなく、選択的抽出＆書き換え**を推奨。
+
+| Tier | 割合 | 説明 | 対応 |
+|------|------|------|------|
+| **A: そのまま利用可** | ~40% | 汎用的な方法論ファイル | コピーするだけ |
+| **B: 系統的置換** | ~45% | 価値あるコンテンツに識別子が散在 | 下記の置換テーブルを適用 |
+| **C: 完全除外** | ~15% | 機密ファイル（サニタイズ不可） | OSS対象外 |
+
+#### 完全除外ファイル（OSS不可）
+
+| ファイル | 理由 |
+|---------|------|
+| `ai-context/context/meta/WORKPLACE_CONTEXT.md` | 組織構造・ビジネス用語の固まり |
+| `ai-context/context/foundation/AWS_RESOURCES.md` | 実AWSリソースカタログ |
+| `ai-context/context/foundation/DATA_ARCHITECTURE.md` | 実データアーキテクチャ |
+| `ai-projects/` ディレクトリ全体 | APIキー、個人情報、エンドポイント等 |
+
+#### 系統的置換テーブル
+
+| 検索パターン | 置換先 | 出現規模 |
+|-------------|--------|---------|
+| `$USJ_DSCI_COMMON_DIR` | `$KAIZEN_KNOWLEDGE_DIR` | ~50箇所 |
+| 社内AWSアカウントID | `123456789012` | ~30箇所 |
+| `/usj-` コマンド接頭辞 | `/kaizen-` | ~25箇所 |
+| `init-usj` | `kaizen-init-project` | ~8箇所 |
+| 社内S3バケット名 | `my-bucket`, `example-bucket` | ~15箇所 |
+| `00_dsci_common` | 汎用リポジトリ参照 | ~12箇所 |
+| `usj-utils` | `shared-utils` | ~8箇所 |
+| `CodeCommit` 参照 | 汎用git参照 | ~12箇所 |
+| 社内プロファイル名 | `default-profile` | ~2箇所 |
+| 社内チーム名 | 汎用チーム名 | ~4箇所 |
+| 社内テーブル名 | `mydb.example_table` | ~5箇所 |
+
+#### 要注意事項
+
+- 社内版の `troubleshooting-lambda/INVESTIGATION.md` にAPIキーが平文で存在 — OSS抽出対象外だが、キーローテーションが必要
+- 個人S3パスが `context-push/pull-s3` コマンドに存在 — これらのコマンドはOSS対象外
+
+---
 
 ### Phase 3: 方法論ドキュメント
 
