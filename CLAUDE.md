@@ -32,7 +32,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 
 - Phase 0: Complete (confidentiality scan)
 - Phase 1: Complete (repository foundation)
-- Phase 2: In progress — skills, templates, commands all done. Remaining: setup.sh
+- Phase 2: Complete
 
 ## Conventions
 

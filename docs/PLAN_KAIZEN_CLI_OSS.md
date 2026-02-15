@@ -190,7 +190,7 @@ kaizen-cli/
 - [x] CLAUDE.md.template 作成
 - [x] docs/PROJECT_SUMMARY.md.template 作成
 - [x] knowledge/projects/INDEX.md.template 作成（プロジェクトレジストリ）
-- [ ] setup.sh 作成（初回セットアップ）
+- [x] setup.sh 作成（初回セットアップ）
   - $KAIZEN_CLI_DIR を自動検出して環境変数に設定
   - $KAIZEN_KNOWLEDGE_DIR ディレクトリ作成
   - knowledge/meta/ テンプレートを $KAIZEN_KNOWLEDGE_DIR に展開
