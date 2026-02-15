@@ -176,10 +176,10 @@ kaizen-cli/
 
 **目的**: 現行資産から汎用フレームワークを抽出する。最も工数がかかるフェーズ。
 
-- [ ] commands/ の汎用化（`kaizen-` prefix で統一）
+- [x] commands/ の汎用化（`kaizen-` prefix で統一）
   - [x] kaizen-suggest-next.md: `usj-`→`kaizen-`、社内AWS参照除去
-  - [ ] kaizen-reflect-learning.md: 同上
-  - [ ] kaizen-update-docs.md: ai-projects/連携の汎用化
+  - [x] kaizen-reflect-learning.md: 同上
+  - [x] kaizen-update-docs.md: ai-projects/連携の汎用化
 - [x] skills/ の汎用化
   - [x] kaizen-init-project/: 社内版スキルから社内固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
   - [x] kaizen-editing-knowledge/: editing-contextから改名（SSOT・行数管理は汎用）
