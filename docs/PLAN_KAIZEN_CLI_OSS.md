@@ -66,16 +66,17 @@ Claude Codeの利用者の多くは「単発のコード生成ツール」とし
 
 ### Layer 2: フレームワーク（汎用化して公開）
 
-| 現行資産 | 公開版 | 変更内容 |
-|---------|--------|---------|
-| `init-usj/` skill | `kaizen-init-project/` | 社内固有のAWSリソース名・命名規則を除去 |
-| `editing-context/` skill | `kaizen-editing-knowledge/` に改名 | SSOT・行数管理。汎用的 |
-| `/usj-suggest-next` | `/kaizen-suggest-next` | `usj-`→`kaizen-`に変更、社内参照を除去 |
-| `/usj-reflect-learning` | `/kaizen-reflect-learning` | 同上 |
-| `/usj-update-docs` | `/kaizen-update-docs` | 同上、ai-projects/連携を汎用化 |
-| `context/meta/INDEX.md` | `knowledge/meta/INDEX.md` テンプレート化 | 構造と書式のみ残す |
-| `context/meta/DOCUMENTATION_GUIDELINES.md` | `knowledge/meta/` に配置、軽微な編集 | 社内固有ルールの除去 |
-| `CLAUDE.md` | テンプレート化 | 構造のみ残し、内容は空欄 |
+| コンポーネント | 説明 |
+|--------------|------|
+| `kaizen-init-project/` skill | プロジェクト初期化（グローバルスキル） |
+| `kaizen-editing-knowledge/` skill | knowledge/編集時のチェックリスト |
+| `/kaizen-suggest-next` command | 次ステップ提案 |
+| `/kaizen-reflect-learning` command | knowledge/への知見反映 |
+| `/kaizen-update-docs` command | プロジェクトドキュメント更新・レジストリ同期 |
+| `knowledge/meta/` templates | INDEX.md、GETTING_STARTED.md、DOCUMENTATION_GUIDELINES.md |
+| `knowledge/projects/` template | プロジェクトレジストリ |
+| `CLAUDE.md.template` | プロジェクト用CLAUDE.mdテンプレート |
+| `PROJECT_SUMMARY.md.template` | プロジェクト概要テンプレート |
 
 ### Layer 3: サンプルドメイン（新規作成）
 
@@ -199,53 +200,7 @@ kaizen-cli/
   - グローバルコマンドを ~/.claude/commands/ にコピー（既存コマンドの衝突チェック付き）
   - kaizen-init-project スキルを ~/.claude/skills/kaizen-init-project/ にグローバルリンク
   - $KAIZEN_KNOWLEDGE_DIR の git init はしない（ユーザー判断。QUICKSTART.md で案内）
-- [ ] Phase 2 完了時の整理: 本PLAN文書内のサニタイズガイドセクション削除、Layer 2テーブルの社内名を汎化
-
-### Phase 2 参考: サニタイズガイド
-
-Phase 0 機密スキャンの結果を要約したもの。社内版からの抽出時に参照する。
-
-#### アプローチ
-
-**コピー＆墨消しではなく、選択的抽出＆書き換え**を推奨。
-
-| Tier | 割合 | 説明 | 対応 |
-|------|------|------|------|
-| **A: そのまま利用可** | ~40% | 汎用的な方法論ファイル | コピーするだけ |
-| **B: 系統的置換** | ~45% | 価値あるコンテンツに識別子が散在 | 下記の置換テーブルを適用 |
-| **C: 完全除外** | ~15% | 機密ファイル（サニタイズ不可） | OSS対象外 |
-
-#### 完全除外ファイル（OSS不可）
-
-| ファイル | 理由 |
-|---------|------|
-| `ai-context/context/meta/WORKPLACE_CONTEXT.md` | 組織構造・ビジネス用語の固まり |
-| `ai-context/context/foundation/AWS_RESOURCES.md` | 実AWSリソースカタログ |
-| `ai-context/context/foundation/DATA_ARCHITECTURE.md` | 実データアーキテクチャ |
-| `ai-projects/` ディレクトリ全体 | APIキー、個人情報、エンドポイント等 |
-
-#### 系統的置換テーブル
-
-| 検索パターン | 置換先 | 出現規模 |
-|-------------|--------|---------|
-| `$USJ_DSCI_COMMON_DIR` | `$KAIZEN_KNOWLEDGE_DIR` | ~50箇所 |
-| 社内AWSアカウントID | `123456789012` | ~30箇所 |
-| `/usj-` コマンド接頭辞 | `/kaizen-` | ~25箇所 |
-| `init-usj` | `kaizen-init-project` | ~8箇所 |
-| 社内S3バケット名 | `my-bucket`, `example-bucket` | ~15箇所 |
-| `00_dsci_common` | 汎用リポジトリ参照 | ~12箇所 |
-| `usj-utils` | `shared-utils` | ~8箇所 |
-| `CodeCommit` 参照 | 汎用git参照 | ~12箇所 |
-| 社内プロファイル名 | `default-profile` | ~2箇所 |
-| 社内チーム名 | 汎用チーム名 | ~4箇所 |
-| 社内テーブル名 | `mydb.example_table` | ~5箇所 |
-
-#### 要注意事項
-
-- 社内版の `troubleshooting-lambda/INVESTIGATION.md` にAPIキーが平文で存在 — OSS抽出対象外だが、キーローテーションが必要
-- 個人S3パスが `context-push/pull-s3` コマンドに存在 — これらのコマンドはOSS対象外
-
----
+- [x] Phase 2 完了時の整理: サニタイズガイドセクション削除、Layer 2テーブルを汎化
 
 ### Phase 3: 方法論ドキュメント
 
