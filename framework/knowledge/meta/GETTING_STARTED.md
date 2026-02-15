@@ -73,6 +73,24 @@ project-root/
 
 ---
 
+## Kaizenサイクル
+
+Kaizen-CLIのコマンドは、以下の改善サイクルを構成しています:
+
+```
+suggest-next → 計画・実行 → reflect-learning → suggest-next → ...
+```
+
+1. **Suggest**: `/kaizen-suggest-next` — タスク完了後、次のステップを提案
+2. **Plan & Execute**: 提案を元に計画・実行（通常のClaude Code作業）
+3. **Reflect**: `/kaizen-reflect-learning` — セッション終了時、学びをknowledgeに蓄積
+
+ドキュメントに変更があった場合は、reflectの前後で `/kaizen-update-docs` を実行します。
+
+蓄積された知識が次のsuggestの質を高め、サイクルを回すほど改善が加速します。
+
+---
+
 ## 利用可能なコマンド・スキル
 
 ### スキル（グローバル — 全プロジェクトで使用可能）
