@@ -68,13 +68,13 @@ Claude Codeの利用者の多くは「単発のコード生成ツール」とし
 
 | 現行資産 | 公開版 | 変更内容 |
 |---------|--------|---------|
-| `init-usj/` skill | `kaizen-init-project/` | USJ固有のAWSリソース名・命名規則を除去 |
+| `init-usj/` skill | `kaizen-init-project/` | 社内固有のAWSリソース名・命名規則を除去 |
 | `editing-context/` skill | `kaizen-editing-knowledge/` に改名 | SSOT・行数管理。汎用的 |
 | `/usj-suggest-next` | `/kaizen-suggest-next` | `usj-`→`kaizen-`に変更、社内参照を除去 |
 | `/usj-reflect-learning` | `/kaizen-reflect-learning` | 同上 |
 | `/usj-update-docs` | `/kaizen-update-docs` | 同上、ai-projects/連携を汎用化 |
 | `context/meta/INDEX.md` | `knowledge/meta/INDEX.md` テンプレート化 | 構造と書式のみ残す |
-| `context/meta/DOCUMENTATION_GUIDELINES.md` | `knowledge/meta/` に配置、軽微な編集 | USJ固有ルールの除去 |
+| `context/meta/DOCUMENTATION_GUIDELINES.md` | `knowledge/meta/` に配置、軽微な編集 | 社内固有ルールの除去 |
 | `CLAUDE.md` | テンプレート化 | 構造のみ残し、内容は空欄 |
 
 ### Layer 3: サンプルドメイン（新規作成）
@@ -159,7 +159,7 @@ kaizen-cli/
 - [x] 本計画書の策定（本ドキュメント）
 - [x] ライセンス選定の最終決定 → **MIT License**
 - [x] リポジトリ名・ブランディングの確定 → **kaizen-cli**
-- [x] 既存資産の機密情報スキャン（公開不可な情報の洗い出し）→ `docs/PHASE0_CONFIDENTIALITY_SCAN.md`
+- [x] 既存資産の機密情報スキャン（結果は Phase 2 サニタイズガイドに統合済み）
 
 ### Phase 1: リポジトリ基盤
 
@@ -181,11 +181,11 @@ kaizen-cli/
   - [ ] kaizen-reflect-learning.md: 同上
   - [ ] kaizen-update-docs.md: ai-projects/連携の汎用化
 - [x] skills/ の汎用化
-  - [x] kaizen-init-project/: init-usjからUSJ固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
+  - [x] kaizen-init-project/: 社内版スキルから社内固有テンプレート参照を除去。サブタイプなし（汎用1パターン）。setup.shで~/.claude/skills/にグローバルリンク。ユーザーによるカスタムサブタイプ追加は CUSTOMIZATION.md で案内。skills は個別スキルごとに symlink（ユーザー独自スキルとの共存のため）
   - [x] kaizen-editing-knowledge/: editing-contextから改名（SSOT・行数管理は汎用）
 - [x] knowledge/meta/ テンプレート作成
   - [x] INDEX.md.template: 構造のみ残し、内容をプレースホルダに
-  - [x] DOCUMENTATION_GUIDELINES.md: USJ固有ルール除去
+  - [x] DOCUMENTATION_GUIDELINES.md: 社内固有ルール除去
   - [x] GETTING_STARTED.md.template: 汎用版に書き換え
 - [x] CLAUDE.md.template 作成
 - [x] docs/PROJECT_SUMMARY.md.template 作成
@@ -199,6 +199,53 @@ kaizen-cli/
   - グローバルコマンドを ~/.claude/commands/ にコピー（既存コマンドの衝突チェック付き）
   - kaizen-init-project スキルを ~/.claude/skills/kaizen-init-project/ にグローバルリンク
   - $KAIZEN_KNOWLEDGE_DIR の git init はしない（ユーザー判断。QUICKSTART.md で案内）
+- [ ] Phase 2 完了時の整理: 本PLAN文書内のサニタイズガイドセクション削除、Layer 2テーブルの社内名を汎化
+
+### Phase 2 参考: サニタイズガイド
+
+Phase 0 機密スキャンの結果を要約したもの。社内版からの抽出時に参照する。
+
+#### アプローチ
+
+**コピー＆墨消しではなく、選択的抽出＆書き換え**を推奨。
+
+| Tier | 割合 | 説明 | 対応 |
+|------|------|------|------|
+| **A: そのまま利用可** | ~40% | 汎用的な方法論ファイル | コピーするだけ |
+| **B: 系統的置換** | ~45% | 価値あるコンテンツに識別子が散在 | 下記の置換テーブルを適用 |
+| **C: 完全除外** | ~15% | 機密ファイル（サニタイズ不可） | OSS対象外 |
+
+#### 完全除外ファイル（OSS不可）
+
+| ファイル | 理由 |
+|---------|------|
+| `ai-context/context/meta/WORKPLACE_CONTEXT.md` | 組織構造・ビジネス用語の固まり |
+| `ai-context/context/foundation/AWS_RESOURCES.md` | 実AWSリソースカタログ |
+| `ai-context/context/foundation/DATA_ARCHITECTURE.md` | 実データアーキテクチャ |
+| `ai-projects/` ディレクトリ全体 | APIキー、個人情報、エンドポイント等 |
+
+#### 系統的置換テーブル
+
+| 検索パターン | 置換先 | 出現規模 |
+|-------------|--------|---------|
+| `$USJ_DSCI_COMMON_DIR` | `$KAIZEN_KNOWLEDGE_DIR` | ~50箇所 |
+| 社内AWSアカウントID | `123456789012` | ~30箇所 |
+| `/usj-` コマンド接頭辞 | `/kaizen-` | ~25箇所 |
+| `init-usj` | `kaizen-init-project` | ~8箇所 |
+| 社内S3バケット名 | `my-bucket`, `example-bucket` | ~15箇所 |
+| `00_dsci_common` | 汎用リポジトリ参照 | ~12箇所 |
+| `usj-utils` | `shared-utils` | ~8箇所 |
+| `CodeCommit` 参照 | 汎用git参照 | ~12箇所 |
+| 社内プロファイル名 | `default-profile` | ~2箇所 |
+| 社内チーム名 | 汎用チーム名 | ~4箇所 |
+| 社内テーブル名 | `mydb.example_table` | ~5箇所 |
+
+#### 要注意事項
+
+- 社内版の `troubleshooting-lambda/INVESTIGATION.md` にAPIキーが平文で存在 — OSS抽出対象外だが、キーローテーションが必要
+- 個人S3パスが `context-push/pull-s3` コマンドに存在 — これらのコマンドはOSS対象外
+
+---
 
 ### Phase 3: 方法論ドキュメント
 
@@ -246,6 +293,9 @@ kaizen-cli/
 - [ ] CONTRIBUTING.md の作成
 - [ ] Issue templatesの作成
 - [ ] 最終レビュー（機密情報の残存チェック）
+  - ワーキングツリー上のファイル内容の確認
+  - git履歴に残存する機密値（Phase 0スキャンレポート等）の除去要否を判断し、必要なら `git filter-repo` 等で履歴書き換え
+- [ ] PLAN_KAIZEN_CLI_OSS.md の削除またはアーカイブ（開発用文書であり公開ドキュメントではない）
 - [ ] v0.1.0 タグ作成・リリース
 - [ ] 告知
   - [ ] Zenn記事（日本語、方法論の解説）
@@ -323,9 +373,9 @@ your-project/
 ## 制約・前提条件
 
 - **Claude Code依存**: このフレームワークはClaude Codeのskills/commands機能を前提とする。他のAIツールへの移植は対象外
-- **社内版との関係**: OSSはフォーク。社内版（00_dsci_common）とは独立に管理。双方向の反映は手動判断
+- **社内版との関係**: OSSはフォーク。社内版とは独立に管理。双方向の反映は手動判断
 - **言語**: テンプレート・コマンド・スキル内の記述は英語。ドキュメント（docs/）は日英バイリンガル。コマンド・スキルには「ユーザーの言語に合わせて応答すること」という指示を含める
-- **個人プロジェクト**: 会社のOSSではなく個人GitHubアカウントで公開（社内固有情報を含まないため問題なし）
+- **個人プロジェクト**: 個人GitHubアカウントで公開
 
 ---
 
