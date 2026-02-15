@@ -110,7 +110,7 @@ kaizen-cli/
 │   │   ├── meta/
 │   │   │   ├── INDEX.md.template       # 逆引きINDEXテンプレート
 │   │   │   ├── DOCUMENTATION_GUIDELINES.md  # 汎用版ドキュメントガイドライン
-│   │   │   └── GETTING_STARTED.md.template  # 使い方ガイドテンプレート
+│   │   │   └── GETTING_STARTED.md           # 使い方ガイド
 │   │   └── projects/
 │   │       └── INDEX.md.template       # プロジェクトレジストリテンプレート
 │   └── .claude/
@@ -186,7 +186,7 @@ kaizen-cli/
 - [x] knowledge/meta/ テンプレート作成
   - [x] INDEX.md.template: 構造のみ残し、内容をプレースホルダに
   - [x] DOCUMENTATION_GUIDELINES.md: 社内固有ルール除去
-  - [x] GETTING_STARTED.md.template: 汎用版に書き換え
+  - [x] GETTING_STARTED.md: 汎用版に書き換え（テンプレート不要のため.mdに変更）
 - [x] CLAUDE.md.template 作成
 - [x] docs/PROJECT_SUMMARY.md.template 作成
 - [x] knowledge/projects/INDEX.md.template 作成（プロジェクトレジストリ）

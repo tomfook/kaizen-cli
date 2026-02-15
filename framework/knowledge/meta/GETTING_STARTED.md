@@ -39,13 +39,6 @@ project-root/
 | **docs/PROJECT_SUMMARY.md** | プロジェクト概要 | 目的、技術スタック、設計判断（レジストリ同期対象） |
 | **docs/** | プロジェクト固有の詳細情報 | 計画、仕様書、意思決定ログ |
 
-### 基本原則
-
-| 原則 | 説明 |
-|------|------|
-| **knowledgeファイルはデフォルトで読み取り専用** | 通常作業中は参照のみ。学びの反映は明示的な意図を持って |
-| **プロジェクト固有情報は分離** | CLAUDE.mdとdocs/にのみ配置（knowledge/には入れない） |
-
 ---
 
 ## 新規プロジェクトセットアップ
@@ -80,11 +73,36 @@ project-root/
 
 ---
 
-## 利用可能なコマンド
+## Kaizenサイクル
+
+Kaizen-CLIのコマンドは、以下の改善サイクルを構成しています:
+
+```
+suggest-next → 計画・実行 → reflect-learning → suggest-next → ...
+```
+
+1. **Suggest**: `/kaizen-suggest-next` — タスク完了後、次のステップを提案
+2. **Plan & Execute**: 提案を元に計画・実行（通常のClaude Code作業）
+3. **Reflect**: `/kaizen-reflect-learning` — セッション終了時、学びをknowledgeに蓄積
+
+ドキュメントに変更があった場合は、reflectの前後で `/kaizen-update-docs` を実行します。
+
+蓄積された知識が次のsuggestの質を高め、サイクルを回すほど改善が加速します。
+
+---
+
+## 利用可能なコマンド・スキル
+
+### スキル（グローバル — 全プロジェクトで使用可能）
+
+| スキル | 用途 | 使うタイミング |
+|-------|------|--------------|
+| `/kaizen-init-project` | プロジェクトをKaizen-CLIで初期化 | 新規プロジェクトセットアップ時 |
+
+### コマンド（プロジェクト内で使用）
 
 | コマンド | 用途 | 使うタイミング |
 |---------|------|--------------|
-| `/kaizen-init-project` | Kaizen-CLIでプロジェクトを初期化 | 新規プロジェクトセットアップ時 |
 | `/kaizen-suggest-next` | 次のステップを提案 | タスク完了時 |
 | `/kaizen-reflect-learning` | 学びをknowledgeファイルに記録 | セッション終了時 |
 | `/kaizen-update-docs` | プロジェクトドキュメントを更新 | docs/やCLAUDE.mdの変更後 |
@@ -131,12 +149,6 @@ knowledgeファイルを編集（一般化 — プロジェクト固有情報な
 
 3つとも「Yes」 → knowledgeファイルに追加。
 
----
-
-## 編集ガイドライン
-
-> 詳細: [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md)
+> knowledgeファイルの編集ガイドライン詳細: [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md)
 
 ---
-
-**最終更新**: {{DATE}}
