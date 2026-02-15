@@ -2,7 +2,7 @@
 
 **A knowledge-accumulating workflow framework for Claude Code**
 
-> Your AI gets smarter the more you use it.
+> Work on real tasks. Let the knowledge build itself.
 
 [日本語版 README](README.ja.md)
 
@@ -12,7 +12,7 @@
 
 With Claude Code, do you find yourself repeating the same explanations every time you switch projects? Project-specific rules can be handled with CLAUDE.md. But industry expertise, deep technical knowledge, and hard-won lessons from past mistakes — these should accumulate across projects, and there's currently no built-in mechanism for that.
 
-Kaizen-CLI solves this by providing a **structured workflow** that accumulates knowledge across sessions and projects, and leverages that knowledge to suggest your next actions. The more you use it, the faster your AI works.
+Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **embeds a knowledge-accumulation loop into your everyday work**. You focus on your actual tasks — building features, fixing bugs, running analyses. When you hit friction during that work — an unexpected error, a technique you had to look up, a pattern that turned out to work well — that friction becomes the raw material for updating your shared knowledge base. Over time, the knowledge that accumulates from real work accelerates all your future work across every project.
 
 ```
                     ┌──────────────────────────────────────────────┐
@@ -20,15 +20,15 @@ Kaizen-CLI solves this by providing a **structured workflow** that accumulates k
                     ▼                                              │
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
-│         │    │         │    │ Decide  │    │         │    │         │
-│/kaizen  │    │/kaizen  │    │         │    │skills   │    │/kaizen  │
-│-init    │    │-suggest │    │plan     │    │auto-    │    │-reflect │
-│-project │    │-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │  Next   │    │ Decide  │    │(= your  │    │         │
+│/kaizen  │    │/kaizen  │    │         │    │ actual  │    │/kaizen  │
+│-init    │    │-suggest │    │plan     │    │  work)  │    │-reflect │
+│-project │    │-next    │    │mode     │    │         │    │-learning│
 │         │    │         │    │         │    │         │    │         │
 └─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
                     ▲                                              │
-                    │          Knowledge accumulates               │
-                    │       in knowledge/ over cycles              │
+                    │     Friction from work feeds knowledge/      │
+                    │       which accelerates the next cycle       │
                     └──────────────────────────────────────────────┘
 ```
 
@@ -37,14 +37,14 @@ Kaizen-CLI solves this by providing a **structured workflow** that accumulates k
 | Mechanism | Description |
 |-----------|-------------|
 | **Shared knowledge base** | `knowledge/` is symlinked across all projects. Industry expertise, technical insights, and hard-won lessons accumulate over time |
-| **Kaizen cycle** | A suggest → plan → execute → reflect cycle that drives continuous improvement |
+| **Work-embedded Kaizen cycle** | Suggest → plan → execute → reflect wraps around your real work — not a separate improvement process |
 | **Project context** | PROJECT_SUMMARY and a project registry maintain cross-project context |
 
 ## Why Kaizen-CLI?
 
+- **No extra process**: You don't need to think about improvements separately. Friction that naturally arises during real work becomes the input for knowledge updates
 - **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session and project
 - **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
-- **Structured improvement**: An explicit suggest → plan → execute → reflect cycle drives continuous improvement
 - **Faster over time**: Accumulated knowledge means less repeated explanations, fewer regressions, and fewer known pitfalls
 
 ## Quick Start
