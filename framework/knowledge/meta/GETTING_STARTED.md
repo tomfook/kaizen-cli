@@ -138,5 +138,3 @@ knowledgeファイルを編集（一般化 — プロジェクト固有情報な
 > 詳細: [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md)
 
 ---
-
-**最終更新**: {{DATE}}
