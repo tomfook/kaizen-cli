@@ -131,10 +131,6 @@ knowledgeファイルを編集（一般化 — プロジェクト固有情報な
 
 3つとも「Yes」 → knowledgeファイルに追加。
 
----
-
-## 編集ガイドライン
-
-> 詳細: [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md)
+> knowledgeファイルの編集ガイドライン詳細: [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md)
 
 ---
