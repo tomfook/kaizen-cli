@@ -208,26 +208,23 @@ kaizen-cli/
 
 作成順序: CONCEPT → QUICKSTART → DESIGN_PRINCIPLES → CUSTOMIZATION
 
-- [ ] docs/CONCEPT.md + ワークフロー図
+- [x] docs/CONCEPT.md + ワークフロー図
   - Kaizenサイクルの定義
   - 各フェーズの詳細説明（init → suggest → plan → execute → reflect）
   - 知識蓄積のメカニズム（なぜ使うほど速くなるか）
   - 対象ユーザー像と非対象ユーザー像
   - ワークフロー図（Mermaid or PNG）— CONCEPTと同時に作成
-- [ ] docs/QUICKSTART.md
+- [x] docs/QUICKSTART.md
   - 5分で始められる最小手順
   - 最初のKaizenサイクルを回すまでのウォークスルー
-- [ ] docs/DESIGN_PRINCIPLES.md
-  - SSOT（Single Source of Truth）
-  - INDEX逆引きパターン（「やりたいことから探す」）
-  - ファイルサイズ管理（800行ルール）
-  - スキル自動発動パターン
-  - シンボリックリンクによる横断共有
-  - 知識の層構造（skills = 手続き知識（静的）、knowledge = 参照知識（蓄積）、commands = 操作）
-- [ ] docs/CUSTOMIZATION.md
-  - 自分のドメイン向けknowledgeの追加方法
-  - 新しいskillの作り方
-  - commandのカスタマイズ方法
+- [x] docs/DESIGN_PRINCIPLES.md
+  - システムアーキテクチャ（配布/蓄積分離、symlink共有、プロジェクト固有vs横断、提案と判断の分離）
+  - ナレッジ管理パターン（SSOT、INDEX逆引き、800行ルール）
+  - 運用詳細はDOCUMENTATION_GUIDELINES.mdに委譲
+- [x] docs/CUSTOMIZATION.md
+  - ドメイン知識の追加方法（サブディレクトリ設計、ファイルの書き方）
+  - スキル・コマンド拡張時の注意点
+  - 既存知識の移行ワークフローはv0.1.0スコープ外（#8）
 
 ### Phase 4: サンプルドメイン
 
@@ -355,20 +352,17 @@ your-project/
 ## 補足: Kaizenサイクル図
 
 ```
-                    ┌──────────────────────────────────────────────┐
-                    │                                              │
-                    ▼                                              │
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
-│         │    │         │    │ Decide  │    │         │    │         │
-│/kaizen  │    │/kaizen  │    │         │    │skills   │    │/kaizen  │
-│-init    │    │-suggest │    │plan     │    │auto-    │    │-reflect │
-│-project │    │-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │  Next   │    │ Decide  │    │(= your  │    │         │
+│/kaizen  │    │/kaizen  │    │         │    │ actual  │    │/kaizen  │
+│-init    │    │-suggest │    │plan     │    │  work)  │    │-reflect │
+│-project │    │-next    │    │mode     │    │         │    │-learning│
 │         │    │         │    │         │    │         │    │         │
 └─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
                     ▲                                              │
-                    │          Knowledge accumulates               │
-                    │       in knowledge/ over cycles              │
+                    │     Friction from work feeds knowledge/      │
+                    │       which accelerates the next cycle       │
                     └──────────────────────────────────────────────┘
 ```
 

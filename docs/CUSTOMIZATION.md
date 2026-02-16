@@ -1,0 +1,73 @@
+# カスタマイズガイド
+
+Kaizen-CLI を自分のドメインに適用するためのガイド。
+
+---
+
+## ドメイン知識の追加
+
+Kaizen-CLI の価値の大部分は knowledge/ に蓄積される知識です。reflect-learning による自動蓄積に加えて、既に持っている知識を手動で追加することもできます。
+
+### サブディレクトリの設計
+
+knowledge/ にドメイン別のサブディレクトリを作成します。
+
+```
+$KAIZEN_KNOWLEDGE_DIR/
+├── meta/                  ← Kaizen-CLI が提供（運用ガイドライン）
+├── projects/              ← Kaizen-CLI が提供（プロジェクトレジストリ）
+├── aws/                   ← 例: AWS関連の知識
+│   ├── INDEX.md
+│   ├── LAMBDA.md
+│   └── S3.md
+├── python/                ← 例: Python関連の知識
+│   ├── INDEX.md
+│   └── PATTERNS.md
+└── data-analysis/         ← 例: データ分析の知識
+    ├── INDEX.md
+    └── QUICK_REFERENCE.md
+```
+
+**ポイント**:
+- ディレクトリ名は英語小文字・ハイフン区切り
+- 各ディレクトリに INDEX.md を配置（→ [DESIGN_PRINCIPLES.md § INDEX逆引きパターン](./DESIGN_PRINCIPLES.md#index-逆引きパターン)）
+- `meta/` と `projects/` は Kaizen-CLI が使用するため、別の用途で上書きしない
+
+### ファイルの書き方
+
+1. **プロジェクト固有情報を含めない**: knowledge/ は全プロジェクトで共有される。プロジェクト名、具体的なファイルパス、特定の数値目標は書かない
+2. **一般化する**: 「プロジェクトXで学んだこと」ではなく「この技術/パターンの注意点」として記述
+3. **SSOT を守る**: 同じ情報を複数ファイルに書かない。参照リンクで誘導する
+4. **800行以内**: 超えそうなら精査 → 分割の順で対応
+
+> 詳細ルール: `knowledge/meta/DOCUMENTATION_GUIDELINES.md`
+
+### examples/ を参考にする
+
+`kaizen-cli/examples/` にドメイン別のサンプルが用意されています。
+
+| サンプル | 内容 |
+|---------|------|
+| `data-analysis/` | データ分析向けの knowledge/ と skills/ |
+| `web-development/` | Web開発向けの knowledge/ と skills/ |
+
+自分のドメインに合わせてカスタマイズするための参考資料として活用してください。
+
+---
+
+## スキル・コマンド拡張時の注意点
+
+独自のスキルやコマンドを追加する際、Kaizen-CLI との共存で気をつけること:
+
+- **Kaizen-CLI のファイルを直接編集しない**: `.claude/skills/` と `~/.claude/commands/` の kaizen- ファイルはシンボリックリンク。編集すると `$KAIZEN_CLI_DIR` 配下の配布元を汚染する。カスタマイズしたい場合はシンボリックリンクを解除してコピーを配置する
+- **kaizen- プレフィックスを避ける**: 独自のスキル・コマンドには別のプレフィックスを使い、名前衝突を防ぐ
+- **knowledge/ を参照する場合**: プロジェクトルート相対パス（`knowledge/path/to/FILE.md`）を使う。`../../../` のような相対パスはシンボリックリンク環境で壊れる
+- **詳細知識はスキル内に書かない**: knowledge/ に置き、スキルからは参照リンクで誘導する（SSOT）
+
+---
+
+## 関連ドキュメント
+
+- Kaizen-CLI の思想を理解する → [CONCEPT.md](./CONCEPT.md)
+- 設計原則を知る → [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
+- 実際に使い始める → [QUICKSTART.md](./QUICKSTART.md)
