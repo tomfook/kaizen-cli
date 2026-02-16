@@ -230,14 +230,12 @@ kaizen-cli/
 
 **目的**: 具体的な利用イメージを伝えるサンプルを用意する
 
-- [ ] examples/data-analysis/
-  - 分析プロジェクト向けのknowledge/とskills/のサンプル
-  - planning-analysisスキルの簡略版
-  - 機密情報を含まないサンプルデータパターン
-- [ ] examples/web-development/
-  - Web開発向けのknowledge/とskills/のサンプル
-  - コードレビュースキルのサンプル
-  - 新規作成（社内資産の流用なし）
+- [x] examples/data-analysis/
+  - knowledge/analysis/: INDEX.md（逆引き）、PITFALLS.md（落とし穴）、QUICK_REFERENCE.md（コードパターン）
+  - skills/planning-analysis/: 分析計画立案スキル（内部版から汎用化）
+- [x] examples/web-development/
+  - knowledge/development/: INDEX.md（逆引き）、PATTERNS.md（Web開発パターン）
+  - skills/reviewing-code/: コードレビュースキル（新規作成）
 
 ### Phase 5: 公開・告知
 
