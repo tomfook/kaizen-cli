@@ -206,26 +206,28 @@ kaizen-cli/
 
 **目的**: Kaizen-CLIの考え方を文書化する。OSSの価値の核心部分。
 
-- [ ] docs/CONCEPT.md
+作成順序: CONCEPT → QUICKSTART → DESIGN_PRINCIPLES → CUSTOMIZATION
+
+- [ ] docs/CONCEPT.md + ワークフロー図
   - Kaizenサイクルの定義
-  - 各フェーズの詳細説明（init → plan → do → reflect → suggest-next）
+  - 各フェーズの詳細説明（init → suggest → plan → execute → reflect）
   - 知識蓄積のメカニズム（なぜ使うほど速くなるか）
   - 対象ユーザー像と非対象ユーザー像
+  - ワークフロー図（Mermaid or PNG）— CONCEPTと同時に作成
+- [ ] docs/QUICKSTART.md
+  - 5分で始められる最小手順
+  - 最初のKaizenサイクルを回すまでのウォークスルー
 - [ ] docs/DESIGN_PRINCIPLES.md
   - SSOT（Single Source of Truth）
   - INDEX逆引きパターン（「やりたいことから探す」）
   - ファイルサイズ管理（800行ルール）
   - スキル自動発動パターン
   - シンボリックリンクによる横断共有
-  - 知識の層構造（skills / knowledge / commands）
-- [ ] docs/QUICKSTART.md
-  - 5分で始められる最小手順
-  - 最初のPDCAサイクルを回すまでのウォークスルー
+  - 知識の層構造（skills = 手続き知識（静的）、knowledge = 参照知識（蓄積）、commands = 操作）
 - [ ] docs/CUSTOMIZATION.md
   - 自分のドメイン向けknowledgeの追加方法
   - 新しいskillの作り方
   - commandのカスタマイズ方法
-- [ ] ワークフロー図の作成（Mermaid or PNG）
 
 ### Phase 4: サンプルドメイン
 
