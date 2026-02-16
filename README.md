@@ -15,9 +15,6 @@ With Claude Code, do you find yourself repeating the same explanations every tim
 Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **embeds a knowledge-accumulation loop into your everyday work**. You focus on your actual tasks — building features, fixing bugs, running analyses. When you hit friction during that work — an unexpected error, a technique you had to look up, a pattern that turned out to work well — that friction becomes the raw material for updating your shared knowledge base. Over time, the knowledge that accumulates from real work accelerates all your future work across every project.
 
 ```
-                    ┌──────────────────────────────────────────────┐
-                    │                                              │
-                    ▼                                              │
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
 │         │    │  Next   │    │ Decide  │    │(= your  │    │         │
