@@ -208,13 +208,13 @@ kaizen-cli/
 
 作成順序: CONCEPT → QUICKSTART → DESIGN_PRINCIPLES → CUSTOMIZATION
 
-- [ ] docs/CONCEPT.md + ワークフロー図
+- [x] docs/CONCEPT.md + ワークフロー図
   - Kaizenサイクルの定義
   - 各フェーズの詳細説明（init → suggest → plan → execute → reflect）
   - 知識蓄積のメカニズム（なぜ使うほど速くなるか）
   - 対象ユーザー像と非対象ユーザー像
   - ワークフロー図（Mermaid or PNG）— CONCEPTと同時に作成
-- [ ] docs/QUICKSTART.md
+- [x] docs/QUICKSTART.md
   - 5分で始められる最小手順
   - 最初のKaizenサイクルを回すまでのウォークスルー
 - [ ] docs/DESIGN_PRINCIPLES.md
@@ -355,20 +355,17 @@ your-project/
 ## 補足: Kaizenサイクル図
 
 ```
-                    ┌──────────────────────────────────────────────┐
-                    │                                              │
-                    ▼                                              │
 ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
 │  Init   │───▶│ Suggest │───▶│ Plan &  │───▶│ Execute │───▶│ Reflect │
-│         │    │         │    │ Decide  │    │         │    │         │
-│/kaizen  │    │/kaizen  │    │         │    │skills   │    │/kaizen  │
-│-init    │    │-suggest │    │plan     │    │auto-    │    │-reflect │
-│-project │    │-next    │    │mode     │    │invoke   │    │-learning│
+│         │    │  Next   │    │ Decide  │    │(= your  │    │         │
+│/kaizen  │    │/kaizen  │    │         │    │ actual  │    │/kaizen  │
+│-init    │    │-suggest │    │plan     │    │  work)  │    │-reflect │
+│-project │    │-next    │    │mode     │    │         │    │-learning│
 │         │    │         │    │         │    │         │    │         │
 └─────────┘    └─────────┘    └─────────┘    └─────────┘    └─────────┘
                     ▲                                              │
-                    │          Knowledge accumulates               │
-                    │       in knowledge/ over cycles              │
+                    │     Friction from work feeds knowledge/      │
+                    │       which accelerates the next cycle       │
                     └──────────────────────────────────────────────┘
 ```
 
