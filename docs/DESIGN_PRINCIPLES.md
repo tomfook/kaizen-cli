@@ -1,128 +1,128 @@
-# 設計原則
+# Design Principles
 
-Kaizen-CLI の設計を支える原則集。システムアーキテクチャの判断基準と、ナレッジ管理のパターンを記載しています。
+A collection of principles underpinning the design of Kaizen-CLI. This document covers the criteria for system architecture decisions and patterns for knowledge management.
 
 ---
 
-## システムアーキテクチャ
+## System Architecture
 
-### 配布と蓄積の分離
+### Separation of Distribution and Accumulation
 
-**kaizen-cli リポジトリは配布専用（read-only）。ユーザーの知識は別の場所に蓄積する。**
+**The kaizen-cli repository is distribution-only (read-only). User knowledge is accumulated elsewhere.**
 
 ```
-kaizen-cli/                ← 配布。git pull で安全に更新可能
+kaizen-cli/                <- Distribution. Safely updatable via git pull
   framework/
-    .claude/commands/      ← ~/.claude/commands/ にsymlink
-    .claude/skills/        ← 各プロジェクトにsymlink
-    knowledge/meta/        ← テンプレートのみ（蓄積先ではない）
+    .claude/commands/      <- Symlinked to ~/.claude/commands/
+    .claude/skills/        <- Symlinked into each project
+    knowledge/meta/        <- Templates only (not a knowledge store)
 
-$KAIZEN_KNOWLEDGE_DIR/     ← ユーザーの知識が蓄積される場所
-  meta/                    ← 運用ガイドライン
-  projects/                ← プロジェクトレジストリ
-  (ドメイン別ファイル)      ← reflect-learning の蓄積先
+$KAIZEN_KNOWLEDGE_DIR/     <- Where user knowledge is accumulated
+  meta/                    <- Operational guidelines
+  projects/                <- Project registry
+  (domain-specific files)  <- Destination for reflect-learning output
 ```
 
-この分離により:
-- `git pull` でフレームワーク更新してもユーザーの知識と衝突しない
-- kaizen-cli のテンプレートと、ユーザーが蓄積した知識が明確に区別される
-- 環境変数（`$KAIZEN_CLI_DIR`、`$KAIZEN_KNOWLEDGE_DIR`）で両者を接続
+This separation ensures:
+- Running `git pull` to update the framework never conflicts with user knowledge
+- Clear distinction between kaizen-cli templates and user-accumulated knowledge
+- Environment variables (`$KAIZEN_CLI_DIR`, `$KAIZEN_KNOWLEDGE_DIR`) connect the two
 
-### シンボリックリンクによる横断共有
+### Cross-Project Sharing via Symlinks
 
-**knowledge/ はシンボリックリンクで全プロジェクトから同じ実体を参照する。**
+**knowledge/ uses symlinks so all projects reference the same underlying data.**
 
 ```
-プロジェクトA                    プロジェクトB
+Project A                       Project B
 ├── knowledge/ ─┐              ├── knowledge/ ─┐
 │               │              │               │
 │               ▼              │               ▼
 │        ┌─────────────────────────────────┐
-│        │  $KAIZEN_KNOWLEDGE_DIR（共有）    │
-│        │  knowledge の実体               │
+│        │  $KAIZEN_KNOWLEDGE_DIR (shared)  │
+│        │  Actual knowledge store         │
 │        └─────────────────────────────────┘
 ```
 
-- **即座に伝播**: あるプロジェクトで knowledge/ を編集すると、全プロジェクトで即座に反映
-- **コピー不要**: ファイルのコピーや同期の仕組みが不要
-- skills/ も同様にシンボリックリンク（個別スキル単位。ユーザー独自スキルとの共存のため）
+- **Instant propagation**: Editing knowledge/ in one project is immediately reflected across all projects
+- **No copying needed**: No file copying or synchronization mechanism required
+- skills/ also uses symlinks (per individual skill, to allow coexistence with user-defined skills)
 
-**注意点**:
-- `git rm` は実体ディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）で実行する
-- バックアップファイルを knowledge/ 内に作成しない（全プロジェクトに影響）
+**Caveats**:
+- Run `git rm` in the actual directory (`$KAIZEN_KNOWLEDGE_DIR`), not through symlinks
+- Do not create backup files inside knowledge/ (it affects all projects)
 
-### プロジェクト固有情報と横断知識の分離
+### Separation of Project-Specific and Cross-Project Knowledge
 
-**プロジェクト固有の情報と、プロジェクトを超えて有用な知識は別の場所に配置する。**
+**Project-specific information and knowledge useful across projects belong in different places.**
 
-| 情報の性質 | 配置場所 | 例 |
-|-----------|---------|---|
-| プロジェクト固有 | CLAUDE.md, docs/ | プロジェクトの目的、技術スタック、設計判断 |
-| プロジェクト横断 | knowledge/ | 技術知見、落とし穴の記録、業界知識 |
+| Nature of Information | Location | Examples |
+|----------------------|----------|----------|
+| Project-specific | CLAUDE.md, docs/ | Project purpose, tech stack, design decisions |
+| Cross-project | knowledge/ | Technical insights, pitfall records, domain knowledge |
 
-knowledge/ にプロジェクト固有情報を書いてはいけません。判断に迷う場合の3つのテスト:
+Do not write project-specific information in knowledge/. When in doubt, apply these three tests:
 
-1. 他のプロジェクトでも役立つか？
-2. 1年後も有効か？
-3. プロジェクト名を除去して一般化できるか？
+1. Would this be useful in other projects?
+2. Will this still be valid a year from now?
+3. Can this be generalized by removing the project name?
 
-3つとも Yes → knowledge/ に追加。
+If all three are Yes → add it to knowledge/.
 
-### 提案と判断の分離
+### Separation of Suggestion and Decision
 
-**Kaizen-CLI は提案する。判断はユーザーが行う。**
+**Kaizen-CLI suggests. The user decides.**
 
-- suggest-next は次のアクションを**提案**する。何を実行するかはユーザーが決める
-- reflect-learning は知見を**抽出・提示**する。knowledge/ への反映はユーザーの承認を経る
-- スキルは**チェックリストやガイドライン**を提供する。作業を自動実行しない
-
----
-
-## ナレッジ管理パターン
-
-knowledge/ ファイルの構造と品質を維持するためのパターン。運用の詳細は `knowledge/meta/DOCUMENTATION_GUIDELINES.md` を参照。
-
-### SSOT（Single Source of Truth）
-
-**同じ情報は1箇所にだけ書く。他はそこにリンクする。**
-
-knowledge/ は全プロジェクトに共有されるため、情報の重複は混乱の元になります。
-
-- 詳細説明は1つのファイルにのみ記載
-- 他のファイルからは参照リンクで誘導: `> 詳細: [ファイル名 § セクション](./filename.md#anchor)`
-- skills/ から knowledge/ を参照する場合はプロジェクトルート相対パスを使用（シンボリックリンク環境で相対パスが壊れるため）
-
-### INDEX 逆引きパターン
-
-**「やりたいこと」から「読むべきファイル」に即座にナビゲートする。**
-
-knowledge/ の各サブディレクトリに INDEX.md を配置します。INDEX.md はファイルの目次ではなく **タスクディスパッチャー** です。
-
-- 「やりたいことから探す」テーブルが最重要。ファイル名ではなくタスクで引ける
-- 各エントリは特定のセクションにリンクする（ファイル全体ではなく）
-- ファイル一覧には行数を含める
-- INDEX.md 自体は100行以内に収める
-
-> 標準構造のテンプレート: `knowledge/meta/INDEX.md`
-
-### ファイルサイズ管理（800行ルール）
-
-**1ファイルは800行以内。600行を超えたら精査を検討する。**
-
-改善の優先順位:
-1. **第1優先**: 内容の精査・削減（重複除去、冗長な例の削減）
-2. **第2優先**: ファイル分割（精査後も600行超の場合のみ）
-
-**禁止**: 転記確認なしの情報削除。削除する情報は必ず転記してから削除する。
-
-CLAUDE.md は200行未満を目安に。300行を超えたら詳細を docs/ に移動する。
-
-> 詳細ルール: `knowledge/meta/DOCUMENTATION_GUIDELINES.md`
+- suggest-next **suggests** next actions. The user chooses what to execute
+- reflect-learning **extracts and presents** insights. Updates to knowledge/ require user approval
+- Skills provide **checklists and guidelines**. They do not auto-execute tasks
 
 ---
 
-## 関連ドキュメント
+## Knowledge Management Patterns
 
-- Kaizen-CLI の思想を理解する → [CONCEPT.md](./CONCEPT.md)
-- 実際に使い始める → [QUICKSTART.md](./QUICKSTART.md)
-- 自分のドメインに適用する → [CUSTOMIZATION.md](./CUSTOMIZATION.md)
+Patterns for maintaining the structure and quality of knowledge/ files. For operational details, see `knowledge/meta/DOCUMENTATION_GUIDELINES.md`.
+
+### SSOT (Single Source of Truth)
+
+**Write the same information in only one place. Link to it from everywhere else.**
+
+Since knowledge/ is shared across all projects, duplicated information leads to confusion.
+
+- Write detailed explanations in only one file
+- From other files, use reference links: `> Details: [filename § Section](./filename.md#anchor)`
+- When referencing knowledge/ from skills/, use project-root-relative paths (relative paths break in symlinked environments)
+
+### INDEX Reverse-Lookup Pattern
+
+**Navigate instantly from "what you want to do" to "which file to read."**
+
+Place an INDEX.md in each subdirectory of knowledge/. An INDEX.md is not a table of contents — it is a **task dispatcher**.
+
+- The "find by what you want to do" table is the most important element. Look up by task, not by filename
+- Each entry links to a specific section (not an entire file)
+- File listings include line counts
+- Keep INDEX.md itself under 100 lines
+
+> Standard structure template: `knowledge/meta/INDEX.md`
+
+### File Size Management (800-Line Rule)
+
+**Keep each file under 800 lines. Consider review when a file exceeds 600 lines.**
+
+Improvement priorities:
+1. **First priority**: Review and reduce content (remove duplicates, trim redundant examples)
+2. **Second priority**: Split files (only if still over 600 lines after review)
+
+**Prohibited**: Deleting information without confirming it has been relocated. Always relocate before deleting.
+
+Keep CLAUDE.md under 200 lines as a guideline. If it exceeds 300 lines, move details to docs/.
+
+> Detailed rules: `knowledge/meta/DOCUMENTATION_GUIDELINES.md`
+
+---
+
+## Related Documents
+
+- Understand the philosophy behind Kaizen-CLI → [CONCEPT.md](./CONCEPT.md)
+- Get started → [QUICKSTART.md](./QUICKSTART.md)
+- Adapt to your own domain → [CUSTOMIZATION.md](./CUSTOMIZATION.md)
