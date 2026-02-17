@@ -1,57 +1,57 @@
-# Kaizen-CLI のコンセプト
+# The Concept Behind Kaizen-CLI
 
-## 課題: 知識の断絶
+## The Problem: Knowledge Fragmentation
 
-Claude Code は強力なAI開発ツールですが、構造的な制約があります。
+Claude Code is a powerful AI development tool, but it has a structural limitation.
 
-- **セッション間**: セッションが終わると会話コンテキストが失われる
-- **プロジェクト間**: あるプロジェクトで学んだことが別のプロジェクトに引き継がれない
+- **Across sessions**: Conversation context is lost when a session ends
+- **Across projects**: Lessons learned in one project are not carried over to another
 
-大規模な長期プロジェクトであれば、CLAUDE.md やプロジェクトドキュメントに知識を蓄積できます。しかし、小規模プロジェクトを多数並行する業務では、この問題が顕著になります。
+For large, long-running projects, you can accumulate knowledge in CLAUDE.md and project documentation. But when you are juggling many small projects in parallel, this problem becomes acute.
 
-具体的には以下が繰り返されます:
+In practice, the same things happen over and over:
 
-- **同じ説明**: 業界の専門知識や技術的な前提を毎回説明する
-- **同じ手戻り**: 過去に踏んだ落とし穴を再び踏む
-- **同じ調査**: 以前調べた仕様を改めて調べ直す
+- **Same explanations**: Re-explaining industry expertise and technical assumptions every time
+- **Same mistakes**: Falling into pitfalls you have already encountered before
+- **Same research**: Looking up specifications you have already investigated
 
-しかし「書き残せばいい」は解決策にならない。知識ベースを別途メンテナンスするのは余計な作業に感じる — そして余計な作業は続かない。
+"Just write it down" is not a real solution. Maintaining a separate knowledge base feels like extra work — and extra work does not stick.
 
-Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく、**実務の中に知識蓄積のループを埋め込む**ことで解決します。
-
----
-
-## 着想: 引っかかりを材料にする
-
-改善の材料を別に用意する必要はありません。それは実務の中にすでにあります — 作業中に遭遇する**引っかかり**がそれです。
-
-- 想定外のエラー → 記録すべき落とし穴
-- 調べ直した技法 → 不足していた知識
-- うまくいったパターン → 再利用できるアプローチ
-- ユーザーが修正した箇所 → 暗黙のルールの明文化
-
-これらは「改善項目」としてバックログに積むものではありません。作業の自然な副産物です。Kaizen-CLI はこれらを捉えて知識ベースにフィードバックします。次に同じ状況に遭遇したとき — どのプロジェクトであっても — その知識はすでにそこにあります。
-
-**作業と改善は、別々の活動ではない。一つだ。**
+Kaizen-CLI solves this not by adding another process, but by **embedding a knowledge accumulation loop into your everyday work**.
 
 ---
 
-## Kaizenサイクル
+## The Insight: Turn Friction into Fuel
 
-サイクルは実務を包み込む形で回ります。「サイクルを回す」のではなく、実務をこなす中で学びが捉えられます。
+You do not need to prepare improvement material separately. It already exists in your work — the **friction** you encounter during tasks.
 
-唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest と Reflect は任意のステップであり、やることが決まっていれば直接作業を始められます。
+- Unexpected errors → Pitfalls worth recording
+- Techniques you had to look up again → Gaps in your knowledge
+- Patterns that worked well → Reusable approaches
+- Places where you corrected Claude's output → Implicit rules made explicit
+
+These are not "improvement items" to add to a backlog. They are natural byproducts of work. Kaizen-CLI captures them and feeds them back into the knowledge base. The next time you encounter the same situation — in any project — that knowledge is already there.
+
+**Work and improvement are not separate activities. They are one.**
+
+---
+
+## The Kaizen Cycle
+
+The cycle wraps around your everyday work. You do not "run the cycle" — learning is captured as you do your work.
+
+The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
 
 ```
 ┌──────────┐
-│  Init    │ (一度だけ)
+│  Init    │ (once)
 │ /kaizen- │
 │ init-    │
 │ project  │
 └────┬─────┘
      │
 ┌────▼─────────────────────────────────────────────────────────┐
-│                       Kaizen サイクル                          │
+│                       Kaizen Cycle                           │
 │                                                               │
 │   ┌────────────────┐                                         │
 │   │ Suggest Next   │                                         │
@@ -65,8 +65,8 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 │                         └──────────────┘  │                   │
 │                                           │ ┌────────────┐   │
 │                                           └▶│ Execute    │──▶│
-│ ───────────────────────────────────────────▶│(= あなたの │   │
-│                                             │   実務)    │   │
+│ ───────────────────────────────────────────▶│(= your     │   │
+│                                             │   work)    │   │
 │                                             └─────┬──────┘   │
 │                                                   │          │
 │                                             ┌─────▼──────┐   │
@@ -78,168 +78,169 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 │                                                               │
 └─────────────────────────────────────┬────────────┬────────────┘
 ▲                                     │            │
-│  実務中の引っかかりが knowledge/ を育て│            │
-│    次のサイクルを加速させる            │            │
+│  Friction during work grows         │            │
+│    knowledge/ and accelerates       │            │
+│    the next cycle                   │            │
 └─────────────────────────────────────┴────────────┘
 ```
 
-### Init — プロジェクトの初期化
+### Init — Project Initialization
 
-**一度だけ実行**。新しいプロジェクトでKaizen-CLIを使い始めるときに `/kaizen-init-project` を実行します。
+**Run once**. Execute `/kaizen-init-project` when you start using Kaizen-CLI in a new project.
 
-- `knowledge/` のsymlinkを作成（共有ナレッジベースへの接続）
-- `CLAUDE.md` と `docs/PROJECT_SUMMARY.md` を生成
-- プロジェクトレジストリに登録
+- Creates a symlink to `knowledge/` (connecting to the shared knowledge base)
+- Generates `CLAUDE.md` and `docs/PROJECT_SUMMARY.md`
+- Registers the project in the project registry
 
-これにより、過去のプロジェクトで蓄積された知識がすぐに利用可能になります。
+This makes all knowledge accumulated from past projects immediately available.
 
-### Suggest — 次のアクションの提案
+### Suggest — Proposing Next Actions
 
-作業が一段落したとき、または次に何をすべきか迷ったときに `/kaizen-suggest-next` を実行します。
+Run `/kaizen-suggest-next` when you finish a chunk of work or are unsure what to do next.
 
-- 今回の作業内容を深く分析
-- **ユーザーが気づいていない発展的なアクション**を提案
-- 関連ファイルの更新漏れを検出
+- Performs a deep analysis of your recent work
+- **Proposes forward-looking actions you may not have considered**
+- Detects missed updates to related files
 
-単なるTODOリストではなく、蓄積された知識とプロジェクトコンテキストを踏まえた提案を行います。
+This is not a simple TODO list — it draws on accumulated knowledge and project context to make its suggestions.
 
-### Plan & Decide — 計画と判断
+### Plan & Decide — Planning and Decision-Making
 
-Claude Code の plan mode を活用し、提案されたアクションの実行計画を立てます。
+Leverages Claude Code's plan mode to build an execution plan for suggested actions.
 
-- ユーザーが判断し、実行するアクションを選択
-- 必要に応じて計画を調整
+- You decide which actions to execute
+- Adjust the plan as needed
 
-**判断はつねにユーザーが行います**。Kaizen-CLI は提案と実行を支援しますが、意思決定を代替しません。
+**Decisions are always made by you**. Kaizen-CLI supports suggestion and execution, but never replaces your judgment.
 
-### Execute — 実行（= あなたの実務）
+### Execute — Execution (= Your Everyday Work)
 
-**ここはあなたの普段の仕事そのものです**。機能の実装、バグ修正、データ分析、コードの記述 — Kaizen-CLI の観点からこのステップに特別なことはありません。
+**This is simply your normal work**. Implementing features, fixing bugs, analyzing data, writing code — there is nothing special about this step from Kaizen-CLI's perspective.
 
-- 蓄積された knowledge/ を参照しながら作業
-- skills/ が特定のタスクパターンを検知すると自動発動してガードレールを提供
+- Work with accumulated knowledge/ as a reference
+- skills/ detects certain task patterns and automatically activates to provide guardrails
 
-### Reflect — 引っかかりが知識に変わる
+### Reflect — Turning Friction into Knowledge
 
-セッション終了時に `/kaizen-reflect-learning` を実行します。作業中に生じた引っかかりを分析し、knowledge/ に反映します。
+Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction encountered during your work and reflects it into knowledge/.
 
-- 失敗パターンと成功アプローチの対比
-- 暗黙のルールの明文化
-- 技術的な誤解の記録と訂正
-- 情報探索の非効率から知識の不足を検出
+- Contrasts failure patterns with successful approaches
+- Makes implicit rules explicit
+- Records and corrects technical misconceptions
+- Detects knowledge gaps from inefficient information searches
 
-重要なルール: **セッション中に失敗・リトライが発生した情報は無条件で採用されます**。「記録に値するか」を判断する必要はありません — 引っかかりが生じた事実が、それだけで十分な理由です。
+An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
 
-反映された知識は symlink を通じて、将来のすべてのセッション・プロジェクトで即座に利用可能になります。
+Reflected knowledge becomes instantly available across all future sessions and projects through the symlink.
 
 ---
 
-## なぜ使うほど速くなるのか
+## Why It Gets Faster the More You Use It
 
-### 知識蓄積のメカニズム
+### The Knowledge Accumulation Mechanism
 
 ```
-プロジェクトA                    プロジェクトB
-┌────────────┐                  ┌────────────┐
-│ CLAUDE.md  │ ← プロジェクト固有  │ CLAUDE.md  │ ← プロジェクト固有
-│ docs/      │                  │ docs/      │
-│            │                  │            │
-│ knowledge/ ─┐                │ knowledge/ ─┐
-└────────────┘ │                └────────────┘ │
-               │                               │
-               ▼                               ▼
+Project A                          Project B
+┌────────────┐                    ┌────────────┐
+│ CLAUDE.md  │ ← Project-specific │ CLAUDE.md  │ ← Project-specific
+│ docs/      │                    │ docs/      │
+│            │                    │            │
+│ knowledge/ ─┐                  │ knowledge/ ─┐
+└────────────┘ │                  └────────────┘ │
+               │                                 │
+               ▼                                 ▼
         ┌─────────────────────────────────────────┐
-        │  $KAIZEN_KNOWLEDGE_DIR（共有）            │
+        │  $KAIZEN_KNOWLEDGE_DIR (shared)          │
         │                                         │
-        │  meta/           ← 運用ガイドライン        │
-        │  projects/       ← プロジェクトレジストリ    │
-        │  (domain files)  ← 蓄積された知識          │
+        │  meta/           ← Operational guidelines│
+        │  projects/       ← Project registry      │
+        │  (domain files)  ← Accumulated knowledge │
         └─────────────────────────────────────────┘
 ```
 
-ポイント:
+Key points:
 
-1. **プロジェクト固有の情報**（CLAUDE.md、docs/）と**横断的な知識**（knowledge/）が分離されている
-2. knowledge/ は symlink で全プロジェクトから同じ実体を参照する
-3. reflect-learning で知識が蓄積されるたびに、すべてのプロジェクトで即座に利用可能になる
+1. **Project-specific information** (CLAUDE.md, docs/) and **cross-cutting knowledge** (knowledge/) are separated
+2. knowledge/ is a symlink so all projects reference the same underlying data
+3. Every time reflect-learning accumulates knowledge, it becomes instantly available in every project
 
-### 蓄積される知識の例
+### Examples of Accumulated Knowledge
 
-| カテゴリ | 例 | 効果 |
-|---------|---|------|
-| **失敗からの予防線** | 「このAPIは第2引数がnullだとサイレントに失敗する」 | 同じ落とし穴を二度と踏まない |
-| **業界の専門知識** | ドメイン用語の定義、業務ルール | 毎回の説明が不要になる |
-| **技術的な知見** | ツールの癖、ベストプラクティス | 調査時間の短縮 |
-| **暗黙のルール** | コーディング規約、命名慣例 | 手戻りの削減 |
+| Category | Example | Effect |
+|----------|---------|--------|
+| **Guardrails from failures** | "This API silently fails when the second argument is null" | Never fall into the same pitfall twice |
+| **Industry expertise** | Domain terminology definitions, business rules | No need to re-explain every time |
+| **Technical insights** | Tool quirks, best practices | Reduced research time |
+| **Implicit rules** | Coding conventions, naming standards | Fewer corrections and rework |
 
-### 複利効果
+### The Compound Effect
 
-知識の蓄積は**複利的**に効果を発揮します。
+Knowledge accumulation produces **compound returns**.
 
-- **1サイクル目**: 知識ゼロからスタート。調査・試行錯誤が多い
-- **5サイクル目**: 基本的な落とし穴は記録済み。作業がスムーズに
-- **20サイクル目**: ドメイン知識が充実。Claude Code がまるでチームメンバーのように動く
+- **Cycle 1**: Starting from zero knowledge. Lots of research and trial-and-error
+- **Cycle 5**: Common pitfalls are already documented. Work flows smoothly
+- **Cycle 20**: Domain knowledge is rich. Claude Code operates as if it were a team member
 
-従来の「毎回リセット」される開発と異なり、**過去の自分の経験がすべて引き継がれる**開発体験が得られます。
-
----
-
-## 知識の層構造
-
-Kaizen-CLI は知識を3つの層に分けて管理します。
-
-| 層 | 配置場所 | 性質 | 変更タイミング |
-|---|---|---|---|
-| **参照知識** | `knowledge/` | ドメイン知識、パターン、ガイドライン | reflect-learning で蓄積 |
-| **手続き知識** | `skills/` | 特定タスクのステップバイステップ手順 | 静的（ユーザーが手動で作成・更新） |
-| **操作** | `commands/` | ワークフローのトリガー | 静的（Kaizen-CLI が提供） |
-
-重要な設計判断: **reflect-learning が蓄積するのは knowledge/ のみ**。skills/ は静的なファイルであり、自動的に変更されることはありません。これにより、スキルの動作が予測可能に保たれます。
+Unlike the traditional experience of "resetting every time," you get a development experience where **all of your past experience carries forward**.
 
 ---
 
-## 対象ユーザー
+## The Knowledge Layer Structure
 
-### 向いている人
+Kaizen-CLI organizes knowledge into three layers.
 
-- **小規模プロジェクトを多数並行する開発者・アナリスト**
-  - プロジェクト間で知識が断絶し、同じ作業を繰り返している
-  - 例: フリーランス、データアナリスト、社内ツール開発者
+| Layer | Location | Nature | When It Changes |
+|-------|----------|--------|-----------------|
+| **Reference knowledge** | `knowledge/` | Domain knowledge, patterns, guidelines | Accumulated via reflect-learning |
+| **Procedural knowledge** | `skills/` | Step-by-step procedures for specific tasks | Static (created and updated manually by the user) |
+| **Operations** | `commands/` | Workflow triggers | Static (provided by Kaizen-CLI) |
 
-- **特定ドメインで繰り返し作業する人**
-  - 業界特有の知識やツールの癖が蓄積されると効果が大きい
-  - 例: AWS開発、データ分析、Web開発
-
-- **Claude Code をもっと活用したい人**
-  - CLAUDE.md は使っているが、プロジェクトを超えた知識管理ができていない
-
-### 向いていない人
-
-- **単一の大規模プロジェクトのみに従事している人**
-  - プロジェクト内のCLAUDE.md とドキュメントで十分
-  - 横断的な知識共有の恩恵が小さい
-
-- **Claude Code を使っていない人**
-  - Kaizen-CLI は Claude Code の skills/commands 機能に依存している
+A key design decision: **reflect-learning only accumulates into knowledge/**. skills/ are static files and are never modified automatically. This keeps skill behavior predictable.
 
 ---
 
-## 従来のアプローチとの比較
+## Target Users
 
-| 観点 | CLAUDE.md のみ | Kaizen-CLI |
-|------|---------------|------------|
-| 知識の範囲 | プロジェクト内 | プロジェクト横断 |
-| 知識の蓄積 | 手動で記述 | reflect-learning で半自動 |
-| 次のアクション | 自分で考える | suggest-next が提案 |
-| 新プロジェクト開始時 | ゼロから | 過去の知識を即座に利用 |
-| 知識の形式 | 自由記述 | 構造化（INDEX逆引き、800行ルール） |
+### Good Fit
 
-Kaizen-CLI は CLAUDE.md を**置き換える**ものではありません。CLAUDE.md（プロジェクト固有）と knowledge/（プロジェクト横断）を**組み合わせる**ことで、知識管理を強化します。
+- **Developers and analysts juggling many small projects in parallel**
+  - Knowledge is fragmented across projects, and the same work is repeated
+  - Examples: freelancers, data analysts, internal tool developers
+
+- **People who perform repetitive work in a specific domain**
+  - The payoff is large when industry-specific knowledge and tool quirks accumulate
+  - Examples: AWS development, data analysis, web development
+
+- **People who want to get more out of Claude Code**
+  - Already using CLAUDE.md but lacking cross-project knowledge management
+
+### Not a Good Fit
+
+- **People working exclusively on a single large project**
+  - In-project CLAUDE.md and documentation are sufficient
+  - Little benefit from cross-cutting knowledge sharing
+
+- **People who do not use Claude Code**
+  - Kaizen-CLI depends on Claude Code's skills/commands functionality
 
 ---
 
-## 次のステップ
+## Comparison with Conventional Approaches
 
-- 実際に使い始める → [QUICKSTART.md](./QUICKSTART.md)
-- 設計原則を理解する → [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
-- 自分のドメインに適用する → [CUSTOMIZATION.md](./CUSTOMIZATION.md)
+| Aspect | CLAUDE.md Only | Kaizen-CLI |
+|--------|---------------|------------|
+| Knowledge scope | Within a project | Across projects |
+| Knowledge accumulation | Written manually | Semi-automatic via reflect-learning |
+| Next actions | You figure it out | suggest-next proposes them |
+| Starting a new project | From scratch | Past knowledge available immediately |
+| Knowledge format | Free-form text | Structured (INDEX-based lookup, 800-line rule) |
+
+Kaizen-CLI does not **replace** CLAUDE.md. It **combines** CLAUDE.md (project-specific) with knowledge/ (cross-project) to strengthen knowledge management.
+
+---
+
+## Next Steps
+
+- Get started → [QUICKSTART.md](./QUICKSTART.md)
+- Understand the design principles → [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
+- Adapt to your own domain → [CUSTOMIZATION.md](./CUSTOMIZATION.md)

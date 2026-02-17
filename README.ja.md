@@ -64,7 +64,7 @@ claude  # Claude Code を起動し:
 
 `setup.sh` は共有知識ディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）の作成とグローバルコマンドのインストールを行います。各プロジェクトの `knowledge/` はこの共有ディレクトリへのシンボリックリンクとなり、あるプロジェクトで蓄積された知識が他のすべてのプロジェクトで自動的に利用可能になります。
 
-詳しいウォークスルーは [docs/QUICKSTART.md](docs/QUICKSTART.md) をご覧ください。
+詳しいウォークスルーは [docs/QUICKSTART.ja.md](docs/QUICKSTART.ja.md) をご覧ください。
 
 ## リポジトリ構成
 
@@ -91,10 +91,10 @@ kaizen-cli/
 
 ## ドキュメント
 
-- [CONCEPT.md](docs/CONCEPT.md) — Kaizen-CLI の思想
-- [DESIGN_PRINCIPLES.md](docs/DESIGN_PRINCIPLES.md) — 設計原則とパターン
-- [QUICKSTART.md](docs/QUICKSTART.md) — 5分で始める
-- [CUSTOMIZATION.md](docs/CUSTOMIZATION.md) — 自分のドメインに適用する
+- [CONCEPT.ja.md](docs/CONCEPT.ja.md) — Kaizen-CLI の思想
+- [DESIGN_PRINCIPLES.ja.md](docs/DESIGN_PRINCIPLES.ja.md) — 設計原則とパターン
+- [QUICKSTART.ja.md](docs/QUICKSTART.ja.md) — 5分で始める
+- [CUSTOMIZATION.ja.md](docs/CUSTOMIZATION.ja.md) — 自分のドメインに適用する
 
 ## 対象ユーザー
 

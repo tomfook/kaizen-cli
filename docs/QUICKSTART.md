@@ -1,187 +1,187 @@
-# クイックスタート
+# Quickstart
 
-5分でKaizen-CLIをセットアップし、最初のKaizenサイクルを体験するガイドです。
+A guide to setting up Kaizen-CLI and experiencing your first Kaizen cycle in 5 minutes.
 
-## 前提条件
+## Prerequisites
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) がインストール済み
-- git がインストール済み
-- bash が利用可能（macOS / Linux）
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
+- git installed
+- bash available (macOS / Linux)
 
 ---
 
-## Step 1: Kaizen-CLI のセットアップ（初回のみ）
+## Step 1: Set Up Kaizen-CLI (First Time Only)
 
 ```bash
-# クローン
+# Clone
 git clone https://github.com/tomfook/kaizen-cli.git
 
-# セットアップ実行
+# Run setup
 bash kaizen-cli/setup.sh
 ```
 
-setup.sh が以下を行います:
+setup.sh does the following:
 
-1. `$KAIZEN_CLI_DIR` を自動検出して `~/.bashrc` に設定
-2. 共有ナレッジディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）のパスを確認・作成
-3. テンプレートファイルを展開
-4. コマンドとスキルをグローバルにリンク
+1. Auto-detects `$KAIZEN_CLI_DIR` and sets it in `~/.bashrc`
+2. Confirms/creates the shared knowledge directory path (`$KAIZEN_KNOWLEDGE_DIR`)
+3. Expands template files
+4. Globally links commands and skills
 
 ```bash
-# 環境変数を反映
+# Apply environment variables
 source ~/.bashrc
 ```
 
 ---
 
-## Step 2: プロジェクトの初期化
+## Step 2: Initialize Your Project
 
-既存のプロジェクトディレクトリで Claude Code を起動し、`/kaizen-init-project` を実行します。
+Launch Claude Code in an existing project directory and run `/kaizen-init-project`.
 
 ```bash
 cd ~/my-python-project
 claude
 ```
 
-Claude Code 内で:
+Inside Claude Code:
 
 ```
 /kaizen-init-project
 ```
 
-いくつかの質問に答えます:
+Answer a few questions:
 
-- **プロジェクト名**: My Python Project
-- **プロジェクトID**: `my-python-project`（ディレクトリ名から自動提案。Enterでそのまま採用）
-- **プロジェクトの目的**: 日常業務を自動化するPythonスクリプト集
-- **概要（1行）**: Pythonユーティリティスクリプトのコレクション
+- **Project name**: My Python Project
+- **Project ID**: `my-python-project` (auto-suggested from the directory name; press Enter to accept)
+- **Project purpose**: A collection of Python scripts to automate daily tasks
+- **Summary (one line)**: A collection of Python utility scripts
 
-完了すると、以下が作成されます:
+Once complete, the following structure is created:
 
 ```
 my-python-project/
-├── CLAUDE.md              ← プロジェクト固有の設定
-├── knowledge/             ← $KAIZEN_KNOWLEDGE_DIR へのsymlink
-├── .claude/skills/        ← Kaizen-CLIスキルへのsymlink
+├── CLAUDE.md              ← Project-specific settings
+├── knowledge/             ← symlink to $KAIZEN_KNOWLEDGE_DIR
+├── .claude/skills/        ← symlink to Kaizen-CLI skills
 └── docs/
-    └── PROJECT_SUMMARY.md ← プロジェクト概要
+    └── PROJECT_SUMMARY.md ← Project overview
 ```
 
-`knowledge/` が共有ディレクトリへのsymlinkになっていることがポイントです。他のプロジェクトで蓄積された知識が、ここからすぐに参照できます。
+The key point is that `knowledge/` is a symlink to the shared directory. Knowledge accumulated in other projects is immediately accessible from here.
 
 ---
 
-## Step 3: 最初のKaizenサイクルを回す
+## Step 3: Run Your First Kaizen Cycle
 
-ここからは架空のシナリオで、Kaizenサイクルの一連の流れを体験します。
+From here, we walk through a fictional scenario to experience the full Kaizen cycle.
 
-### 3-1: Suggest — 次のアクションの提案
+### 3-1: Suggest — Get Next Action Proposals
 
 ```
 /kaizen-suggest-next
 ```
 
-初期化直後なので、以下のような提案が出ます:
+Since the project was just initialized, you will see suggestions like these:
 
 ```markdown
-## 次のステップ提案
+## Suggested Next Steps
 
-**今回の作業**: プロジェクトの初期セットアップ
+**Current task**: Initial project setup
 
-### 発展的なアクション
+### Possible Actions
 
-1. [ ] **docs/PROJECT_SUMMARY.md の各セクションを埋める**: 技術スタックや
-   設計判断を記録しておくと、将来のセッションで文脈の再説明が不要になる
-   → 理由: プロジェクトの目的と制約が明文化されていると作業効率が上がる
+1. [ ] **Fill in the sections of docs/PROJECT_SUMMARY.md**: Recording the tech stack and
+   design decisions eliminates the need to re-explain context in future sessions
+   → Reason: Documenting the project's purpose and constraints improves work efficiency
 
-2. [ ] **CLAUDE.md をカスタマイズ**: プロジェクト固有のコーディング規約や
-   重要なルールを追記する
-   → 理由: Claude Code が最初に読むファイルなので、ここに書くと即座に反映される
+2. [ ] **Customize CLAUDE.md**: Add project-specific coding conventions and
+   important rules
+   → Reason: Since Claude Code reads this file first, anything written here takes effect immediately
 
-どの提案を実行しますか？
+Which suggestion would you like to pursue?
 ```
 
-### 3-2: Plan & Decide — 計画と判断
+### 3-2: Plan & Decide — Choose and Plan
 
-提案の中から「1. PROJECT_SUMMARY.md を埋める」を選びます。
-
-```
-1を実行しましょう
-```
-
-### 3-3: Execute — 実行（= あなたの実務）
-
-Claude Code と一緒に PROJECT_SUMMARY.md を編集します。
+Pick "1. Fill in PROJECT_SUMMARY.md" from the suggestions.
 
 ```
-技術スタックのセクションを埋めてください。
-Python 3.11を使っています。依存管理はpipです。
+Let's go with 1
 ```
 
-Claude Code が編集を進めますが、あなたが修正を入れたとします:
+### 3-3: Execute — Do the Work (= Your Actual Task)
+
+Edit PROJECT_SUMMARY.md together with Claude Code.
 
 ```
-待って、venvじゃなくてuvを使っています。修正して。
+Fill in the tech stack section.
+I'm using Python 3.11. Dependency management is pip.
 ```
 
-この「修正」が、Reflect で知識として捉えられるシグナルです。作業中に自然と生じる引っかかり — これが知識の材料になります。
+Claude Code proceeds with the edits, but suppose you make a correction:
 
-### 3-4: Reflect — 引っかかりが知識に変わる
+```
+Wait, I'm using uv, not venv. Fix that.
+```
 
-作業が終わったら、知見を反映します。
+This "correction" is the kind of signal that Reflect captures as knowledge. The natural friction that arises during work — that becomes the raw material for knowledge.
+
+### 3-4: Reflect — Turn Friction into Knowledge
+
+After the work is done, reflect on what you learned.
 
 ```
 /kaizen-reflect-learning
 ```
 
-Claude Code がセッションを分析し、以下のような提案を出します:
+Claude Code analyzes the session and proposes something like this:
 
 ```markdown
-## 知見の分析
+## Insight Analysis
 
-### 抽出した知見
+### Extracted Insights
 
-1. **暗黙のルールの明文化**: ユーザーはPythonの依存管理にuvを使用している。
-   venvを前提とした提案は修正が必要だった。
-   - 一般化: 「Pythonプロジェクトの依存管理ツールはプロジェクトごとに異なる。
-     推測せず確認すること」
-   - 反映先: knowledge/ に追加
+1. **Making implicit rules explicit**: The user uses uv for Python dependency management.
+   Suggestions that assumed venv required correction.
+   - Generalization: "Dependency management tools vary by Python project.
+     Confirm rather than assume."
+   - Destination: Add to knowledge/
 
-### 一般化条件チェック
-- [x] 単発の例外ではない（他のプロジェクトでも該当する）
-- [x] 効率向上に寄与する（次回から推測せず確認できる）
-- [x] セッション中に修正が発生した（無条件採用）
+### Generalization Criteria Check
+- [x] Not a one-off exception (applies to other projects too)
+- [x] Contributes to efficiency (enables confirming instead of guessing next time)
+- [x] A correction occurred during the session (auto-approved)
 
-承認しますか？
+Do you approve?
 ```
 
-承認すると、knowledge/ に知見が書き込まれます。この知見は **symlink を通じて、今後すべてのプロジェクトで即座に利用可能** になります。
+Once approved, the insight is written to knowledge/. This insight **becomes immediately available across all projects via the symlink**.
 
-次にPythonプロジェクトを初期化したとき、Claude Code は knowledge/ からこの知見を読み取り、依存管理ツールを推測せずに確認するようになります。
+The next time you initialize a Python project, Claude Code reads this insight from knowledge/ and will confirm the dependency management tool instead of guessing.
 
 ---
 
-## これが Kaizen サイクルです
+## This Is the Kaizen Cycle
 
-1. **Suggest**: 次にやることの提案を受ける
-2. **Plan & Decide**: 何をやるか決める
-3. **Execute**: 実務をこなす（= 普段の作業）
-4. **Reflect**: 引っかかりを知識に変える
+1. **Suggest**: Receive proposals for what to do next
+2. **Plan & Decide**: Decide what to work on
+3. **Execute**: Do the actual work (= your regular tasks)
+4. **Reflect**: Turn friction into knowledge
 
-サイクルを回すたびに knowledge/ が育ち、同じ説明の繰り返し・手戻り・既知の落とし穴が減っていきます。
+With each cycle, knowledge/ grows, and repeated explanations, rework, and known pitfalls decrease over time.
 
 ---
 
 ## Tips
 
-- **knowledge/ のgit管理**: `$KAIZEN_KNOWLEDGE_DIR` で `git init` を実行すると、蓄積された知識の変更履歴を管理できます
-- **セッションの終わりに**: `/kaizen-reflect-learning` を習慣にすると、知識が着実に蓄積されます
-- **ドキュメントの更新**: 作業後に `/kaizen-update-docs` でプロジェクトドキュメントを最新化できます
+- **Version-control knowledge/**: Run `git init` in `$KAIZEN_KNOWLEDGE_DIR` to track changes to your accumulated knowledge
+- **At the end of each session**: Make `/kaizen-reflect-learning` a habit to steadily build up knowledge
+- **Update documentation**: Run `/kaizen-update-docs` after working to keep your project documentation up to date
 
 ---
 
-## 関連ドキュメント
+## Related Documents
 
-- Kaizen-CLI の思想を深く理解する → [CONCEPT.md](./CONCEPT.md)
-- 設計原則を知る → [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
-- 自分のドメインに合わせてカスタマイズする → [CUSTOMIZATION.md](./CUSTOMIZATION.md)
+- Understand the philosophy behind Kaizen-CLI → [CONCEPT.md](./CONCEPT.md)
+- Learn the design principles → [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md)
+- Customize for your domain → [CUSTOMIZATION.md](./CUSTOMIZATION.md)
