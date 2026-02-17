@@ -52,14 +52,15 @@ graph TD
         Plan["Plan & Decide<br>（plan mode）"]
         Execute["Execute<br>= あなたの実務"]
         Reflect["Reflect<br>/kaizen-reflect-learning"]
+        End((" "))
 
-        Start --> Suggest --> Plan --> Execute --> Reflect
+        Start --> Suggest --> Plan --> Execute --> Reflect --> End
         Start -.-> Plan
         Start -.-> Execute
+        Execute -.-> End
     end
 
-    Execute -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
-    Reflect -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
+    End -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
 ```
 
 ### Init — プロジェクトの初期化

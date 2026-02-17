@@ -52,14 +52,15 @@ graph TD
         Plan["Plan & Decide<br>(plan mode)"]
         Execute["Execute<br>= your work"]
         Reflect["Reflect<br>/kaizen-reflect-learning"]
+        End((" "))
 
-        Start --> Suggest --> Plan --> Execute --> Reflect
+        Start --> Suggest --> Plan --> Execute --> Reflect --> End
         Start -.-> Plan
         Start -.-> Execute
+        Execute -.-> End
     end
 
-    Execute -->|"knowledge/ grows,<br>accelerates next cycle"| Start
-    Reflect -->|"knowledge/ grows,<br>accelerates next cycle"| Start
+    End -->|"knowledge/ grows,<br>accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization
