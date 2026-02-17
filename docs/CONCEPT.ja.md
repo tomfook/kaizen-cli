@@ -42,15 +42,18 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest、Reflect、Update Docs は任意のステップであり、やることが決まっていれば直接作業を始められます。
 
-```mermaid
-graph LR
-    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Suggest
-
-    Suggest["Suggest Next<br>/kaizen-suggest-next"] --> Execute["Execute<br>= あなたの実務"] --> Reflect["Reflect<br>/kaizen-reflect-learning"] --> UpdateDocs["Update Docs<br>/kaizen-update-docs"] --> Suggest
-
-    Knowledge[("knowledge/")]
-    Reflect -->|"引っかかりを蓄積"| Knowledge
-    UpdateDocs -->|"ドキュメントとレジストリを同期"| Knowledge
+```
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐
+│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │───▶│ Update   │
+│         │    │  Next   │    │(= あなた│    │         │    │  Docs    │
+│/kaizen  │    │/kaizen  │    │  の実務)│    │/kaizen  │    │/kaizen   │
+│-init    │    │-suggest │    │         │    │-reflect │    │-update   │
+│-project │    │-next    │    │         │    │-learning│    │-docs     │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └──────────┘
+                    ▲                                              │
+                    │   実務中の引っかかりが knowledge/ を育て      │
+                    │       次のサイクルを加速させる                 │
+                    └──────────────────────────────────────────────┘
 ```
 
 ### Init — プロジェクトの初期化

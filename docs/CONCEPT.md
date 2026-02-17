@@ -42,15 +42,18 @@ The cycle wraps around your everyday work. You do not "run the cycle" — learni
 
 The only required step is **Execute (= your everyday work)**. Suggest, Reflect, and Update Docs are optional — if you already know what to do, you can jump straight into work.
 
-```mermaid
-graph LR
-    Init["Init (once)<br>/kaizen-init-project"] --> Suggest
-
-    Suggest["Suggest Next<br>/kaizen-suggest-next"] --> Execute["Execute<br>= your work"] --> Reflect["Reflect<br>/kaizen-reflect-learning"] --> UpdateDocs["Update Docs<br>/kaizen-update-docs"] --> Suggest
-
-    Knowledge[("knowledge/")]
-    Reflect -->|"accumulates learnings"| Knowledge
-    UpdateDocs -->|"syncs docs & registry"| Knowledge
+```
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐
+│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │───▶│ Update   │
+│         │    │  Next   │    │(= your  │    │         │    │  Docs    │
+│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen  │    │/kaizen   │
+│-init    │    │-suggest │    │  work)  │    │-reflect │    │-update   │
+│-project │    │-next    │    │         │    │-learning│    │-docs     │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └──────────┘
+                    ▲                                              │
+                    │     Friction from work feeds knowledge/      │
+                    │       which accelerates the next cycle       │
+                    └──────────────────────────────────────────────┘
 ```
 
 ### Init — Project Initialization
