@@ -46,7 +46,7 @@ The only required step is **Execute (= your everyday work)**. Suggest and Reflec
 ---
 config:
   flowchart:
-    curve: stepBefore
+    curve: linear
 ---
 graph TD
     Init["Init (once)<br>/kaizen-init-project"] --> Start

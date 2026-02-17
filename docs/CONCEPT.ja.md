@@ -46,7 +46,7 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 ---
 config:
   flowchart:
-    curve: stepBefore
+    curve: linear
 ---
 graph TD
     Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
