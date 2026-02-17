@@ -11,7 +11,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 
 ## Language Policy
 
-- Templates, commands, skills: 開発中は日本語。Phase 5（公開前）で英語に一括翻訳
+- Templates, commands, skills: 日本語（英訳は post-v0.1.0 で段階的に対応）
 - Documentation (docs/): Bilingual (English + Japanese)
 - README: English (README.md) + Japanese (README.ja.md)
 

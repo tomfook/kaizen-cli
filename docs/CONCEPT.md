@@ -40,35 +40,20 @@ These are not "improvement items" to add to a backlog. They are natural byproduc
 
 The cycle wraps around your everyday work. You do not "run the cycle" — learning is captured as you do your work.
 
-The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
+The only required step is **Execute (= your everyday work)**. Suggest, Reflect, and Update Docs are optional — if you already know what to do, you can jump straight into work.
 
-```mermaid
----
-config:
-  flowchart:
-    curve: linear
----
-graph TD
-    Init["Init (once)<br>/kaizen-init-project"] --> Start
-
-    subgraph Cycle [" Kaizen Cycle "]
-        Start((" "))
-        Suggest["Suggest Next<br>/kaizen-suggest-next"]
-        Plan["Plan & Decide<br>(plan mode)"]
-        Execute["Execute<br>= your work"]
-        Reflect["Reflect<br>/kaizen-reflect-learning"]
-        End((" "))
-
-        Start --> Suggest --> Plan --> Execute --> Reflect --> End
-        Start --> Plan
-        Start --> Execute
-        Execute --> End
-    end
-
-    Knowledge[("knowledge/")]
-    Execute ~~~ Knowledge
-    Reflect -->|"accumulates learnings"| Knowledge
-    End -->|"accelerates next cycle"| Start
+```
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐
+│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │───▶│ Update   │
+│         │    │  Next   │    │(= your  │    │         │    │  Docs    │
+│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen  │    │/kaizen   │
+│-init    │    │-suggest │    │  work)  │    │-reflect │    │-update   │
+│-project │    │-next    │    │         │    │-learning│    │-docs     │
+└─────────┘    └─────────┘    └─────────┘    └─────────┘    └──────────┘
+                    ▲                                              │
+                    │     Friction from work feeds knowledge/      │
+                    │       which accelerates the next cycle       │
+                    └──────────────────────────────────────────────┘
 ```
 
 ### Init — Project Initialization
@@ -91,20 +76,11 @@ Run `/kaizen-suggest-next` when you finish a chunk of work or are unsure what to
 
 This is not a simple TODO list — it draws on accumulated knowledge and project context to make its suggestions.
 
-### Plan & Decide — Planning and Decision-Making
-
-Leverages Claude Code's plan mode to build an execution plan for suggested actions.
-
-- You decide which actions to execute
-- Adjust the plan as needed
-
-**Decisions are always made by you**. Kaizen-CLI supports suggestion and execution, but never replaces your judgment.
-
 ### Execute — Execution (= Your Everyday Work)
 
-**This is simply your normal work**. Implementing features, fixing bugs, analyzing data, writing code — there is nothing special about this step from Kaizen-CLI's perspective.
+**This is simply your normal work**. Implementing features, fixing bugs, analyzing data, writing code — what you do stays the same. What changes is that your past experience is already on your side.
 
-- Work with accumulated knowledge/ as a reference
+- Work with accumulated knowledge/ as a reference. The more cycles you complete, the more past pitfalls, researched techniques, and implicit rules are already in place when you start working
 - skills/ detects certain task patterns and automatically activates to provide guardrails
 
 ### Reflect — Turning Friction into Knowledge
@@ -119,6 +95,15 @@ Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. 
 An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
 
 Reflected knowledge becomes instantly available across all future sessions and projects through the symlink.
+
+### Update Docs — Syncing Project Documents and Registry
+
+Run `/kaizen-update-docs` after reflect-learning to bring project-side documentation up to date.
+
+- Updates CLAUDE.md and docs/ based on changes during work
+- Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
+
+This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
 
 ---
 
