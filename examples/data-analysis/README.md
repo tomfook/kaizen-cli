@@ -10,7 +10,7 @@
 examples/data-analysis/
 ├── knowledge/
 │   └── analysis/
-│       ├── INDEX.md            # 逆引きリファレンス
+│       ├── INDEX.md            # Reverse Lookup Reference
 │       ├── PITFALLS.md         # 分析の落とし穴と対策
 │       └── QUICK_REFERENCE.md  # 分析コードパターン集
 └── .claude/

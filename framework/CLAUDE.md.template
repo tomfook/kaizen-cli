@@ -1,30 +1,30 @@
-## Claude Codeへの指示
+## Instructions for Claude Code
 
-- ユーザーの言語に合わせて応答すること。
-- ユーザーが年を省略した日付（例:「3月5日」）は現在の年として解釈する。年はランタイムで動的に判定し、記載時に必ず確認する。
+- Respond in the user's language.
+- When the user omits the year from a date (e.g., "March 5"), interpret it as the current year. Determine the year dynamically at runtime and always verify when writing dates.
 
-## プロジェクト概要
+## Project Overview
 
 {{PROJECT_DESCRIPTION}}
 
-**現在のステータス**: 初期セットアップ完了
+**Current Status**: Initial setup complete
 
-## 次のステップ
+## Next Steps
 
-1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
-2. `knowledge/` の関連ファイルを確認する
-3. 実装を開始する — Claudeが必要なファイルを生成する
-4. 作業が一段落ついたら `/kaizen-reflect-learning` で学びを記録する
+1. Fill in each section of `docs/PROJECT_SUMMARY.md`
+2. Review related files in `knowledge/`
+3. Start implementation — Claude will generate necessary files
+4. When you reach a stopping point, record learnings with `/kaizen-reflect-learning`
 
-## 参考ドキュメント
+## Reference Documentation
 
-### プロジェクト情報
-- **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — プロジェクト概要・目的・技術スタック
+### Project Information
+- **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — Project overview, purpose, and tech stack
 
-### ナレッジベース
-- **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — やりたいことからドキュメントを探す
+### Knowledge Base
+- **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — Find documents by what you want to do
 
-### Kaizen-CLIワークフロー
-- `/kaizen-suggest-next` — 次のステップの提案を取得
-- `/kaizen-reflect-learning` — 学びをknowledgeファイルに記録
-- `/kaizen-update-docs` — プロジェクトドキュメントを更新（PROJECT_SUMMARY同期含む）
+### Kaizen-CLI Workflow
+- `/kaizen-suggest-next` — Get suggestions for next steps
+- `/kaizen-reflect-learning` — Record learnings to knowledge files
+- `/kaizen-update-docs` — Update project documents (including PROJECT_SUMMARY sync)

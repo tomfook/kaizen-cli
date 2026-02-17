@@ -67,9 +67,9 @@ INDEX.mdは「タスク別の逆引きリファレンス」— **Claude Codeが�
 - コンテキストウィンドウの効率的利用
 
 **INDEX.mdに含めるもの**:
-1. **やりたいことから探す**（必須）: タスク別の逆引きテーブル
-2. **ファイル一覧**（必須）: 各ファイルの概要と行数
-3. **関連ガイド**（必須）: 他ディレクトリへのリンク
+1. **Find by Task**（必須）: タスク別の逆引きテーブル
+2. **File List**（必須）: 各ファイルの概要と行数
+3. **Related Guides**（必須）: 他ディレクトリへのリンク
 
 **INDEX.mdに含めないもの**:
 - 詳細な内容説明（各ファイルの先頭に記載する）
@@ -79,35 +79,35 @@ INDEX.mdは「タスク別の逆引きリファレンス」— **Claude Codeが�
 ### 標準INDEX.md構造
 
 ```markdown
-# [ディレクトリ名] - 逆引きリファレンス
+# [Directory Name] - Reverse Lookup Reference
 
-[1行の説明]
+[One-line description]
 
-**重要**: プロジェクト横断ファイルのみ。プロジェクト固有の内容を追加しないこと。
+**Important**: Cross-project files only. Do not add project-specific content.
 
-## やりたいことから探す
+## Find by Task
 
-| やりたいこと | 参照先 |
-|-------------|--------|
-| [具体的なタスク] | [ファイル名 § セクション](./filename.md#anchor) |
+| What you want to do | Reference |
+|---------------------|-----------|
+| [Specific task] | [Filename § Section](./filename.md#anchor) |
 
-## ファイル一覧
+## File List
 
-| ファイル | 概要 | 行数 |
-|---------|------|------|
-| [ファイル名](./filename.md) | [1行の概要] | ~XXX |
+| File | Description | Lines |
+|------|-------------|-------|
+| [Filename](./filename.md) | [One-line description] | ~XXX |
 
-## 関連ガイド
+## Related Guides
 
-- **[カテゴリ]**: [リンク](./path) - [1行の説明]
+- **[Category]**: [Link](./path) - [One-line description]
 ```
 
 ### INDEX.md 設計チェックリスト
 
-- [ ] 「やりたいことから探す」テーブルがあるか？
+- [ ] 「Find by Task」テーブルがあるか？
 - [ ] 各エントリが特定のセクションにリンクしているか？
-- [ ] ファイル一覧に行数が含まれているか？
-- [ ] 関連ガイドへのリンクがあるか？
+- [ ] File Listに行数が含まれているか？
+- [ ] Related Guidesへのリンクがあるか？
 - [ ] INDEX.mdは100行以内か？
 
 ---

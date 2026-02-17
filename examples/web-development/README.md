@@ -10,7 +10,7 @@ Web開発プロジェクト向けの Kaizen-CLI サンプル。
 examples/web-development/
 ├── knowledge/
 │   └── development/
-│       ├── INDEX.md            # 逆引きリファレンス
+│       ├── INDEX.md            # Reverse Lookup Reference
 │       └── PATTERNS.md         # Web開発パターン集
 └── .claude/
     └── skills/

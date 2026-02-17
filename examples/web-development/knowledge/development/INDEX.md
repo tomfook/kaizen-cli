@@ -1,12 +1,12 @@
-# Web開発ガイド - 逆引きリファレンス
+# Web Development Guide - Reverse Lookup Reference
 
 開発ナレッジの入口。「やりたいこと」から参照先を引くタスクディスパッチャー。
 
-**⚠️ 重要**: プロジェクト横断の汎用ファイル（プロジェクト固有の内容は禁止）
+**⚠️ Important**: Cross-project files only. Do not add project-specific content.
 
 ---
 
-## やりたいことから探す
+## Find by Task
 
 ### クイックスタート
 
@@ -73,9 +73,9 @@
 
 ---
 
-## ファイル一覧
+## File List
 
-| ファイル | 概要 | 行数 |
+| File | Description | Lines |
 |---------|-----|-----|
 | **[PATTERNS.md](./PATTERNS.md)** | **Web開発の落とし穴と推奨パターン** | ~190行 |
 
