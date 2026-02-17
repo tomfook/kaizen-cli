@@ -11,22 +11,24 @@ A collection of principles underpinning the design of Kaizen-CLI. This document 
 **The kaizen-cli repository is distribution-only (read-only). User knowledge is accumulated elsewhere.**
 
 ```
-kaizen-cli/                <- Distribution. Safely updatable via git pull
+$KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
   framework/
-    .claude/commands/      <- Symlinked to ~/.claude/commands/
-    .claude/skills/        <- Symlinked into each project
-    knowledge/meta/        <- Templates only (not a knowledge store)
+    .claude/commands/              <- Symlinked to ~/.claude/commands/
+    .claude/skills/                <- Symlinked into each project
+    knowledge/meta/                <- Templates only (not a knowledge store)
 
-$KAIZEN_KNOWLEDGE_DIR/     <- Where user knowledge is accumulated
-  meta/                    <- Operational guidelines
-  projects/                <- Project registry
-  (domain-specific files)  <- Destination for reflect-learning output
+$KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
+  meta/                            <- Operational guidelines
+  projects/                        <- Project registry
+  (domain-specific files)          <- Destination for reflect-learning output
 ```
 
 This separation ensures:
 - Running `git pull` to update the framework never conflicts with user knowledge
 - Clear distinction between kaizen-cli templates and user-accumulated knowledge
-- Environment variables (`$KAIZEN_CLI_DIR`, `$KAIZEN_KNOWLEDGE_DIR`) connect the two
+- Environment variables connect the two:
+  - `$KAIZEN_CLI_DIR`: Root of the kaizen-cli repository (auto-detected by setup.sh). Used during setup and project initialization to locate templates and skills
+  - `$KAIZEN_KNOWLEDGE_DIR`: User's shared knowledge directory. Referenced at runtime via symlinks from each project
 
 ### Cross-Project Sharing via Symlinks
 
