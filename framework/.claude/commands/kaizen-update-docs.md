@@ -40,7 +40,7 @@
 
 - ステータス変更があれば `status` を更新（planning → developing → released → completed、一時停止は on-hold）
 - キーワードとなる技術・概念が増えた → `keywords` に追加
-- 技術スタックに変更があれば「技術スタック」セクションを更新
+- 技術スタックに変更があれば「Tech Stack」セクションを更新
 
 ### Step 3: 更新提案を一括表示
 
@@ -85,17 +85,17 @@
 
 **PROJECT_SUMMARY.md更新時の追加処理**:
 
-`## プロジェクトドキュメント` セクションを自動更新する:
+`## Project Documentation` セクションを自動更新する:
 1. `docs/` ディレクトリの `.md` ファイルをスキャン
 2. 各ファイルの先頭行からタイトルを抽出
-3. `## プロジェクトドキュメント` セクションを最新のファイル一覧で更新
+3. `## Project Documentation` セクションを最新のファイル一覧で更新
 
 形式:
 ```markdown
-## プロジェクトドキュメント
+## Project Documentation
 
-- `PROJECT_SUMMARY.md` - プロジェクト概要（本ファイル）
-- [PLAN.md](./PLAN.md) - 実装計画
+- `PROJECT_SUMMARY.md` - Project overview (this file)
+- [PLAN.md](./PLAN.md) - Implementation plan
 ```
 
 ### Step 5: プロジェクトレジストリ同期
@@ -179,12 +179,12 @@ project:
 
 | セクション | 用途 |
 |-----------|------|
-| `## 目的` | プロジェクトの目的・背景 |
-| `## 概要` | 処理内容の概要 |
-| `## 技術スタック` | 使用言語・フレームワーク・サービス |
-| `## 設計判断` | ADR的な判断記録 |
-| `## 注意事項` | 運用・開発上の注意 |
-| `## プロジェクトドキュメント` | docs/内の全.mdファイル一覧（自動更新） |
+| `## Purpose` | プロジェクトの目的・背景 |
+| `## Overview` | 処理内容の概要 |
+| `## Tech Stack` | 使用言語・フレームワーク・サービス |
+| `## Design Decisions` | ADR的な判断記録 |
+| `## Notes` | 運用・開発上の注意 |
+| `## Project Documentation` | docs/内の全.mdファイル一覧（自動更新） |
 
 ### 禁止事項
 

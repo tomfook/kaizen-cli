@@ -1,12 +1,12 @@
-# データ分析ガイド - 逆引きリファレンス
+# Data Analysis Guide - Reverse Lookup Reference
 
 分析ナレッジの入口。「やりたいこと」から参照先を引くタスクディスパッチャー。
 
-**⚠️ 重要**: プロジェクト横断の汎用ファイル（プロジェクト固有の内容は禁止）
+**⚠️ Important**: Cross-project files only. Do not add project-specific content.
 
 ---
 
-## やりたいことから探す
+## Find by Task
 
 ### クイックスタート
 
@@ -75,9 +75,9 @@
 
 ---
 
-## ファイル一覧
+## File List
 
-| ファイル | 概要 | 行数 |
+| File | Description | Lines |
 |---------|-----|-----|
 | **[QUICK_REFERENCE.md](./QUICK_REFERENCE.md)** | **データ前処理・統計チェック・分析パターンのコード集** | ~200行 |
 | [PITFALLS.md](./PITFALLS.md) | データ前処理・統計分析の落とし穴と対策 | ~170行 |

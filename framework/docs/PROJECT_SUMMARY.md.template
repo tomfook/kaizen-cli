@@ -3,33 +3,33 @@ project:
   id: "{{PROJECT_ID}}"
   name: "{{PROJECT_NAME}}"
   status: planning          # planning | developing | released | completed | on-hold
-  keywords: []              # 検索用キーワード
+  keywords: []              # Search keywords
   created: "{{DATE}}"
   updated: "{{DATE}}"
 ---
 
 # {{PROJECT_NAME}}
 
-## 目的
+## Purpose
 
 {{PROJECT_PURPOSE}}
 
-## 概要
+## Overview
 
-（プロジェクトの概要を記載）
+(Describe the project overview)
 
-## 技術スタック
+## Tech Stack
 
-- （使用言語・フレームワーク・サービス等）
+- (Languages, frameworks, services, etc.)
 
-## 設計判断
+## Design Decisions
 
-（重要な設計判断とその理由を記録）
+(Record important design decisions and their rationale)
 
-## 注意事項
+## Notes
 
-（運用・開発上の注意点）
+(Operational and development notes)
 
-## プロジェクトドキュメント
+## Project Documentation
 
-- `PROJECT_SUMMARY.md` - プロジェクト概要（本ファイル）
+- `PROJECT_SUMMARY.md` - Project overview (this file)

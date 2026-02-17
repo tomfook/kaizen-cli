@@ -1,16 +1,16 @@
-# プロジェクトレジストリ
+# Project Registry
 
-登録済みプロジェクトの一覧。kaizen-init-project で自動登録、kaizen-update-docs で同期される。
+List of registered projects. Auto-registered by kaizen-init-project, synced by kaizen-update-docs.
 
-**重要**: このファイルはコマンドにより自動更新される。手動編集は非推奨。
-
----
-
-## 一覧
-
-| ID | プロジェクト名 | ステータス | キーワード | 更新日 |
-|----|--------------|-----------|-----------|--------|
+**Important**: This file is auto-updated by commands. Manual editing is not recommended.
 
 ---
 
-**最終更新**: {{DATE}}
+## Projects
+
+| ID | Project Name | Status | Keywords | Updated |
+|----|--------------|--------|----------|---------|
+
+---
+
+**Last updated**: {{DATE}}

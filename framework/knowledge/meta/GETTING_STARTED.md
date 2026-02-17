@@ -36,7 +36,7 @@ project-root/
 |---------|------|------|
 | **knowledge/** | プロジェクト横断の知識 | 全プロジェクトで共有（reflect-learningの蓄積先） |
 | **CLAUDE.md** | プロジェクト固有の重要情報 | 用語、データソース、成果物 |
-| **docs/PROJECT_SUMMARY.md** | プロジェクト概要 | 目的、技術スタック、設計判断（レジストリ同期対象） |
+| **docs/PROJECT_SUMMARY.md** | プロジェクト概要 | Purpose, Tech Stack, Design Decisions（レジストリ同期対象） |
 | **docs/** | プロジェクト固有の詳細情報 | 計画、仕様書、意思決定ログ |
 
 ---
