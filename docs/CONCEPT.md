@@ -69,14 +69,15 @@ The only required step is **Execute (= your everyday work)**. Suggest and Reflec
 │                                             │   work)    │   │
 │                                             └─────┬──────┘   │
 │                                                   │          │
-│                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │   │
-│                                             │ /kaizen-   │   │
-│                                             │  reflect-  │   │
-│                                             │  learning  │   │
-│                                             └─────┬──────┘   │
-│                                                   │          │
-│◀──────────────────────────────────────────────────┘          │
+│                                          ┌────────┤          │
+│                                          │  ┌─────▼──────┐   │
+│                                          │  │ Reflect    │   │
+│                                          │  │ /kaizen-   │   │
+│                                          │  │  reflect-  │   │
+│                                          │  │  learning  │   │
+│                                          │  └─────┬──────┘   │
+│                                          │        │          │
+│◀─────────────────────────────────────────┴────────┘          │
 │  Friction during work grows knowledge/                       │
 │  and accelerates the next cycle                              │
 │                                                              │
