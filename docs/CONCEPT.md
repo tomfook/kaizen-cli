@@ -122,7 +122,7 @@ Leverages Claude Code's plan mode to build an execution plan for suggested actio
 
 ### Reflect — Turning Friction into Knowledge
 
-Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction encountered during your work and reflects it into knowledge/.
+Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. It analyzes friction encountered during your work and reflects it into knowledge/.
 
 - Contrasts failure patterns with successful approaches
 - Makes implicit rules explicit

@@ -200,7 +200,7 @@ With each cycle, knowledge/ grows, and repeated explanations, rework, and known 
 ## Tips
 
 - **Version-control knowledge/**: Run `git init` in `$KAIZEN_KNOWLEDGE_DIR` to track changes to your accumulated knowledge
-- **At the end of each session**: Make `/kaizen-reflect-learning` → `/kaizen-update-docs` a habit to steadily build up knowledge and keep documentation in sync
+- **When work reaches a stopping point**: Make `/kaizen-reflect-learning` → `/kaizen-update-docs` a habit to steadily build up knowledge and keep documentation in sync
 
 ---
 
