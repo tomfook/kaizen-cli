@@ -44,21 +44,22 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 ```mermaid
 graph TD
-    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Suggest
+    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
 
     subgraph Cycle [" Kaizen サイクル "]
+        Start((" "))
         Suggest["Suggest Next<br>/kaizen-suggest-next"]
         Plan["Plan & Decide<br>（plan mode）"]
         Execute["Execute<br>= あなたの実務"]
         Reflect["Reflect<br>/kaizen-reflect-learning"]
 
-        Suggest --> Plan
-        Plan --> Execute
-        Execute --> Reflect
+        Start --> Suggest --> Plan --> Execute --> Reflect
+        Start -.-> Plan
+        Start -.-> Execute
     end
 
-    Execute -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Suggest
-    Reflect -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Suggest
+    Execute -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
+    Reflect -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
 ```
 
 ### Init — プロジェクトの初期化

@@ -44,21 +44,22 @@ The only required step is **Execute (= your everyday work)**. Suggest and Reflec
 
 ```mermaid
 graph TD
-    Init["Init (once)<br>/kaizen-init-project"] --> Suggest
+    Init["Init (once)<br>/kaizen-init-project"] --> Start
 
     subgraph Cycle [" Kaizen Cycle "]
+        Start((" "))
         Suggest["Suggest Next<br>/kaizen-suggest-next"]
         Plan["Plan & Decide<br>(plan mode)"]
         Execute["Execute<br>= your work"]
         Reflect["Reflect<br>/kaizen-reflect-learning"]
 
-        Suggest --> Plan
-        Plan --> Execute
-        Execute --> Reflect
+        Start --> Suggest --> Plan --> Execute --> Reflect
+        Start -.-> Plan
+        Start -.-> Execute
     end
 
-    Execute -->|"knowledge/ grows,<br>accelerates next cycle"| Suggest
-    Reflect -->|"knowledge/ grows,<br>accelerates next cycle"| Suggest
+    Execute -->|"knowledge/ grows,<br>accelerates next cycle"| Start
+    Reflect -->|"knowledge/ grows,<br>accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization
