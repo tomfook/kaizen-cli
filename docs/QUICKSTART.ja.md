@@ -175,7 +175,7 @@ Claude Code がセッションを分析し、以下のような提案を出し�
 ## Tips
 
 - **knowledge/ のgit管理**: `$KAIZEN_KNOWLEDGE_DIR` で `git init` を実行すると、蓄積された知識の変更履歴を管理できます
-- **セッションの終わりに**: `/kaizen-reflect-learning` を習慣にすると、知識が着実に蓄積されます
+- **作業が一段落ついたら**: `/kaizen-reflect-learning` を習慣にすると、知識が着実に蓄積されます
 - **ドキュメントの更新**: 作業後に `/kaizen-update-docs` でプロジェクトドキュメントを最新化できます
 
 ---

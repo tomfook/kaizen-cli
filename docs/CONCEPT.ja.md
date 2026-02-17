@@ -121,7 +121,7 @@ Claude Code の plan mode を活用し、提案されたアクションの実行
 
 ### Reflect — 引っかかりが知識に変わる
 
-セッション終了時に `/kaizen-reflect-learning` を実行します。作業中に生じた引っかかりを分析し、knowledge/ に反映します。
+作業が一段落ついたときに `/kaizen-reflect-learning` を実行します。作業中に生じた引っかかりを分析し、knowledge/ に反映します。
 
 - 失敗パターンと成功アプローチの対比
 - 暗黙のルールの明文化

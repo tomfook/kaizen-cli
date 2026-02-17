@@ -14,7 +14,7 @@
 1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
 2. `knowledge/` の関連ファイルを確認する
 3. 実装を開始する — Claudeが必要なファイルを生成する
-4. セッション終了時に `/kaizen-reflect-learning` で学びを記録する
+4. 作業が一段落ついたら `/kaizen-reflect-learning` で学びを記録する
 
 ## 参考ドキュメント
 
