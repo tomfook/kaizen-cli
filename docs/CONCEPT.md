@@ -42,46 +42,33 @@ The cycle wraps around your everyday work. You do not "run the cycle" — learni
 
 The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
 
-```
-┌──────────┐
-│  Init    │ (once)
-│ /kaizen- │
-│ init-    │
-│ project  │
-└────┬─────┘
-     │
-┌────▼─────────────────────────────────────────────────────────┐
-│                       Kaizen Cycle                           │
-│                                                               │
-│   ┌────────────────┐                                         │
-│   │ Suggest Next   │                                         │
-│ ─▶│ /kaizen-       │─┐                                      │
-│   │  suggest-next  │  │                                      │
-│   └────────────────┘  │                                      │
-│                       │ ┌──────────────┐                     │
-│                       └▶│ Plan &       │                     │
-│ ───────────────────────▶│  Decide      │─┐                   │
-│                         │ (plan mode)  │  │                   │
-│                         └──────────────┘  │                   │
-│                                           │ ┌────────────┐   │
-│                                           └▶│ Execute    │──▶│
-│ ───────────────────────────────────────────▶│(= your     │   │
-│                                             │   work)    │   │
-│                                             └─────┬──────┘   │
-│                                                   │          │
-│                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │──▶│
-│                                             │ /kaizen-   │   │
-│                                             │  reflect-  │   │
-│                                             │  learning  │   │
-│                                             └────────────┘   │
-│                                                               │
-└─────────────────────────────────────┬────────────┬────────────┘
-▲                                     │            │
-│  Friction during work grows         │            │
-│    knowledge/ and accelerates       │            │
-│    the next cycle                   │            │
-└─────────────────────────────────────┴────────────┘
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD
+    Init["Init (once)<br>/kaizen-init-project"] --> Start
+
+    subgraph Cycle [" Kaizen Cycle "]
+        Start((" "))
+        Suggest["Suggest Next<br>/kaizen-suggest-next"]
+        Plan["Plan & Decide<br>(plan mode)"]
+        Execute["Execute<br>= your work"]
+        Reflect["Reflect<br>/kaizen-reflect-learning"]
+        End((" "))
+
+        Start --> Suggest --> Plan --> Execute --> Reflect --> End
+        Start --> Plan
+        Start --> Execute
+        Execute --> End
+    end
+
+    Knowledge[("knowledge/")]
+    Execute ~~~ Knowledge
+    Reflect -->|"accumulates learnings"| Knowledge
+    End -->|"accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization
