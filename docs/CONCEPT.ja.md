@@ -43,6 +43,11 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest と Reflect は任意のステップであり、やることが決まっていれば直接作業を始められます。
 
 ```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
 graph TD
     Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
 

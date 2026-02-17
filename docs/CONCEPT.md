@@ -43,6 +43,11 @@ The cycle wraps around your everyday work. You do not "run the cycle" — learni
 The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
 
 ```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
 graph TD
     Init["Init (once)<br>/kaizen-init-project"] --> Start
 
