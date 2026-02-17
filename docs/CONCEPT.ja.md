@@ -40,37 +40,17 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 サイクルは実務を包み込む形で回ります。「サイクルを回す」のではなく、実務をこなす中で学びが捉えられます。
 
-唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest と Reflect は任意のステップであり、やることが決まっていれば直接作業を始められます。
+唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest、Reflect、Update Docs は任意のステップであり、やることが決まっていれば直接作業を始められます。
 
 ```mermaid
----
-config:
-  flowchart:
-    curve: linear
----
-graph TD
-    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
+graph LR
+    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Suggest
 
-    subgraph Cycle [" Kaizen サイクル "]
-        Start((" "))
-        Suggest["Suggest Next<br>/kaizen-suggest-next"]
-        Plan["Plan & Decide<br>（plan mode）"]
-        Execute["Execute<br>= あなたの実務"]
-        Reflect["Reflect<br>/kaizen-reflect-learning"]
-        End((" "))
+    Suggest["Suggest Next<br>/kaizen-suggest-next"] --> Execute["Execute<br>= あなたの実務"] --> Reflect["Reflect<br>/kaizen-reflect-learning"] --> UpdateDocs["Update Docs<br>/kaizen-update-docs"] --> Suggest
 
-        Start --> Suggest --> Plan --> Execute --> Reflect --> UpdateDocs --> End
-        Start --> Plan
-        Start --> Execute
-        Execute --> End
-    end
-
-    UpdateDocs["Update Docs<br>/kaizen-update-docs"]
     Knowledge[("knowledge/")]
-    Execute ~~~ Knowledge
     Reflect -->|"引っかかりを蓄積"| Knowledge
     UpdateDocs -->|"ドキュメントとレジストリを同期"| Knowledge
-    End -->|"次のサイクルを加速"| Start
 ```
 
 ### Init — プロジェクトの初期化
@@ -93,20 +73,11 @@ graph TD
 
 単なるTODOリストではなく、蓄積された知識とプロジェクトコンテキストを踏まえた提案を行います。
 
-### Plan & Decide — 計画と判断
-
-Claude Code の plan mode を活用し、提案されたアクションの実行計画を立てます。
-
-- ユーザーが判断し、実行するアクションを選択
-- 必要に応じて計画を調整
-
-**判断はつねにユーザーが行います**。Kaizen-CLI は提案と実行を支援しますが、意思決定を代替しません。
-
 ### Execute — 実行（= あなたの実務）
 
-**ここはあなたの普段の仕事そのものです**。機能の実装、バグ修正、データ分析、コードの記述 — Kaizen-CLI の観点からこのステップに特別なことはありません。
+**ここはあなたの普段の仕事そのものです**。機能の実装、バグ修正、データ分析、コードの記述 — あなたがやることは変わりません。変わるのは、過去の経験が味方についていることです。
 
-- 蓄積された knowledge/ を参照しながら作業
+- 蓄積された knowledge/ を参照しながら作業。サイクルを重ねるほど、過去に踏んだ落とし穴・調べ直した技法・暗黙のルールが既に揃った状態で作業を始められる
 - skills/ が特定のタスクパターンを検知すると自動発動してガードレールを提供
 
 ### Reflect — 引っかかりが知識に変わる

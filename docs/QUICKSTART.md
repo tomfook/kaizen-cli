@@ -101,15 +101,9 @@ Since the project was just initialized, you will see suggestions like these:
 Which suggestion would you like to pursue?
 ```
 
-### 3-2: Plan & Decide — Choose and Plan
+### 3-2: Execute — Do the Work (= Your Actual Task)
 
 Pick "1. Fill in PROJECT_SUMMARY.md" from the suggestions.
-
-```
-Let's go with 1
-```
-
-### 3-3: Execute — Do the Work (= Your Actual Task)
 
 Edit PROJECT_SUMMARY.md together with Claude Code.
 
@@ -126,7 +120,7 @@ Wait, I'm using uv, not venv. Fix that.
 
 This "correction" is the kind of signal that Reflect captures as knowledge. The natural friction that arises during work — that becomes the raw material for knowledge.
 
-### 3-4: Reflect — Turn Friction into Knowledge
+### 3-3: Reflect — Turn Friction into Knowledge
 
 After the work is done, reflect on what you learned.
 
@@ -159,7 +153,7 @@ Once approved, the insight is written to knowledge/. This insight **becomes imme
 
 The next time you initialize a Python project, Claude Code reads this insight from knowledge/ and will confirm the dependency management tool instead of guessing.
 
-### 3-5: Update Docs — Sync Project Documents and Registry
+### 3-4: Update Docs — Sync Project Documents and Registry
 
 Once knowledge/ has been updated, bring your project-side documentation up to date as well.
 
@@ -188,10 +182,9 @@ Once approved, PROJECT_SUMMARY.md is updated. The changes are also automatically
 ## This Is the Kaizen Cycle
 
 1. **Suggest**: Receive proposals for what to do next
-2. **Plan & Decide**: Decide what to work on
-3. **Execute**: Do the actual work (= your regular tasks)
-4. **Reflect**: Turn friction into knowledge
-5. **Update Docs**: Sync project documents and registry
+2. **Execute**: Do the actual work (= your regular tasks)
+3. **Reflect**: Turn friction into knowledge
+4. **Update Docs**: Sync project documents and registry
 
 With each cycle, knowledge/ grows, and repeated explanations, rework, and known pitfalls decrease over time.
 

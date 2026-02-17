@@ -40,37 +40,17 @@ These are not "improvement items" to add to a backlog. They are natural byproduc
 
 The cycle wraps around your everyday work. You do not "run the cycle" — learning is captured as you do your work.
 
-The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
+The only required step is **Execute (= your everyday work)**. Suggest, Reflect, and Update Docs are optional — if you already know what to do, you can jump straight into work.
 
 ```mermaid
----
-config:
-  flowchart:
-    curve: linear
----
-graph TD
-    Init["Init (once)<br>/kaizen-init-project"] --> Start
+graph LR
+    Init["Init (once)<br>/kaizen-init-project"] --> Suggest
 
-    subgraph Cycle [" Kaizen Cycle "]
-        Start((" "))
-        Suggest["Suggest Next<br>/kaizen-suggest-next"]
-        Plan["Plan & Decide<br>(plan mode)"]
-        Execute["Execute<br>= your work"]
-        Reflect["Reflect<br>/kaizen-reflect-learning"]
-        End((" "))
+    Suggest["Suggest Next<br>/kaizen-suggest-next"] --> Execute["Execute<br>= your work"] --> Reflect["Reflect<br>/kaizen-reflect-learning"] --> UpdateDocs["Update Docs<br>/kaizen-update-docs"] --> Suggest
 
-        Start --> Suggest --> Plan --> Execute --> Reflect --> UpdateDocs --> End
-        Start --> Plan
-        Start --> Execute
-        Execute --> End
-    end
-
-    UpdateDocs["Update Docs<br>/kaizen-update-docs"]
     Knowledge[("knowledge/")]
-    Execute ~~~ Knowledge
     Reflect -->|"accumulates learnings"| Knowledge
     UpdateDocs -->|"syncs docs & registry"| Knowledge
-    End -->|"accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization
@@ -93,20 +73,11 @@ Run `/kaizen-suggest-next` when you finish a chunk of work or are unsure what to
 
 This is not a simple TODO list — it draws on accumulated knowledge and project context to make its suggestions.
 
-### Plan & Decide — Planning and Decision-Making
-
-Leverages Claude Code's plan mode to build an execution plan for suggested actions.
-
-- You decide which actions to execute
-- Adjust the plan as needed
-
-**Decisions are always made by you**. Kaizen-CLI supports suggestion and execution, but never replaces your judgment.
-
 ### Execute — Execution (= Your Everyday Work)
 
-**This is simply your normal work**. Implementing features, fixing bugs, analyzing data, writing code — there is nothing special about this step from Kaizen-CLI's perspective.
+**This is simply your normal work**. Implementing features, fixing bugs, analyzing data, writing code — what you do stays the same. What changes is that your past experience is already on your side.
 
-- Work with accumulated knowledge/ as a reference
+- Work with accumulated knowledge/ as a reference. The more cycles you complete, the more past pitfalls, researched techniques, and implicit rules are already in place when you start working
 - skills/ detects certain task patterns and automatically activates to provide guardrails
 
 ### Reflect — Turning Friction into Knowledge
