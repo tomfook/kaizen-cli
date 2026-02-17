@@ -24,6 +24,7 @@ fi
 DEFAULT_KNOWLEDGE_DIR="$HOME/kaizen-knowledge"
 echo ""
 echo "[2/6] 共有ナレッジディレクトリのパスを指定してください。"
+echo "  （そのままEnterでデフォルト値を使用）"
 read -rp "  パス [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
 KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
 
