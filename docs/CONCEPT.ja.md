@@ -42,45 +42,23 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest と Reflect は任意のステップであり、やることが決まっていれば直接作業を始められます。
 
-```
-┌──────────┐
-│  Init    │ (一度だけ)
-│ /kaizen- │
-│ init-    │
-│ project  │
-└────┬─────┘
-     │
-┌────▼─────────────────────────────────────────────────────────┐
-│                       Kaizen サイクル                          │
-│                                                               │
-│   ┌────────────────┐                                         │
-│   │ Suggest Next   │                                         │
-│ ─▶│ /kaizen-       │─┐                                      │
-│   │  suggest-next  │  │                                      │
-│   └────────────────┘  │                                      │
-│                       │ ┌──────────────┐                     │
-│                       └▶│ Plan &       │                     │
-│ ───────────────────────▶│  Decide      │─┐                   │
-│                         │ (plan mode)  │  │                   │
-│                         └──────────────┘  │                   │
-│                                           │ ┌────────────┐   │
-│                                           └▶│ Execute    │──▶│
-│ ───────────────────────────────────────────▶│(= あなたの │   │
-│                                             │   実務)    │   │
-│                                             └─────┬──────┘   │
-│                                                   │          │
-│                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │──▶│
-│                                             │ /kaizen-   │   │
-│                                             │  reflect-  │   │
-│                                             │  learning  │   │
-│                                             └────────────┘   │
-│                                                              │
-└──────────────────────────────────────────────────────────────┤
-▲                                                              │
-│  実務中の引っかかりが knowledge/ を育て、                    │
-│  次のサイクルを加速させる                                    │
-└──────────────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Suggest
+
+    subgraph Cycle [" Kaizen サイクル "]
+        Suggest["Suggest Next<br>/kaizen-suggest-next"]
+        Plan["Plan & Decide<br>（plan mode）"]
+        Execute["Execute<br>= あなたの実務"]
+        Reflect["Reflect<br>/kaizen-reflect-learning"]
+
+        Suggest --> Plan
+        Plan --> Execute
+        Execute --> Reflect
+    end
+
+    Execute -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Suggest
+    Reflect -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Suggest
 ```
 
 ### Init — プロジェクトの初期化
