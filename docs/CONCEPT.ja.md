@@ -46,7 +46,7 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 ---
 config:
   flowchart:
-    curve: linear
+    curve: stepBefore
 ---
 graph TD
     Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
@@ -60,9 +60,9 @@ graph TD
         End((" "))
 
         Start --> Suggest --> Plan --> Execute --> Reflect --> End
-        Start -.-> Plan
-        Start -.-> Execute
-        Execute -.-> End
+        Start --> Plan
+        Start --> Execute
+        Execute --> End
     end
 
     End -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start

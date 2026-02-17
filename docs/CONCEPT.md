@@ -46,7 +46,7 @@ The only required step is **Execute (= your everyday work)**. Suggest and Reflec
 ---
 config:
   flowchart:
-    curve: linear
+    curve: stepBefore
 ---
 graph TD
     Init["Init (once)<br>/kaizen-init-project"] --> Start
@@ -60,9 +60,9 @@ graph TD
         End((" "))
 
         Start --> Suggest --> Plan --> Execute --> Reflect --> End
-        Start -.-> Plan
-        Start -.-> Execute
-        Execute -.-> End
+        Start --> Plan
+        Start --> Execute
+        Execute --> End
     end
 
     End -->|"knowledge/ grows,<br>accelerates next cycle"| Start
