@@ -64,24 +64,23 @@ The only required step is **Execute (= your everyday work)**. Suggest and Reflec
 │                         │ (plan mode)  │  │                   │
 │                         └──────────────┘  │                   │
 │                                           │ ┌────────────┐   │
-│                                           └▶│ Execute    │──▶│
+│                                           └▶│ Execute    │   │
 │ ───────────────────────────────────────────▶│(= your     │   │
 │                                             │   work)    │   │
 │                                             └─────┬──────┘   │
 │                                                   │          │
 │                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │──▶│
+│                                             │ Reflect    │   │
 │                                             │ /kaizen-   │   │
 │                                             │  reflect-  │   │
 │                                             │  learning  │   │
-│                                             └────────────┘   │
-│                                                               │
-└─────────────────────────────────────┬────────────┬────────────┘
-▲                                     │            │
-│  Friction during work grows         │            │
-│    knowledge/ and accelerates       │            │
-│    the next cycle                   │            │
-└─────────────────────────────────────┴────────────┘
+│                                             └─────┬──────┘   │
+│                                                   │          │
+│◀──────────────────────────────────────────────────┘          │
+│  Friction during work grows knowledge/                       │
+│  and accelerates the next cycle                              │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
 ```
 
 ### Init — Project Initialization
