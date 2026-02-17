@@ -65,7 +65,9 @@ graph TD
         Execute --> End
     end
 
-    End -->|"knowledge/ grows,<br>accelerates next cycle"| Start
+    Knowledge[("knowledge/")]
+    Reflect -->|"accumulates learnings"| Knowledge
+    End -->|"accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization

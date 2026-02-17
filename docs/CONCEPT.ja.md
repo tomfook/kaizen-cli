@@ -65,7 +65,9 @@ graph TD
         Execute --> End
     end
 
-    End -->|"実務中の引っかかりが<br>knowledge/ を育てる"| Start
+    Knowledge[("knowledge/")]
+    Reflect -->|"引っかかりを蓄積"| Knowledge
+    End -->|"次のサイクルを加速"| Start
 ```
 
 ### Init — プロジェクトの初期化
