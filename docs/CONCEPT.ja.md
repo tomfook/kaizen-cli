@@ -42,45 +42,35 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 唯一必須なのは **Execute（= あなたの実務）** だけです。Suggest と Reflect は任意のステップであり、やることが決まっていれば直接作業を始められます。
 
-```
-┌──────────┐
-│  Init    │ (一度だけ)
-│ /kaizen- │
-│ init-    │
-│ project  │
-└────┬─────┘
-     │
-┌────▼─────────────────────────────────────────────────────────┐
-│                       Kaizen サイクル                          │
-│                                                               │
-│   ┌────────────────┐                                         │
-│   │ Suggest Next   │                                         │
-│ ─▶│ /kaizen-       │─┐                                      │
-│   │  suggest-next  │  │                                      │
-│   └────────────────┘  │                                      │
-│                       │ ┌──────────────┐                     │
-│                       └▶│ Plan &       │                     │
-│ ───────────────────────▶│  Decide      │─┐                   │
-│                         │ (plan mode)  │  │                   │
-│                         └──────────────┘  │                   │
-│                                           │ ┌────────────┐   │
-│                                           └▶│ Execute    │──▶│
-│ ───────────────────────────────────────────▶│(= あなたの │   │
-│                                             │   実務)    │   │
-│                                             └─────┬──────┘   │
-│                                                   │          │
-│                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │──▶│
-│                                             │ /kaizen-   │   │
-│                                             │  reflect-  │   │
-│                                             │  learning  │   │
-│                                             └────────────┘   │
-│                                                               │
-└─────────────────────────────────────┬────────────┬────────────┘
-▲                                     │            │
-│  実務中の引っかかりが knowledge/ を育て│            │
-│    次のサイクルを加速させる            │            │
-└─────────────────────────────────────┴────────────┘
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD
+    Init["Init（一度だけ）<br>/kaizen-init-project"] --> Start
+
+    subgraph Cycle [" Kaizen サイクル "]
+        Start((" "))
+        Suggest["Suggest Next<br>/kaizen-suggest-next"]
+        Plan["Plan & Decide<br>（plan mode）"]
+        Execute["Execute<br>= あなたの実務"]
+        Reflect["Reflect<br>/kaizen-reflect-learning"]
+        End((" "))
+
+        Start --> Suggest --> Plan --> Execute --> Reflect --> UpdateDocs --> End
+        Start --> Plan
+        Start --> Execute
+        Execute --> End
+    end
+
+    UpdateDocs["Update Docs<br>/kaizen-update-docs"]
+    Knowledge[("knowledge/")]
+    Execute ~~~ Knowledge
+    Reflect -->|"引っかかりを蓄積"| Knowledge
+    UpdateDocs -->|"ドキュメントとレジストリを同期"| Knowledge
+    End -->|"次のサイクルを加速"| Start
 ```
 
 ### Init — プロジェクトの初期化
@@ -121,7 +111,7 @@ Claude Code の plan mode を活用し、提案されたアクションの実行
 
 ### Reflect — 引っかかりが知識に変わる
 
-セッション終了時に `/kaizen-reflect-learning` を実行します。作業中に生じた引っかかりを分析し、knowledge/ に反映します。
+作業が一段落ついたときに `/kaizen-reflect-learning` を実行します。作業中に生じた引っかかりを分析し、knowledge/ に反映します。
 
 - 失敗パターンと成功アプローチの対比
 - 暗黙のルールの明文化
@@ -131,6 +121,15 @@ Claude Code の plan mode を活用し、提案されたアクションの実行
 重要なルール: **セッション中に失敗・リトライが発生した情報は無条件で採用されます**。「記録に値するか」を判断する必要はありません — 引っかかりが生じた事実が、それだけで十分な理由です。
 
 反映された知識は symlink を通じて、将来のすべてのセッション・プロジェクトで即座に利用可能になります。
+
+### Update Docs — プロジェクトドキュメントとレジストリの同期
+
+reflect-learning の後に `/kaizen-update-docs` を実行し、プロジェクト側のドキュメントを最新化します。
+
+- 作業中の変更に基づいて CLAUDE.md と docs/ を更新
+- PROJECT_SUMMARY.md をプロジェクトレジストリ（`knowledge/projects/INDEX.md`）と同期
+
+これにより、将来のセッションや他プロジェクトからの `/kaizen-suggest-next` でプロジェクトの文脈が正確に参照されます。
 
 ---
 

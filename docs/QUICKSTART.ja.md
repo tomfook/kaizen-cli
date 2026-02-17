@@ -200,7 +200,7 @@ Claude Code が CLAUDE.md と docs/ を分析し、更新を提案します:
 ## Tips
 
 - **knowledge/ のgit管理**: `$KAIZEN_KNOWLEDGE_DIR` で `git init` を実行すると、蓄積された知識の変更履歴を管理できます
-- **セッションの終わりに**: `/kaizen-reflect-learning` → `/kaizen-update-docs` を習慣にすると、知識が着実に蓄積され、ドキュメントも常に最新に保てます
+- **作業が一段落ついたら**: `/kaizen-reflect-learning` → `/kaizen-update-docs` を習慣にすると、知識が着実に蓄積され、ドキュメントも常に最新に保てます
 
 ---
 

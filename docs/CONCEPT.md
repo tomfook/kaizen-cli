@@ -42,46 +42,35 @@ The cycle wraps around your everyday work. You do not "run the cycle" — learni
 
 The only required step is **Execute (= your everyday work)**. Suggest and Reflect are optional steps; if you already know what to do, you can jump straight into work.
 
-```
-┌──────────┐
-│  Init    │ (once)
-│ /kaizen- │
-│ init-    │
-│ project  │
-└────┬─────┘
-     │
-┌────▼─────────────────────────────────────────────────────────┐
-│                       Kaizen Cycle                           │
-│                                                               │
-│   ┌────────────────┐                                         │
-│   │ Suggest Next   │                                         │
-│ ─▶│ /kaizen-       │─┐                                      │
-│   │  suggest-next  │  │                                      │
-│   └────────────────┘  │                                      │
-│                       │ ┌──────────────┐                     │
-│                       └▶│ Plan &       │                     │
-│ ───────────────────────▶│  Decide      │─┐                   │
-│                         │ (plan mode)  │  │                   │
-│                         └──────────────┘  │                   │
-│                                           │ ┌────────────┐   │
-│                                           └▶│ Execute    │──▶│
-│ ───────────────────────────────────────────▶│(= your     │   │
-│                                             │   work)    │   │
-│                                             └─────┬──────┘   │
-│                                                   │          │
-│                                             ┌─────▼──────┐   │
-│                                             │ Reflect    │──▶│
-│                                             │ /kaizen-   │   │
-│                                             │  reflect-  │   │
-│                                             │  learning  │   │
-│                                             └────────────┘   │
-│                                                               │
-└─────────────────────────────────────┬────────────┬────────────┘
-▲                                     │            │
-│  Friction during work grows         │            │
-│    knowledge/ and accelerates       │            │
-│    the next cycle                   │            │
-└─────────────────────────────────────┴────────────┘
+```mermaid
+---
+config:
+  flowchart:
+    curve: linear
+---
+graph TD
+    Init["Init (once)<br>/kaizen-init-project"] --> Start
+
+    subgraph Cycle [" Kaizen Cycle "]
+        Start((" "))
+        Suggest["Suggest Next<br>/kaizen-suggest-next"]
+        Plan["Plan & Decide<br>(plan mode)"]
+        Execute["Execute<br>= your work"]
+        Reflect["Reflect<br>/kaizen-reflect-learning"]
+        End((" "))
+
+        Start --> Suggest --> Plan --> Execute --> Reflect --> UpdateDocs --> End
+        Start --> Plan
+        Start --> Execute
+        Execute --> End
+    end
+
+    UpdateDocs["Update Docs<br>/kaizen-update-docs"]
+    Knowledge[("knowledge/")]
+    Execute ~~~ Knowledge
+    Reflect -->|"accumulates learnings"| Knowledge
+    UpdateDocs -->|"syncs docs & registry"| Knowledge
+    End -->|"accelerates next cycle"| Start
 ```
 
 ### Init — Project Initialization
@@ -122,7 +111,7 @@ Leverages Claude Code's plan mode to build an execution plan for suggested actio
 
 ### Reflect — Turning Friction into Knowledge
 
-Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction encountered during your work and reflects it into knowledge/.
+Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. It analyzes friction encountered during your work and reflects it into knowledge/.
 
 - Contrasts failure patterns with successful approaches
 - Makes implicit rules explicit
@@ -132,6 +121,15 @@ Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction enc
 An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
 
 Reflected knowledge becomes instantly available across all future sessions and projects through the symlink.
+
+### Update Docs — Syncing Project Documents and Registry
+
+Run `/kaizen-update-docs` after reflect-learning to bring project-side documentation up to date.
+
+- Updates CLAUDE.md and docs/ based on changes during work
+- Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
+
+This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
 
 ---
 
