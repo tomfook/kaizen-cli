@@ -11,22 +11,24 @@ Kaizen-CLI の設計を支える原則集。システムアーキテクチャの
 **kaizen-cli リポジトリは配布専用（read-only）。ユーザーの知識は別の場所に蓄積する。**
 
 ```
-kaizen-cli/                ← 配布。git pull で安全に更新可能
+$KAIZEN_CLI_DIR (= kaizen-cli/)  ← 配布。git pull で安全に更新可能
   framework/
-    .claude/commands/      ← ~/.claude/commands/ にsymlink
-    .claude/skills/        ← 各プロジェクトにsymlink
-    knowledge/meta/        ← テンプレートのみ（蓄積先ではない）
+    .claude/commands/              ← ~/.claude/commands/ にsymlink
+    .claude/skills/                ← 各プロジェクトにsymlink
+    knowledge/meta/                ← テンプレートのみ（蓄積先ではない）
 
-$KAIZEN_KNOWLEDGE_DIR/     ← ユーザーの知識が蓄積される場所
-  meta/                    ← 運用ガイドライン
-  projects/                ← プロジェクトレジストリ
-  (ドメイン別ファイル)      ← reflect-learning の蓄積先
+$KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される場所
+  meta/                            ← 運用ガイドライン
+  projects/                        ← プロジェクトレジストリ
+  (ドメイン別ファイル)               ← reflect-learning の蓄積先
 ```
 
 この分離により:
 - `git pull` でフレームワーク更新してもユーザーの知識と衝突しない
 - kaizen-cli のテンプレートと、ユーザーが蓄積した知識が明確に区別される
-- 環境変数（`$KAIZEN_CLI_DIR`、`$KAIZEN_KNOWLEDGE_DIR`）で両者を接続
+- 環境変数で両者を接続:
+  - `$KAIZEN_CLI_DIR`: kaizen-cli リポジトリのルート（setup.sh が自動検出）。セットアップとプロジェクト初期化時にテンプレートやスキルの参照に使用
+  - `$KAIZEN_KNOWLEDGE_DIR`: ユーザーの共有ナレッジディレクトリ。各プロジェクトからsymlink経由で常時参照
 
 ### シンボリックリンクによる横断共有
 
