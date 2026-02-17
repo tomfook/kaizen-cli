@@ -68,7 +68,6 @@ graph TD
     Knowledge[("knowledge/")]
     Execute ~~~ Knowledge
     Reflect -->|"引っかかりを蓄積"| Knowledge
-    Knowledge -.->|"知識を参照"| Cycle
     End -->|"次のサイクルを加速"| Start
 ```
 

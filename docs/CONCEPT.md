@@ -68,7 +68,6 @@ graph TD
     Knowledge[("knowledge/")]
     Execute ~~~ Knowledge
     Reflect -->|"accumulates learnings"| Knowledge
-    Knowledge -.->|"informs"| Cycle
     End -->|"accelerates next cycle"| Start
 ```
 
