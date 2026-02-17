@@ -109,7 +109,7 @@ kaizen-cli/
 
 ## コントリビューション
 
-コントリビューション歓迎です！[CONTRIBUTING.md](CONTRIBUTING.md) をご覧ください。
+コントリビューション歓迎です！Issue または Pull Request をお気軽にどうぞ。
 
 ## ライセンス
 

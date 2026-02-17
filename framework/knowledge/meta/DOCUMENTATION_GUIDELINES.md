@@ -189,4 +189,4 @@ grep -r "FILENAME.md" knowledge/
 
 ---
 
-**最終更新**: {{DATE}}
+**最終更新**: 2026-02-11

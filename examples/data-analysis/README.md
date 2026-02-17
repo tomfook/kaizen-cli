@@ -39,4 +39,4 @@ examples/data-analysis/
 2. skills/ のファイルをプロジェクトの `.claude/skills/` にコピーして編集
 3. 自分の分析ドメインに合わせてコード例やチェックリストを追加・修正
 
-カスタマイズの詳細は [docs/CUSTOMIZATION.md](../../docs/CUSTOMIZATION.md) を参照してください。
+カスタマイズの詳細は [docs/CUSTOMIZATION.ja.md](../../docs/CUSTOMIZATION.ja.md) を参照してください。

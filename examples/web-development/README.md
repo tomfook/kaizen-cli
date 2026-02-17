@@ -37,4 +37,4 @@ examples/web-development/
 2. skills/ のファイルをプロジェクトの `.claude/skills/` にコピーして編集
 3. 自分の技術スタックに合わせてパターンやチェックリストを追加・修正
 
-カスタマイズの詳細は [docs/CUSTOMIZATION.md](../../docs/CUSTOMIZATION.md) を参照してください。
+カスタマイズの詳細は [docs/CUSTOMIZATION.ja.md](../../docs/CUSTOMIZATION.ja.md) を参照してください。

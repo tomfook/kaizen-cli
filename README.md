@@ -109,7 +109,7 @@ kaizen-cli/
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please open an issue or pull request.
 
 ## License
 

@@ -159,6 +159,30 @@ Claude Code がセッションを分析し、以下のような提案を出し�
 
 次にPythonプロジェクトを初期化したとき、Claude Code は knowledge/ からこの知見を読み取り、依存管理ツールを推測せずに確認するようになります。
 
+### 3-5: Update Docs — プロジェクトドキュメントとレジストリの同期
+
+knowledge/ が更新されたら、プロジェクト側のドキュメントも最新化します。
+
+```
+/kaizen-update-docs
+```
+
+Claude Code が CLAUDE.md と docs/ を分析し、更新を提案します:
+
+```markdown
+## ドキュメント更新提案
+
+### docs/ の更新
+
+#### PROJECT_SUMMARY.md
+- 技術スタック: 依存管理ツールに uv を追加
+- status: planning → developing
+
+承認しますか？
+```
+
+承認すると、PROJECT_SUMMARY.md が更新されます。変更はプロジェクトレジストリ（`knowledge/projects/INDEX.md`）にも自動同期されます。これにより、別プロジェクトで `/kaizen-suggest-next` を実行した際に、このプロジェクトの最新状況が参照可能になります。
+
 ---
 
 ## これが Kaizen サイクルです
@@ -167,6 +191,7 @@ Claude Code がセッションを分析し、以下のような提案を出し�
 2. **Plan & Decide**: 何をやるか決める
 3. **Execute**: 実務をこなす（= 普段の作業）
 4. **Reflect**: 引っかかりを知識に変える
+5. **Update Docs**: プロジェクトドキュメントとレジストリを同期する
 
 サイクルを回すたびに knowledge/ が育ち、同じ説明の繰り返し・手戻り・既知の落とし穴が減っていきます。
 
@@ -175,8 +200,7 @@ Claude Code がセッションを分析し、以下のような提案を出し�
 ## Tips
 
 - **knowledge/ のgit管理**: `$KAIZEN_KNOWLEDGE_DIR` で `git init` を実行すると、蓄積された知識の変更履歴を管理できます
-- **セッションの終わりに**: `/kaizen-reflect-learning` を習慣にすると、知識が着実に蓄積されます
-- **ドキュメントの更新**: 作業後に `/kaizen-update-docs` でプロジェクトドキュメントを最新化できます
+- **セッションの終わりに**: `/kaizen-reflect-learning` → `/kaizen-update-docs` を習慣にすると、知識が着実に蓄積され、ドキュメントも常に最新に保てます
 
 ---
 
