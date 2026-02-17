@@ -15,17 +15,18 @@ With Claude Code, do you find yourself repeating the same explanations every tim
 Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **embeds a knowledge-accumulation loop into your everyday work**. You focus on your actual tasks — building features, fixing bugs, running analyses. When you hit friction during that work — an unexpected error, a technique you had to look up, a pattern that turned out to work well — that friction becomes the raw material for updating your shared knowledge base. Over time, the knowledge that accumulates from real work accelerates all your future work across every project.
 
 ```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐
-│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │───▶│ Update   │
-│         │    │  Next   │    │(= your  │    │         │    │  Docs    │
-│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen  │    │/kaizen   │
-│-init    │    │-suggest │    │  work)  │    │-reflect │    │-update   │
-│-project │    │-next    │    │         │    │-learning│    │-docs     │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘    └──────────┘
-                    ▲                                              │
-                    │     Friction from work feeds knowledge/      │
-                    │       which accelerates the next cycle       │
-                    └──────────────────────────────────────────────┘
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐
+│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │
+│         │    │  Next   │    │(= your  │    │         │
+│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen  │
+│-init    │    │-suggest │    │  work)  │    │-reflect │
+│-project │    │-next    │    │         │    │-learning│
+└─────────┘    └─────────┘    └─────────┘    └─────────┘
+                    ▲                              │
+                    │  Friction from work feeds     │
+                    │  knowledge/ which accelerates │
+                    │  the next cycle               │
+                    └──────────────────────────────┘
 ```
 
 ## What Kaizen-CLI Provides
@@ -33,7 +34,7 @@ Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **
 | Mechanism | Description |
 |-----------|-------------|
 | **Shared knowledge base** | `knowledge/` is symlinked across all projects. Industry expertise, technical insights, and hard-won lessons accumulate over time |
-| **Work-embedded Kaizen cycle** | Suggest → execute → reflect → update docs wraps around your real work — not a separate improvement process |
+| **Work-embedded Kaizen cycle** | Suggest → execute → reflect wraps around your real work — not a separate improvement process |
 | **Project context** | PROJECT_SUMMARY and a project registry maintain cross-project context |
 
 ## Why Kaizen-CLI?
@@ -58,7 +59,6 @@ claude  # Start Claude Code, then:
 # 3. Start the Kaizen cycle
         # /kaizen-suggest-next    — get next step suggestions
         # /kaizen-reflect-learning — capture lessons learned
-        # /kaizen-update-docs     — update project documentation
 ```
 
 `setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to this shared directory — knowledge accumulated in one project is automatically available to all others.
