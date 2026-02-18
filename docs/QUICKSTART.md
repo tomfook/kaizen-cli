@@ -32,6 +32,8 @@ setup.sh does the following:
 source ~/.bashrc
 ```
 
+> **Tip**: After updating kaizen-cli with `git pull`, re-run `bash kaizen-cli/setup.sh --force` to refresh templates, environment variables, and symlinks.
+
 ---
 
 ## Step 2: Initialize Your Project

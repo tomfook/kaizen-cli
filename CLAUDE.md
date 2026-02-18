@@ -42,6 +42,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - Phase 2: Complete
 - Phase 3: Complete
 - Phase 4: Complete
+- Phase 5: Complete (v0.1.0 release)
 
 ## Conventions
 

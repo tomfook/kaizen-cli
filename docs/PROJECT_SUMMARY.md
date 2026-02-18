@@ -36,3 +36,11 @@ See CLAUDE.md "Key Design Decisions" section for comprehensive list.
 ## Project Documentation
 
 - `PROJECT_SUMMARY.md` - Project overview (this file)
+- [CONCEPT.md](./CONCEPT.md) - Methodology concept
+- [CONCEPT.ja.md](./CONCEPT.ja.md) - Methodology concept (Japanese)
+- [CUSTOMIZATION.md](./CUSTOMIZATION.md) - Customization guide
+- [CUSTOMIZATION.ja.md](./CUSTOMIZATION.ja.md) - Customization guide (Japanese)
+- [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md) - Design principles
+- [DESIGN_PRINCIPLES.ja.md](./DESIGN_PRINCIPLES.ja.md) - Design principles (Japanese)
+- [QUICKSTART.md](./QUICKSTART.md) - Quickstart guide
+- [QUICKSTART.ja.md](./QUICKSTART.ja.md) - Quickstart guide (Japanese)
