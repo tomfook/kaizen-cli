@@ -44,13 +44,29 @@ fi
 
 DEFAULT_KNOWLEDGE_DIR="$HOME/kaizen-knowledge"
 echo ""
-echo "[2/6] Specify the path for your shared knowledge directory."
-echo "  (Press Enter to use the default)"
-read -rp "  Path [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
-KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
 
-# Tilde expansion
-KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR/#\~/$HOME}"
+if [ "$FORCE" = true ]; then
+  # In --force mode, reuse existing value (env var > ~/.bashrc > default)
+  if [ -n "${KAIZEN_KNOWLEDGE_DIR:-}" ]; then
+    echo "[2/6] Using existing KAIZEN_KNOWLEDGE_DIR: $KAIZEN_KNOWLEDGE_DIR"
+  elif existing_val=$(grep -oP '^export KAIZEN_KNOWLEDGE_DIR="\K[^"]+' "$HOME/.bashrc" 2>/dev/null); then
+    KAIZEN_KNOWLEDGE_DIR="$existing_val"
+    echo "[2/6] Read from ~/.bashrc: KAIZEN_KNOWLEDGE_DIR=$KAIZEN_KNOWLEDGE_DIR"
+  else
+    echo "[2/6] Specify the path for your shared knowledge directory."
+    echo "  (Press Enter to use the default)"
+    read -rp "  Path [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
+    KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
+    KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR/#\~/$HOME}"
+  fi
+else
+  echo "[2/6] Specify the path for your shared knowledge directory."
+  echo "  (Press Enter to use the default)"
+  read -rp "  Path [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
+  KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
+  # Tilde expansion
+  KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR/#\~/$HOME}"
+fi
 
 if [ -d "$KAIZEN_KNOWLEDGE_DIR" ]; then
   echo "  Already exists: $KAIZEN_KNOWLEDGE_DIR (skipped)"

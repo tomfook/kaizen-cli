@@ -32,6 +32,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **Knowledge-only accumulation**: `reflect-learning` writes only to `knowledge/` files. Skills are static (provided by kaizen-cli or user-created) and not modified by the reflect process.
 - **PROJECT_SUMMARY.md**: Each project has a structured summary in `docs/PROJECT_SUMMARY.md` with YAML frontmatter. Used by `suggest-next` to understand project context.
 - **Project registry**: `$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` maintains a table of all registered projects. `kaizen-init-project` registers, `kaizen-update-docs` syncs.
+- **setup.sh --force preserves user data**: `--force` only updates env vars and symlinks. Knowledge files (template-expanded into `$KAIZEN_KNOWLEDGE_DIR`) are never overwritten, as they accumulate user data.
 - **MIT License**: Maximum adoption, minimum friction
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
 
