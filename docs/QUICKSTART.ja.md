@@ -32,7 +32,7 @@ setup.sh が以下を行います:
 source ~/.bashrc
 ```
 
-> **Tip**: `git pull` で kaizen-cli を更新した後は、`bash kaizen-cli/setup.sh --force` を再実行するとテンプレート・環境変数・シンボリックリンクが最新化されます。
+> **Tip**: `git pull` で kaizen-cli を更新した後は、`bash kaizen-cli/setup.sh --force` を再実行すると環境変数とシンボリックリンクが最新化されます。knowledge ファイルは保持されます。
 
 ---
 
