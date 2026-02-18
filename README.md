@@ -99,7 +99,7 @@ kaizen-cli/
 
 **Great fit:**
 - Individual developers or analysts juggling multiple small projects
-- Claude Code users who want knowledge to carry over between sessions
+- Claude Code users who want knowledge gained in one project to carry over to all other projects
 - Anyone interested in structured AI-assisted development workflows
 
 **Not a fit:**
