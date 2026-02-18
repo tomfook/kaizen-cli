@@ -1,3 +1,8 @@
+## Instructions for Claude Code
+
+- Respond in the user's language.
+- When the user omits the year from a date (e.g., "March 5"), interpret it as the current year. Determine the year dynamically at runtime and always verify when writing dates.
+
 # Kaizen-CLI Repository
 
 This is the Kaizen-CLI open source project — a knowledge-accumulating workflow framework for Claude Code.
@@ -37,9 +42,23 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - Phase 2: Complete
 - Phase 3: Complete
 - Phase 4: Complete
+- Phase 5: Complete (v0.1.0 release)
 
 ## Conventions
 
 - Commit messages: Conventional Commits format
 - File size: Keep individual files under 800 lines
 - SSOT: Each piece of information lives in exactly one place
+
+## Reference Documentation
+
+### Project Information
+- **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — Project overview, purpose, and tech stack
+
+### Knowledge Base
+- **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — Find documents by what you want to do
+
+### Kaizen-CLI Workflow
+- `/kaizen-suggest-next` — Get suggestions for next steps
+- `/kaizen-reflect-learning` — Record learnings to knowledge files
+- `/kaizen-update-docs` — Update project documents (including PROJECT_SUMMARY sync)

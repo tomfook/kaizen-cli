@@ -32,6 +32,8 @@ setup.sh が以下を行います:
 source ~/.bashrc
 ```
 
+> **Tip**: `git pull` で kaizen-cli を更新した後は、`bash kaizen-cli/setup.sh --force` を再実行するとテンプレート・環境変数・シンボリックリンクが最新化されます。
+
 ---
 
 ## Step 2: プロジェクトの初期化

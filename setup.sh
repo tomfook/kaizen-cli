@@ -3,8 +3,28 @@ set -euo pipefail
 
 # Kaizen-CLI setup script
 # Run once. Subsequent runs skip existing files.
+# Use --force to overwrite existing files and links.
+
+# --- Parse arguments ---
+FORCE=false
+for arg in "$@"; do
+  case "$arg" in
+    --force) FORCE=true ;;
+    -h|--help)
+      echo "Usage: bash setup.sh [--force]"
+      echo ""
+      echo "Options:"
+      echo "  --force  Overwrite existing files, environment variables, and symlinks"
+      echo "  -h, --help   Show this help message"
+      exit 0
+      ;;
+  esac
+done
 
 echo "=== Kaizen-CLI Setup ==="
+if [ "$FORCE" = true ]; then
+  echo "(--force mode: existing files will be overwritten)"
+fi
 echo ""
 
 # --- Step 1: Auto-detect KAIZEN_CLI_DIR ---
@@ -49,11 +69,15 @@ mkdir -p "$KAIZEN_KNOWLEDGE_DIR/meta"
 copy_if_not_exists() {
   local src="$1"
   local dest="$2"
-  if [ -f "$dest" ]; then
+  if [ -f "$dest" ] && [ "$FORCE" = false ]; then
     echo "  Skipped (exists): $dest"
   else
     cp "$src" "$dest"
-    echo "  Created: $dest"
+    if [ "$FORCE" = true ]; then
+      echo "  Overwritten: $dest"
+    else
+      echo "  Created: $dest"
+    fi
   fi
 }
 
@@ -84,7 +108,12 @@ add_env_var() {
   local var_name="$1"
   local var_value="$2"
   if grep -q "^export ${var_name}=" "$BASHRC" 2>/dev/null; then
-    echo "  Skipped (exists): $var_name in $BASHRC"
+    if [ "$FORCE" = true ]; then
+      sed -i "s|^export ${var_name}=.*|export ${var_name}=\"${var_value}\"|" "$BASHRC"
+      echo "  Updated: export ${var_name}=\"${var_value}\" in $BASHRC"
+    else
+      echo "  Skipped (exists): $var_name in $BASHRC"
+    fi
   else
     echo "" >> "$BASHRC"
     echo "# Kaizen-CLI" >> "$BASHRC"
@@ -107,7 +136,12 @@ for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
   cmd_name="$(basename "$cmd_file")"
   dest="$HOME/.claude/commands/$cmd_name"
   if [ -e "$dest" ] || [ -L "$dest" ]; then
-    echo "  Skipped (exists): $dest"
+    if [ "$FORCE" = true ]; then
+      ln -sf "$cmd_file" "$dest"
+      echo "  Re-linked: $dest -> $cmd_file"
+    else
+      echo "  Skipped (exists): $dest"
+    fi
   else
     ln -s "$cmd_file" "$dest"
     echo "  Linked: $dest -> $cmd_file"
@@ -125,7 +159,13 @@ SKILL_SRC="$KAIZEN_CLI_DIR/framework/.claude/skills/kaizen-init-project"
 SKILL_DEST="$HOME/.claude/skills/kaizen-init-project"
 
 if [ -e "$SKILL_DEST" ] || [ -L "$SKILL_DEST" ]; then
-  echo "  Skipped (exists): $SKILL_DEST"
+  if [ "$FORCE" = true ]; then
+    rm -f "$SKILL_DEST"
+    ln -s "$SKILL_SRC" "$SKILL_DEST"
+    echo "  Re-linked: $SKILL_DEST -> $SKILL_SRC"
+  else
+    echo "  Skipped (exists): $SKILL_DEST"
+  fi
 else
   ln -s "$SKILL_SRC" "$SKILL_DEST"
   echo "  Linked: $SKILL_DEST -> $SKILL_SRC"

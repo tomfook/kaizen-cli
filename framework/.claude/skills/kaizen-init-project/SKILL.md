@@ -39,7 +39,10 @@ ls "$KAIZEN_KNOWLEDGE_DIR"
 
 - `knowledge/` — 既にsymlinkまたはディレクトリが存在する場合はスキップ
 - `.claude/skills/` — 既にsymlinkが存在する場合はスキップ
-- `CLAUDE.md` — 既に存在する場合はスキップ（ユーザーに確認）
+- `CLAUDE.md` — 既に存在する場合はユーザーに以下の3択を提示:
+  1. **追記** — テンプレートの「Reference Documentation」「Kaizen-CLI Workflow」セクションを既存ファイルの末尾に追記
+  2. **上書き** — テンプレートから新規生成（既存内容は失われる）
+  3. **スキップ** — 何もしない
 - `docs/PROJECT_SUMMARY.md` — 既に存在する場合はスキップ
 
 ### 3. ユーザーへの質問
@@ -84,6 +87,16 @@ done
 
 **置換対象**:
 - `{{PROJECT_DESCRIPTION}}`: Step 3で取得した概要
+
+**追記モード**（Step 2 で「追記」が選択された場合）:
+
+1. 既存の CLAUDE.md を読み取る
+2. テンプレートから以下のセクションを抽出:
+   - `## Reference Documentation`（配下の小見出し含む）
+   - `### Kaizen-CLI Workflow`
+3. 既存 CLAUDE.md に各セクションの見出しが既に含まれているか確認
+4. 含まれていないセクションのみ、既存ファイルの末尾に追記
+5. プレースホルダ（`{{PROJECT_DESCRIPTION}}` 等）は追記内容にも適用する
 
 ### 7. docs/PROJECT_SUMMARY.md の生成
 

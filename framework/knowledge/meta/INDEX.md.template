@@ -23,7 +23,7 @@ Guides for project operations, knowledge management, and Kaizen-CLI configuratio
 | Check INDEX.md design rules | [DOCUMENTATION_GUIDELINES.md § INDEX Design](./DOCUMENTATION_GUIDELINES.md#indexmd-design-guidelines) |
 | Check quality checklist | [DOCUMENTATION_GUIDELINES.md § Quality](./DOCUMENTATION_GUIDELINES.md#document-quality) |
 
-{{ADDITIONAL_SECTIONS}}
+<!-- Add domain-specific sections here as your knowledge base grows -->
 
 ## File List
 
@@ -32,10 +32,4 @@ Guides for project operations, knowledge management, and Kaizen-CLI configuratio
 | [GETTING_STARTED.md](./GETTING_STARTED.md) | Project setup, workflow overview, editing guidelines | ~XXX |
 | [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md) | File size management, INDEX design, quality maintenance | ~XXX |
 
-## Related Guides
-
-{{RELATED_GUIDES}}
-
----
-
-**Last updated**: {{DATE}}
+<!-- Add links to related guides here as needed -->
