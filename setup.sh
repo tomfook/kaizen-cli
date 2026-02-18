@@ -3,7 +3,8 @@ set -euo pipefail
 
 # Kaizen-CLI setup script
 # Run once. Subsequent runs skip existing files.
-# Use --force to overwrite existing files and links.
+# Use --force to re-link symlinks and update environment variables.
+# Note: --force does NOT overwrite knowledge files (user data).
 
 # --- Parse arguments ---
 FORCE=false
@@ -14,7 +15,7 @@ for arg in "$@"; do
       echo "Usage: bash setup.sh [--force]"
       echo ""
       echo "Options:"
-      echo "  --force  Overwrite existing files, environment variables, and symlinks"
+      echo "  --force  Update environment variables and re-link symlinks (knowledge files are preserved)"
       echo "  -h, --help   Show this help message"
       exit 0
       ;;
@@ -23,7 +24,7 @@ done
 
 echo "=== Kaizen-CLI Setup ==="
 if [ "$FORCE" = true ]; then
-  echo "(--force mode: existing files will be overwritten)"
+  echo "(--force mode: environment variables and symlinks will be updated)"
 fi
 echo ""
 
@@ -69,15 +70,11 @@ mkdir -p "$KAIZEN_KNOWLEDGE_DIR/meta"
 copy_if_not_exists() {
   local src="$1"
   local dest="$2"
-  if [ -f "$dest" ] && [ "$FORCE" = false ]; then
+  if [ -f "$dest" ]; then
     echo "  Skipped (exists): $dest"
   else
     cp "$src" "$dest"
-    if [ "$FORCE" = true ]; then
-      echo "  Overwritten: $dest"
-    else
-      echo "  Created: $dest"
-    fi
+    echo "  Created: $dest"
   fi
 }
 
