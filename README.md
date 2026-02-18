@@ -40,7 +40,7 @@ Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **
 ## Why Kaizen-CLI?
 
 - **No extra process**: You don't need to think about improvements separately. Friction that naturally arises during real work becomes the input for knowledge updates
-- **Knowledge persists**: Lessons learned are written to `knowledge/` files and available in every future session and project
+- **Knowledge persists**: Lessons learned are written to `knowledge/` files and available across all your projects
 - **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
 - **Faster over time**: Accumulated knowledge means less repeated explanations, fewer regressions, and fewer known pitfalls
 

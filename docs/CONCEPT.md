@@ -94,7 +94,7 @@ Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. 
 
 An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
 
-Reflected knowledge becomes instantly available across all future sessions and projects through the symlink.
+Reflected knowledge becomes instantly available across all your projects through the symlink.
 
 ### Update Docs — Syncing Project Documents and Registry
 
