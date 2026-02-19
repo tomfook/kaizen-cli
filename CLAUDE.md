@@ -33,7 +33,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **PROJECT_SUMMARY.md**: Each project has a structured summary in `docs/PROJECT_SUMMARY.md` with YAML frontmatter. Used by `suggest-next` to understand project context.
 - **Project registry**: `$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` maintains a table of all registered projects. `kaizen-init-project` registers, `kaizen-update-docs` syncs.
 - **Multiple registries**: Subdirectories of `$KAIZEN_KNOWLEDGE_DIR` act as isolated knowledge bases. No config file needed — directory existence defines a registry. Commands work unchanged via the knowledge/ symlink.
-- **Registry selection always prompts**: `kaizen-init-project` always asks which registry to use (even if only one exists). This ensures users are aware of the registry concept. Default is `default` (press Enter to accept).
+- **Registry selection always prompts**: `kaizen-init-project` always asks which registry to use (even if only one exists). This allows users to create a new registry in-place without leaving Claude Code. Default is `default` (press Enter to accept).
 - **setup.sh --force preserves user data**: `--force` only updates env vars and symlinks. Knowledge files (template-expanded into `$KAIZEN_KNOWLEDGE_DIR`) are never overwritten, as they accumulate user data.
 - **MIT License**: Maximum adoption, minimum friction
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
