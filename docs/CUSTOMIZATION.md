@@ -16,7 +16,16 @@ During `setup.sh`, specify a registry name:
 Registry name [default]: work
 ```
 
-Or create one manually:
+Or create one directly from `/kaizen-init-project` — just type a new name at the registry prompt:
+
+```
+Available registries: default
+Registry [default]: work    ← enter a name that doesn't exist yet
+```
+
+You'll be asked to confirm, and the new registry will be created with all necessary template files.
+
+You can also create one manually:
 
 ```bash
 mkdir -p $KAIZEN_KNOWLEDGE_DIR/work
