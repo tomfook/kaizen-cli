@@ -10,13 +10,7 @@ Registries let you maintain separate knowledge bases for different contexts — 
 
 ### Creating a New Registry
 
-During `setup.sh`, specify a registry name:
-
-```
-Registry name [default]: work
-```
-
-Or create one directly from `/kaizen-init-project` — just type a new name at the registry prompt:
+The easiest way is to type a new name at the registry prompt during `/kaizen-init-project` (recommended):
 
 ```
 Available registries: default
@@ -25,7 +19,13 @@ Registry [default]: work    ← enter a name that doesn't exist yet
 
 You'll be asked to confirm, and the new registry will be created with all necessary template files.
 
-You can also create one manually:
+Alternatively, you can create one during `setup.sh`:
+
+```
+Registry name [default]: work
+```
+
+Or manually:
 
 ```bash
 mkdir -p $KAIZEN_KNOWLEDGE_DIR/work
