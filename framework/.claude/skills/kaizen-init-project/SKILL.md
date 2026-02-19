@@ -31,6 +31,9 @@ echo "$KAIZEN_KNOWLEDGE_DIR"
 # ディレクトリの存在チェック
 ls "$KAIZEN_CLI_DIR/framework/.claude/skills/"
 ls "$KAIZEN_KNOWLEDGE_DIR"
+
+# レジストリの存在チェック（サブディレクトリが1つ以上あること）
+ls -d "$KAIZEN_KNOWLEDGE_DIR"/*/
 ```
 
 ### 2. 既存ファイルの確認
@@ -51,17 +54,21 @@ ls "$KAIZEN_KNOWLEDGE_DIR"
 
 | 項目 | 用途 | 必須 | デフォルト |
 |------|------|------|----------|
+| レジストリ | knowledge/ symlink 先の選択 | 必須 | `default`（レジストリが1つなら自動選択しスキップ） |
 | プロジェクト名 | PROJECT_SUMMARY.md, CLAUDE.md | 必須 | — |
 | プロジェクトID | レジストリ登録用（英数字・ハイフン） | 必須 | カレントディレクトリ名（`basename "$PWD"`） |
 | プロジェクトの目的 | PROJECT_SUMMARY.md | 必須 | — |
 | 概要（1行） | CLAUDE.md, レジストリ | 必須 | — |
+
+**レジストリ選択**: `$KAIZEN_KNOWLEDGE_DIR` 直下のサブディレクトリを一覧し、レジストリが複数ある場合のみユーザーに選択を求める。1つしかない場合はそのレジストリを自動選択する。
 
 **プロジェクトID**: デフォルトでカレントディレクトリ名を使用する。ユーザーが変更したい場合は上書き可能。ディレクトリ名に英数字・ハイフン以外の文字が含まれる場合は、ユーザーに手動入力を求める。
 
 ### 4. knowledge/ symlinkの作成
 
 ```bash
-ln -s "$KAIZEN_KNOWLEDGE_DIR" knowledge
+# $REGISTRY_NAME は Step 3 で選択されたレジストリ名
+ln -s "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME" knowledge
 ```
 
 ### 5. skills/ symlinkの作成
@@ -114,10 +121,10 @@ mkdir -p docs
 
 ### 8. プロジェクトレジストリへの登録
 
-`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` にプロジェクトを登録:
+選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
 
-1. `$KAIZEN_KNOWLEDGE_DIR/projects/` ディレクトリが存在しない場合は作成
-2. `INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template` から生成
+1. `knowledge/projects/` ディレクトリが存在しない場合は作成
+2. `knowledge/projects/INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template` から生成
 3. INDEX.mdの一覧テーブルに行を追加:
    - `| {id} | {name} | planning | | {date} |`
 
@@ -131,7 +138,7 @@ ls docs/PROJECT_SUMMARY.md
 ```
 
 ユーザーに以下を案内:
-- `knowledge/` が `$KAIZEN_KNOWLEDGE_DIR` へのsymlinkであること
+- `knowledge/` が `$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME` へのsymlinkであること
 - `.claude/skills/` にKaizen-CLIスキルへのsymlinkが作成されたこと
 - `CLAUDE.md` が生成されたこと
 - `docs/PROJECT_SUMMARY.md` が生成されたこと

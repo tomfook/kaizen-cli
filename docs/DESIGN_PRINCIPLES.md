@@ -18,9 +18,13 @@ $KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
     knowledge/meta/                <- Templates only (not a knowledge store)
 
 $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
-  meta/                            <- Operational guidelines
-  projects/                        <- Project registry
-  (domain-specific files)          <- Destination for reflect-learning output
+  default/                         <- Default registry
+    meta/                          <- Operational guidelines
+    projects/                      <- Project registry
+    (domain-specific files)        <- Destination for reflect-learning output
+  work/                            <- Additional registry (user-created)
+    meta/
+    projects/
 ```
 
 This separation ensures:
@@ -32,26 +36,29 @@ This separation ensures:
 
 ### Cross-Project Sharing via Symlinks
 
-**knowledge/ uses symlinks so all projects reference the same underlying data.**
+**knowledge/ uses symlinks so all projects sharing a registry reference the same underlying data.**
 
 ```
-Project A                       Project B
-├── knowledge/ ─┐              ├── knowledge/ ─┐
-│               │              │               │
-│               ▼              │               ▼
-│        ┌─────────────────────────────────┐
-│        │  $KAIZEN_KNOWLEDGE_DIR (shared)  │
-│        │  Actual knowledge store         │
-│        └─────────────────────────────────┘
+Project A                       Project B                      Project C
+├── knowledge/ ─┐              ├── knowledge/ ─┐              ├── knowledge/ ─┐
+│               │              │               │              │               │
+│               ▼              │               ▼              │               ▼
+│     ┌────────────────┐      │   ┌────────────────┐         │
+│     │ default/       │      │   │ work/          │         │
+│     │ (shared)       │      │   │ (shared)       │         │
+│     └────────────────┘      │   └────────────────┘         │
+│     └─────────────── $KAIZEN_KNOWLEDGE_DIR ────────────────┘
 ```
 
-- **Instant propagation**: Editing knowledge/ in one project is immediately reflected across all projects
+- **Instant propagation**: Editing knowledge/ in one project is immediately reflected across all projects in the same registry
 - **No copying needed**: No file copying or synchronization mechanism required
+- **Registry isolation**: Projects sharing a registry share knowledge. Projects on different registries are completely isolated
+- **Registries are subdirectories**: A registry is simply a subdirectory of `$KAIZEN_KNOWLEDGE_DIR` — no configuration file is needed. Directory existence defines a registry
 - skills/ also uses symlinks (per individual skill, to allow coexistence with user-defined skills)
 
 **Caveats**:
 - Run `git rm` in the actual directory (`$KAIZEN_KNOWLEDGE_DIR`), not through symlinks
-- Do not create backup files inside knowledge/ (it affects all projects)
+- Do not create backup files inside knowledge/ (it affects all projects in the same registry)
 
 ### Separation of Project-Specific and Cross-Project Knowledge
 

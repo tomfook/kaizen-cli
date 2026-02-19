@@ -33,7 +33,7 @@ Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **
 
 | Mechanism | Description |
 |-----------|-------------|
-| **Shared knowledge base** | `knowledge/` is symlinked across all projects. Industry expertise, technical insights, and hard-won lessons accumulate over time |
+| **Shared knowledge base** | `knowledge/` is symlinked across all projects with optional registry isolation. Industry expertise, technical insights, and hard-won lessons accumulate over time |
 | **Work-embedded Kaizen cycle** | Suggest → execute → reflect wraps around your real work — not a separate improvement process |
 | **Project context** | PROJECT_SUMMARY and a project registry maintain cross-project context |
 
@@ -61,7 +61,7 @@ claude  # Start Claude Code, then:
         # /kaizen-reflect-learning — capture lessons learned
 ```
 
-`setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to this shared directory — knowledge accumulated in one project is automatically available to all others.
+`setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to a registry within this shared directory — knowledge accumulated in one project is automatically available to all others sharing the same registry. You can create multiple registries (e.g., work and personal) to keep knowledge separated by context.
 
 For a detailed walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 

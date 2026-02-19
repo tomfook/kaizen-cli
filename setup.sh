@@ -75,13 +75,65 @@ else
   echo "  Created: $KAIZEN_KNOWLEDGE_DIR"
 fi
 
+# --- Step 2.5: Select knowledge registry ---
+
+DEFAULT_REGISTRY="default"
+
+if [ "$FORCE" = true ]; then
+  REGISTRY_NAME="$DEFAULT_REGISTRY"
+  echo "  Using registry: $REGISTRY_NAME"
+else
+  echo ""
+  echo "  Select a knowledge registry name."
+  echo "  (Registries are subdirectories of \$KAIZEN_KNOWLEDGE_DIR for isolating knowledge by context)"
+  read -rp "  Registry name [$DEFAULT_REGISTRY]: " REGISTRY_NAME
+  REGISTRY_NAME="${REGISTRY_NAME:-$DEFAULT_REGISTRY}"
+fi
+
+REGISTRY_DIR="$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME"
+
+# --- Detect legacy structure and auto-migrate ---
+
+if [ -d "$KAIZEN_KNOWLEDGE_DIR/meta" ] && [ ! -d "$KAIZEN_KNOWLEDGE_DIR/default" ]; then
+  echo ""
+  echo "  Detected legacy knowledge structure (flat layout without registries)."
+  echo "  Migrating to default/ registry..."
+  mkdir -p "$KAIZEN_KNOWLEDGE_DIR/default"
+  for item in "$KAIZEN_KNOWLEDGE_DIR"/*/; do
+    item_name="$(basename "$item")"
+    if [ "$item_name" = "default" ]; then
+      continue
+    fi
+    mv "$item" "$KAIZEN_KNOWLEDGE_DIR/default/"
+    echo "  Moved: $item_name/ -> default/$item_name/"
+  done
+  echo "  Migration complete."
+
+  # Fix existing project symlinks pointing to the old flat structure
+  echo "  Searching for project symlinks to update..."
+  fixed_count=0
+  while IFS= read -r symlink; do
+    target="$(readlink "$symlink")"
+    if [ "$target" = "$KAIZEN_KNOWLEDGE_DIR" ]; then
+      ln -sfn "$KAIZEN_KNOWLEDGE_DIR/default" "$symlink"
+      echo "  Updated: $symlink -> $KAIZEN_KNOWLEDGE_DIR/default"
+      fixed_count=$((fixed_count + 1))
+    fi
+  done < <(find "$HOME" -maxdepth 4 -name knowledge -type l 2>/dev/null)
+  if [ "$fixed_count" -eq 0 ]; then
+    echo "  No project symlinks needed updating."
+  else
+    echo "  Updated $fixed_count symlink(s)."
+  fi
+fi
+
 # --- Step 3: Expand templates ---
 
 echo ""
 echo "[3/6] Expanding templates..."
 
 # meta/
-mkdir -p "$KAIZEN_KNOWLEDGE_DIR/meta"
+mkdir -p "$REGISTRY_DIR/meta"
 
 copy_if_not_exists() {
   local src="$1"
@@ -96,19 +148,19 @@ copy_if_not_exists() {
 
 # Copy templates (strip .template extension)
 copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/INDEX.md.template" \
-  "$KAIZEN_KNOWLEDGE_DIR/meta/INDEX.md"
+  "$REGISTRY_DIR/meta/INDEX.md"
 
 copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/GETTING_STARTED.md" \
-  "$KAIZEN_KNOWLEDGE_DIR/meta/GETTING_STARTED.md"
+  "$REGISTRY_DIR/meta/GETTING_STARTED.md"
 
 copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/DOCUMENTATION_GUIDELINES.md" \
-  "$KAIZEN_KNOWLEDGE_DIR/meta/DOCUMENTATION_GUIDELINES.md"
+  "$REGISTRY_DIR/meta/DOCUMENTATION_GUIDELINES.md"
 
 # projects/
-mkdir -p "$KAIZEN_KNOWLEDGE_DIR/projects"
+mkdir -p "$REGISTRY_DIR/projects"
 
 copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template" \
-  "$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md"
+  "$REGISTRY_DIR/projects/INDEX.md"
 
 # --- Step 4: Add environment variables to ~/.bashrc ---
 

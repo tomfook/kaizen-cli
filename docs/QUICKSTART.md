@@ -24,8 +24,9 @@ setup.sh does the following:
 
 1. Auto-detects `$KAIZEN_CLI_DIR` and sets it in `~/.bashrc`
 2. Confirms/creates the shared knowledge directory path (`$KAIZEN_KNOWLEDGE_DIR`)
-3. Expands template files
-4. Globally links commands and skills
+3. Selects or creates a knowledge registry (default: `default`)
+4. Expands template files into the selected registry
+5. Globally links commands and skills
 
 ```bash
 # Apply environment variables
@@ -53,6 +54,7 @@ Inside Claude Code:
 
 Answer a few questions:
 
+- **Registry**: `default` (if only one registry exists, this is auto-selected)
 - **Project name**: My Python Project
 - **Project ID**: `my-python-project` (auto-suggested from the directory name; press Enter to accept)
 - **Project purpose**: A collection of Python scripts to automate daily tasks
@@ -63,7 +65,7 @@ Once complete, the following structure is created:
 ```
 my-python-project/
 ├── CLAUDE.md              ← Project-specific settings
-├── knowledge/             ← symlink to $KAIZEN_KNOWLEDGE_DIR
+├── knowledge/             ← symlink to $KAIZEN_KNOWLEDGE_DIR/default
 ├── .claude/skills/        ← symlink to Kaizen-CLI skills
 └── docs/
     └── PROJECT_SUMMARY.md ← Project overview

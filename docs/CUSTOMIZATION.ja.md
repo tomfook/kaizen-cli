@@ -4,6 +4,54 @@ Kaizen-CLI を自分のドメインに適用するためのガイド。
 
 ---
 
+## 複数レジストリの管理
+
+レジストリを使うと、異なる文脈（例: 職場と個人）で独立したナレッジベースを維持できます。
+
+### 新しいレジストリの作成
+
+`setup.sh` 実行時にレジストリ名を指定:
+
+```
+Registry name [default]: work
+```
+
+または手動で作成:
+
+```bash
+mkdir -p $KAIZEN_KNOWLEDGE_DIR/work
+bash setup.sh   # テンプレートが新しいレジストリに展開される
+```
+
+### プロジェクトごとのレジストリ選択
+
+`/kaizen-init-project` を実行すると、レジストリが複数ある場合に選択を求められます:
+
+```
+利用可能なレジストリ: default, work
+レジストリ [default]: work
+```
+
+`knowledge/` のシンボリックリンクは選択したレジストリを指します。`/kaizen-reflect-learning` で蓄積される知識はすべてそのレジストリに入ります。
+
+### ユースケース
+
+| シナリオ | レジストリ構成 |
+|---------|--------------|
+| 個人の副業プロジェクト | `default` レジストリ |
+| 企業開発 | `work` レジストリ（社内ナレッジベースから移行可能） |
+| NDA付きクライアント業務 | クライアントごとに `client-x` レジストリ |
+| ドメイン分離 | `data-analysis`、`web-dev` など |
+
+### 重要な注意点
+
+- 各レジストリは完全に独立（meta/、projects/、ドメインファイルが個別）
+- プロジェクトは1つのレジストリにのみ属する（knowledge/ のsymlink先で決まる）
+- レジストリは `$KAIZEN_KNOWLEDGE_DIR` のサブディレクトリにすぎない — 設定ファイルは不要
+- プロジェクトがどのレジストリを使っているか確認するには: `ls -la knowledge/`
+
+---
+
 ## ドメイン知識の追加
 
 Kaizen-CLI の価値の大部分は knowledge/ に蓄積される知識です。reflect-learning による自動蓄積に加えて、既に持っている知識を手動で追加することもできます。
@@ -13,7 +61,7 @@ Kaizen-CLI の価値の大部分は knowledge/ に蓄積される知識です。
 knowledge/ にドメイン別のサブディレクトリを作成します。
 
 ```
-$KAIZEN_KNOWLEDGE_DIR/
+$KAIZEN_KNOWLEDGE_DIR/default/
 ├── meta/                  ← Kaizen-CLI が提供（運用ガイドライン）
 ├── projects/              ← Kaizen-CLI が提供（プロジェクトレジストリ）
 ├── aws/                   ← 例: AWS関連の知識
@@ -32,6 +80,7 @@ $KAIZEN_KNOWLEDGE_DIR/
 - ディレクトリ名は英語小文字・ハイフン区切り
 - 各ディレクトリに INDEX.md を配置（→ [DESIGN_PRINCIPLES.ja.md § INDEX逆引きパターン](./DESIGN_PRINCIPLES.ja.md#index-逆引きパターン)）
 - `meta/` と `projects/` は Kaizen-CLI が使用するため、別の用途で上書きしない
+- ドメインサブディレクトリはレジストリ内に作成する（例: `default/aws/`）。`$KAIZEN_KNOWLEDGE_DIR` 直下ではない
 
 ### ファイルの書き方
 
