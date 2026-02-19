@@ -135,29 +135,31 @@ This separation is what turns Kaizen-CLI from a per-project tool into a cross-pr
 ### The Knowledge Accumulation Mechanism
 
 ```
-Project A                          Project B
-┌────────────┐                    ┌────────────┐
-│ CLAUDE.md  │ ← Project-specific │ CLAUDE.md  │ ← Project-specific
-│ docs/      │                    │ docs/      │
-│            │                    │            │
-│ knowledge/ ─┐                  │ knowledge/ ─┐
-└────────────┘ │                  └────────────┘ │
-               │                                 │
-               ▼                                 ▼
-        ┌─────────────────────────────────────────┐
-        │  $KAIZEN_KNOWLEDGE_DIR (shared)          │
-        │                                         │
-        │  meta/           ← Operational guidelines│
-        │  projects/       ← Project registry      │
-        │  (domain files)  ← Accumulated knowledge │
-        └─────────────────────────────────────────┘
+Project A (personal)        Project B (work)         Project C (work)
+┌────────────┐             ┌────────────┐           ┌────────────┐
+│ CLAUDE.md  │             │ CLAUDE.md  │           │ CLAUDE.md  │
+│ docs/      │             │ docs/      │           │ docs/      │
+│            │             │            │           │            │
+│ knowledge/ ─┐            │ knowledge/ ─┐          │ knowledge/ ─┐
+└────────────┘ │            └────────────┘ │          └────────────┘ │
+               │                           │                         │
+               ▼                           ▼                         ▼
+  ┌──────────────────┐      ┌──────────────────────────────────────┐
+  │ default registry │      │ work registry                        │
+  │                  │      │                                      │
+  │ meta/            │      │ meta/                                │
+  │ projects/        │      │ projects/                            │
+  │ (domain files)   │      │ (domain files)                      │
+  └──────────────────┘      └──────────────────────────────────────┘
+  └───────────────────── $KAIZEN_KNOWLEDGE_DIR ────────────────────┘
 ```
 
 Key points:
 
 1. **Project-specific information** (CLAUDE.md, docs/) and **cross-cutting knowledge** (knowledge/) are separated — as described in the Two Layers model above
-2. knowledge/ is a symlink so all projects reference the same underlying data
-3. Every time reflect-learning accumulates knowledge, it becomes instantly available in every project
+2. knowledge/ is a symlink so all projects sharing a registry reference the same underlying data
+3. Every time reflect-learning accumulates knowledge, it becomes instantly available in every project within that registry
+4. **Registries isolate knowledge by context** — Work knowledge and personal knowledge never mix. Each registry has its own meta/, projects/, and accumulated domain files
 
 ### Examples of Accumulated Knowledge
 

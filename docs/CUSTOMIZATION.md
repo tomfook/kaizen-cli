@@ -4,6 +4,54 @@ A guide for adapting Kaizen-CLI to your own domain.
 
 ---
 
+## Managing Multiple Registries
+
+Registries let you maintain separate knowledge bases for different contexts — for example, work and personal projects.
+
+### Creating a New Registry
+
+During `setup.sh`, specify a registry name:
+
+```
+Registry name [default]: work
+```
+
+Or create one manually:
+
+```bash
+mkdir -p $KAIZEN_KNOWLEDGE_DIR/work
+bash setup.sh   # templates will be expanded into the new registry
+```
+
+### Choosing a Registry per Project
+
+When you run `/kaizen-init-project`, you'll be asked which registry to use (if more than one exists):
+
+```
+Available registries: default, work
+Registry [default]: work
+```
+
+The `knowledge/` symlink will point to the selected registry. All knowledge accumulated in this project via `/kaizen-reflect-learning` will go into that registry.
+
+### Use Cases
+
+| Scenario | Registry Setup |
+|----------|---------------|
+| Personal side projects | `default` registry |
+| Corporate development | `work` registry (can migrate from internal knowledge base) |
+| Client work with NDA | Separate `client-x` registry per client |
+| Domain separation | `data-analysis`, `web-dev` etc. |
+
+### Important Notes
+
+- Each registry is completely independent (separate meta/, projects/, and domain files)
+- A project belongs to exactly one registry (determined by the knowledge/ symlink target)
+- Registries are simply subdirectories of `$KAIZEN_KNOWLEDGE_DIR` — no config file needed
+- To check which registry a project uses: `ls -la knowledge/`
+
+---
+
 ## Adding Domain Knowledge
 
 Much of Kaizen-CLI's value comes from the knowledge accumulated in knowledge/. In addition to automatic accumulation via reflect-learning, you can also add existing knowledge manually.
@@ -13,7 +61,7 @@ Much of Kaizen-CLI's value comes from the knowledge accumulated in knowledge/. I
 Create domain-specific subdirectories under knowledge/.
 
 ```
-$KAIZEN_KNOWLEDGE_DIR/
+$KAIZEN_KNOWLEDGE_DIR/default/
 ├── meta/                  ← Provided by Kaizen-CLI (operational guidelines)
 ├── projects/              ← Provided by Kaizen-CLI (project registry)
 ├── aws/                   ← Example: AWS-related knowledge
@@ -32,6 +80,7 @@ $KAIZEN_KNOWLEDGE_DIR/
 - Use lowercase English with hyphens for directory names
 - Place an INDEX.md in each directory (see [DESIGN_PRINCIPLES.md § INDEX Reverse-Lookup Pattern](./DESIGN_PRINCIPLES.md#index-reverse-lookup-pattern))
 - Do not overwrite `meta/` or `projects/` for other purposes, as they are used by Kaizen-CLI
+- Domain subdirectories are created inside a registry (e.g., `default/aws/`), not at the `$KAIZEN_KNOWLEDGE_DIR` root
 
 ### How to Write Knowledge Files
 

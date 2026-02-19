@@ -24,8 +24,9 @@ setup.sh が以下を行います:
 
 1. `$KAIZEN_CLI_DIR` を自動検出して `~/.bashrc` に設定
 2. 共有ナレッジディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）のパスを確認・作成
-3. テンプレートファイルを展開
-4. コマンドとスキルをグローバルにリンク
+3. ナレッジレジストリを選択・作成（デフォルト: `default`）
+4. テンプレートファイルを選択したレジストリ内に展開
+5. コマンドとスキルをグローバルにリンク
 
 ```bash
 # 環境変数を反映
@@ -53,6 +54,7 @@ Claude Code 内で:
 
 いくつかの質問に答えます:
 
+- **レジストリ**: `default`（レジストリが1つだけなら自動選択される）
 - **プロジェクト名**: My Python Project
 - **プロジェクトID**: `my-python-project`（ディレクトリ名から自動提案。Enterでそのまま採用）
 - **プロジェクトの目的**: 日常業務を自動化するPythonスクリプト集
@@ -63,7 +65,7 @@ Claude Code 内で:
 ```
 my-python-project/
 ├── CLAUDE.md              ← プロジェクト固有の設定
-├── knowledge/             ← $KAIZEN_KNOWLEDGE_DIR へのsymlink
+├── knowledge/             ← $KAIZEN_KNOWLEDGE_DIR/default へのsymlink
 ├── .claude/skills/        ← Kaizen-CLIスキルへのsymlink
 └── docs/
     └── PROJECT_SUMMARY.md ← プロジェクト概要
