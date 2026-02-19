@@ -10,13 +10,7 @@ Kaizen-CLI を自分のドメインに適用するためのガイド。
 
 ### 新しいレジストリの作成
 
-`setup.sh` 実行時にレジストリ名を指定:
-
-```
-Registry name [default]: work
-```
-
-`/kaizen-init-project` のレジストリ選択で、存在しない名前を入力して直接作成することもできます:
+最も簡単な方法は、`/kaizen-init-project` のレジストリ選択で存在しない名前を入力することです（推奨）:
 
 ```
 利用可能なレジストリ: default
@@ -24,6 +18,12 @@ Registry name [default]: work
 ```
 
 確認後、必要なテンプレートファイルとともに新しいレジストリが作成されます。
+
+`setup.sh` 実行時に作成することもできます:
+
+```
+Registry name [default]: work
+```
 
 または手動で作成:
 
