@@ -54,7 +54,7 @@ Inside Claude Code:
 
 Answer a few questions:
 
-- **Registry**: `default` (if only one registry exists, this is auto-selected)
+- **Registry**: `default` (press Enter to accept; type a different name to select another registry)
 - **Project name**: My Python Project
 - **Project ID**: `my-python-project` (auto-suggested from the directory name; press Enter to accept)
 - **Project purpose**: A collection of Python scripts to automate daily tasks

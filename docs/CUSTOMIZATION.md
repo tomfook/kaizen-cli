@@ -25,7 +25,7 @@ bash setup.sh   # templates will be expanded into the new registry
 
 ### Choosing a Registry per Project
 
-When you run `/kaizen-init-project`, you'll be asked which registry to use (if more than one exists):
+When you run `/kaizen-init-project`, you'll be asked which registry to use:
 
 ```
 Available registries: default, work
