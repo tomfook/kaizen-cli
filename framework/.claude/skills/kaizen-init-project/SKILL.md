@@ -55,13 +55,30 @@ ls -d "$KAIZEN_KNOWLEDGE_DIR"/*/
 
 | 項目 | 用途 | 必須 | デフォルト |
 |------|------|------|----------|
-| レジストリ | knowledge/ symlink 先の選択 | 必須 | `default`（レジストリが1つなら自動選択しスキップ） |
+| レジストリ | knowledge/ symlink 先の選択 | 必須 | `default`（Enterでそのまま採用） |
 | プロジェクト名 | PROJECT_SUMMARY.md, CLAUDE.md | 必須 | — |
 | プロジェクトID | レジストリ登録用（英数字・ハイフン） | 必須 | カレントディレクトリ名（`basename "$PWD"`） |
 | プロジェクトの目的 | PROJECT_SUMMARY.md | 必須 | — |
 | 概要（1行） | CLAUDE.md, レジストリ | 必須 | — |
 
-**レジストリ選択**: `$KAIZEN_KNOWLEDGE_DIR` 直下のサブディレクトリを一覧し、レジストリが複数ある場合のみユーザーに選択を求める。1つしかない場合はそのレジストリを自動選択する。
+**レジストリ選択**: `$KAIZEN_KNOWLEDGE_DIR` 直下のサブディレクトリを一覧し、常にユーザーに選択を求める（レジストリが1つでもスキップしない）。デフォルトは `default`（Enterでそのまま採用可能）。
+
+入力されたレジストリ名のバリデーション: `^[a-z0-9][a-z0-9-]*$`（小文字英数字・ハイフンのみ）。不正な場合はエラーを表示し再入力を求める。
+
+存在しないレジストリ名が入力された場合:
+
+1. 新しいレジストリとして作成するかユーザーに確認する
+2. 承認された場合、ディレクトリを作成しテンプレートを展開する:
+   ```bash
+   REGISTRY_DIR="$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME"
+   mkdir -p "$REGISTRY_DIR/meta" "$REGISTRY_DIR/projects"
+   # 以下のテンプレートをコピー（存在しない場合のみ）
+   # $KAIZEN_CLI_DIR/framework/knowledge/meta/INDEX.md.template → $REGISTRY_DIR/meta/INDEX.md
+   # $KAIZEN_CLI_DIR/framework/knowledge/meta/GETTING_STARTED.md → $REGISTRY_DIR/meta/GETTING_STARTED.md
+   # $KAIZEN_CLI_DIR/framework/knowledge/meta/DOCUMENTATION_GUIDELINES.md → $REGISTRY_DIR/meta/DOCUMENTATION_GUIDELINES.md
+   # $KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template → $REGISTRY_DIR/projects/INDEX.md
+   ```
+3. 拒否された場合、レジストリ選択に戻る
 
 **プロジェクトID**: デフォルトでカレントディレクトリ名を使用する。ユーザーが変更したい場合は上書き可能。ディレクトリ名に英数字・ハイフン以外の文字が含まれる場合は、ユーザーに手動入力を求める。
 
@@ -161,4 +178,4 @@ ls docs/PROJECT_SUMMARY.md
 | 既存ファイルの上書き | ユーザーの作業内容を破壊する |
 | テンプレートファイルの直接編集 | 全ユーザーに影響 |
 | `$KAIZEN_CLI_DIR` 配下のファイル変更 | 配布元リポジトリを汚染 |
-| `$KAIZEN_KNOWLEDGE_DIR` の構造変更 | 他プロジェクトに影響（レジストリ登録を除く） |
+| `$KAIZEN_KNOWLEDGE_DIR` の構造変更 | 他プロジェクトに影響（レジストリ登録・新規レジストリ作成を除く） |
