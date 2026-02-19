@@ -1,10 +1,11 @@
 ---
 name: kaizen-init-project
 description: >-
-  Initial setup for a Kaizen-CLI project. Manual invocation only.
+  Initial setup for a Kaizen-CLI project.
   Creates knowledge/ and skills/ symlinks, generates CLAUDE.md and PROJECT_SUMMARY.md,
   and registers the project in the registry.
   Usage: "/kaizen-init-project"
+disable-model-invocation: true
 ---
 
 # kaizen-init-project
