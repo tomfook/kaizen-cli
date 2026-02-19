@@ -1,9 +1,9 @@
 ---
 name: kaizen-editing-knowledge
 description: >-
-  knowledge/や.claude/skills/配下のファイル編集時に適用。
-  これらのディレクトリのファイルパスが操作対象に含まれる場合は必ず自動発動すること。
-  削除・移動時の参照確認、SSOT確認、シンボリックリンク環境での安全な操作のガードレールを提供。
+  Applied when editing files under knowledge/ or .claude/skills/.
+  Must auto-activate whenever these directory paths are part of the operation.
+  Provides guardrails for safe operations in symlinked environments: reference checks on delete/move, SSOT verification.
 ---
 
 # kaizen-editing-knowledge

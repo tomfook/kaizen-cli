@@ -3,7 +3,7 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry]
   created: "2026-02-18"
   updated: "2026-02-19"
 ---

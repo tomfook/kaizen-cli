@@ -1,4 +1,4 @@
-# プロジェクトドキュメントの更新
+# Update project documentation
 
 プロジェクト進行に伴い、プロジェクト固有ドキュメント（CLAUDE.md、docs/）の更新を支援する。
 
