@@ -86,8 +86,28 @@ else
   echo ""
   echo "  Select a knowledge registry name."
   echo "  (Registries are subdirectories of \$KAIZEN_KNOWLEDGE_DIR for isolating knowledge by context)"
+  # Show existing registries if any
+  existing_registries=""
+  if [ -d "$KAIZEN_KNOWLEDGE_DIR" ]; then
+    for reg_dir in "$KAIZEN_KNOWLEDGE_DIR"/*/; do
+      [ -d "$reg_dir" ] || continue
+      reg_name="$(basename "$reg_dir")"
+      if [ -z "$existing_registries" ]; then
+        existing_registries="$reg_name"
+      else
+        existing_registries="$existing_registries, $reg_name"
+      fi
+    done
+  fi
+  if [ -n "$existing_registries" ]; then
+    echo "  Existing registries: $existing_registries"
+  fi
   read -rp "  Registry name [$DEFAULT_REGISTRY]: " REGISTRY_NAME
   REGISTRY_NAME="${REGISTRY_NAME:-$DEFAULT_REGISTRY}"
+  if ! echo "$REGISTRY_NAME" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+    echo "  Error: Registry name must contain only lowercase letters, numbers, and hyphens (e.g., 'default', 'work', 'client-x')."
+    exit 1
+  fi
 fi
 
 REGISTRY_DIR="$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME"

@@ -1,4 +1,4 @@
-# プロジェクト横断知見の反映
+# Reflect cross-project learnings
 
 現在のClaude Codeコンテキスト（今日のいままでの作業履歴）から得られた知見を分析し、
 プロジェクト横断のknowledge/ファイルに**簡潔に**反映する。
