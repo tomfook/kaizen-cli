@@ -79,6 +79,26 @@ echo "ja" > $KAIZEN_KNOWLEDGE_DIR/default/.lang
 
 ---
 
+## 知識の3層構造
+
+Kaizen-CLI はスコープに応じて情報を3層に整理します:
+
+| 層 | 配置場所 | スコープ | 更新コマンド |
+|----|---------|---------|------------|
+| **プロジェクト横断知識** | `knowledge/` | レジストリ内の全プロジェクトで共有 | `/kaizen-reflect-learning` |
+| **プロジェクト固有教訓** | `docs/LEARNINGS.md` | このプロジェクトの失敗・制約・落とし穴 | `/kaizen-update-docs` |
+| **プロジェクトドキュメント** | `CLAUDE.md`, `docs/` | 設定、設計判断、計画 | `/kaizen-update-docs` |
+
+**情報の振り分け基準**:
+
+- 他のプロジェクトでも役立つか？ → `knowledge/`（`/kaizen-reflect-learning` で反映）
+- このプロジェクト固有の教訓（失敗、制約、落とし穴）か？ → `docs/LEARNINGS.md`（`/kaizen-update-docs` で反映）
+- プロジェクトの事実情報（設計、設定、計画）か？ → `CLAUDE.md` または `docs/`
+
+`docs/LEARNINGS.md` の教訓は `/kaizen-update-docs` で定期的に棚卸しされます: 一般パターンは `knowledge/` に**卒業**し、解消済みの制約は削除され、設計に反映済みの教訓は引退します。
+
+---
+
 ## ドメイン知識の追加
 
 Kaizen-CLI の価値の大部分は knowledge/ に蓄積される知識です。reflect-learning による自動蓄積に加えて、既に持っている知識を手動で追加することもできます。

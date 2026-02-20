@@ -129,6 +129,20 @@ Keep CLAUDE.md under 200 lines as a guideline. If it exceeds 300 lines, move det
 
 > Detailed rules: `knowledge/meta/DOCUMENTATION_GUIDELINES.md`
 
+### Lesson Lifecycle
+
+**Lessons are not permanent. They graduate, go stale, or get internalized.**
+
+`docs/LEARNINGS.md` captures project-specific lessons (failures, constraints, pitfalls). `/kaizen-update-docs` periodically reviews them:
+
+| State | Criteria | Action |
+|-------|----------|--------|
+| **Graduated** | The lesson has been promoted to `knowledge/` | Remove entry |
+| **Stale** | The constraint no longer applies (library update, spec change, etc.) | Remove entry |
+| **Internalized** | The lesson is already embedded in the design/code | Remove entry |
+
+This lifecycle prevents lessons from accumulating indefinitely and ensures each entry remains actionable. General patterns flow upward to `knowledge/` via `/kaizen-reflect-learning`, while project-specific lessons stay in `docs/LEARNINGS.md` until they are no longer relevant.
+
 ---
 
 ## Related Documents
