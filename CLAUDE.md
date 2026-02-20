@@ -11,7 +11,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 
 - `docs/` — Methodology documentation (CONCEPT, DESIGN_PRINCIPLES, QUICKSTART, CUSTOMIZATION)
 - `docs/internal/` — Development-only documents (.gitignore, not published). Includes PLAN_KAIZEN_CLI_OSS.md
-- `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/)
+- `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/, bin/)
 - `examples/` — Domain-specific examples (data-analysis, web-development)
 
 ## Language Policy
@@ -37,6 +37,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **Per-registry language selection**: Each registry stores its language in `$REGISTRY_DIR/.lang` (`en` or `ja`). Templates under `framework/templates/{en,ja}/` are selected accordingly. Registries without `.lang` default to `en` (backward compatible).
 - **setup.sh --force preserves user data**: `--force` only updates env vars and symlinks. Knowledge files (template-expanded into `$KAIZEN_KNOWLEDGE_DIR`) are never overwritten, as they accumulate user data.
 - **MIT License**: Maximum adoption, minimum friction
+- **framework/bin/ for mechanical processing**: SKILL.md from mechanical steps (environment validation, registry listing, etc.) are extracted into testable shell scripts under `framework/bin/`. Skills call these scripts and parse structured output. This improves testability and fixes bugs like Issue #26.
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
 
 ## Current Progress
