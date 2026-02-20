@@ -15,7 +15,7 @@ $KAIZEN_CLI_DIR (= kaizen-cli/)  ← 配布。git pull で安全に更新可能
   framework/
     .claude/commands/              ← ~/.claude/commands/ にsymlink
     .claude/skills/                ← 各プロジェクトにsymlink
-    knowledge/meta/                ← テンプレートのみ（蓄積先ではない）
+    templates/{en,ja}/             ← ロケール別テンプレート（レジストリ単位で選択）
 
 $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される場所
   default/                         ← デフォルトレジストリ

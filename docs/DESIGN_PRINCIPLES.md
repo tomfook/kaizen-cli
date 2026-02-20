@@ -15,7 +15,7 @@ $KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
   framework/
     .claude/commands/              <- Symlinked to ~/.claude/commands/
     .claude/skills/                <- Symlinked into each project
-    knowledge/meta/                <- Templates only (not a knowledge store)
+    templates/{en,ja}/             <- Locale-separated templates (selected per registry)
 
 $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
   default/                         <- Default registry

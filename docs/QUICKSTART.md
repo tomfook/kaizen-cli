@@ -25,8 +25,9 @@ setup.sh does the following:
 1. Auto-detects `$KAIZEN_CLI_DIR` and sets it in `~/.bashrc`
 2. Confirms/creates the shared knowledge directory path (`$KAIZEN_KNOWLEDGE_DIR`)
 3. Selects or creates a knowledge registry (default: `default`)
-4. Expands template files into the selected registry
-5. Globally links commands and skills
+4. Selects a template language (`en` or `ja`, default: `en`) — stored in `$REGISTRY_DIR/.lang`
+5. Expands template files into the selected registry (in the chosen language)
+6. Globally links commands and skills
 
 ```bash
 # Apply environment variables

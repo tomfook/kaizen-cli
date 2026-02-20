@@ -76,9 +76,9 @@ kaizen-cli/
 │   └── CUSTOMIZATION.md     # How to adapt for your domain
 │
 ├── framework/               # Copy-and-use template set
-│   ├── CLAUDE.md.template   # CLAUDE.md template for projects
-│   ├── knowledge/           # Knowledge base templates
-│   │   └── meta/
+│   ├── templates/           # Locale-separated templates
+│   │   ├── en/              # English templates
+│   │   └── ja/              # Japanese templates
 │   └── .claude/
 │       ├── commands/        # Workflow slash commands
 │       └── skills/          # Auto-invoked skill definitions

@@ -76,9 +76,9 @@ kaizen-cli/
 │   └── CUSTOMIZATION.md     # 自分のドメインへの適用方法
 │
 ├── framework/               # コピーして使うテンプレート一式
-│   ├── CLAUDE.md.template   # プロジェクト用 CLAUDE.md テンプレート
-│   ├── knowledge/           # 知識ベーステンプレート
-│   │   └── meta/
+│   ├── templates/           # ロケール別テンプレート
+│   │   ├── en/              # 英語テンプレート
+│   │   └── ja/              # 日本語テンプレート
 │   └── .claude/
 │       ├── commands/        # ワークフロースラッシュコマンド
 │       └── skills/          # 自動発動スキル定義

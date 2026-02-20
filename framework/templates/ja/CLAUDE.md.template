@@ -1,0 +1,30 @@
+## Claude Code への指示
+
+- ユーザーの言語に合わせて応答すること。
+- ユーザーが日付から年を省略した場合（例:「3月5日」）、当年として解釈すること。日付を書く際は実行時に年を動的に判定し、必ず検証すること。
+
+## プロジェクト概要
+
+{{PROJECT_DESCRIPTION}}
+
+**現在のステータス**: 初期セットアップ完了
+
+## 次のステップ
+
+1. `docs/PROJECT_SUMMARY.md` の各セクションを記入する
+2. `knowledge/` 内の関連ファイルを確認する
+3. 実装を開始する — Claude が必要なファイルを生成します
+4. 区切りがついたら `/kaizen-reflect-learning` で学びを記録する
+
+## リファレンスドキュメント
+
+### プロジェクト情報
+- **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — プロジェクト概要、目的、技術スタック
+
+### ナレッジベース
+- **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — やりたいことからドキュメントを探す
+
+### Kaizen-CLI ワークフロー
+- `/kaizen-suggest-next` — 次のステップの提案を取得
+- `/kaizen-reflect-learning` — 学びをナレッジファイルに記録
+- `/kaizen-update-docs` — プロジェクトドキュメントを更新（PROJECT_SUMMARYの同期を含む）

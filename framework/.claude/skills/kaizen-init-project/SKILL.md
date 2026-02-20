@@ -56,6 +56,7 @@ ls -d "$KAIZEN_KNOWLEDGE_DIR"/*/
 | 項目 | 用途 | 必須 | デフォルト |
 |------|------|------|----------|
 | レジストリ | knowledge/ symlink 先の選択 | 必須 | `default`（Enterでそのまま採用） |
+| 言語 | テンプレートの言語選択（新規レジストリ作成時のみ質問） | 条件付き | `en` |
 | プロジェクト名 | PROJECT_SUMMARY.md, CLAUDE.md | 必須 | — |
 | プロジェクトID | レジストリ登録用（英数字・ハイフン） | 必須 | カレントディレクトリ名（`basename "$PWD"`） |
 | プロジェクトの目的 | PROJECT_SUMMARY.md | 必須 | — |
@@ -65,18 +66,22 @@ ls -d "$KAIZEN_KNOWLEDGE_DIR"/*/
 
 入力されたレジストリ名のバリデーション: `^[a-z0-9][a-z0-9-]*$`（小文字英数字・ハイフンのみ）。不正な場合はエラーを表示し再入力を求める。
 
+**言語検出**: 既存レジストリ選択時は `$REGISTRY_DIR/.lang` から言語を読み取る（ファイルが存在しない場合は `en` をデフォルト使用）。新規レジストリ作成時のみ言語を質問する（`en`/`ja`、デフォルト: `en`）。言語は `$LANG` 変数に格納し、テンプレートパスの決定に使用する。
+
 存在しないレジストリ名が入力された場合:
 
 1. 新しいレジストリとして作成するかユーザーに確認する
-2. 承認された場合、ディレクトリを作成しテンプレートを展開する:
+2. 承認された場合、言語を質問し（`en`/`ja`、デフォルト: `en`）、ディレクトリを作成しテンプレートを展開する:
    ```bash
    REGISTRY_DIR="$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME"
+   TEMPLATE_DIR="$KAIZEN_CLI_DIR/framework/templates/$LANG"
    mkdir -p "$REGISTRY_DIR/meta" "$REGISTRY_DIR/projects"
+   echo "$LANG" > "$REGISTRY_DIR/.lang"
    # 以下のテンプレートをコピー（存在しない場合のみ）
-   # $KAIZEN_CLI_DIR/framework/knowledge/meta/INDEX.md.template → $REGISTRY_DIR/meta/INDEX.md
-   # $KAIZEN_CLI_DIR/framework/knowledge/meta/GETTING_STARTED.md → $REGISTRY_DIR/meta/GETTING_STARTED.md
-   # $KAIZEN_CLI_DIR/framework/knowledge/meta/DOCUMENTATION_GUIDELINES.md → $REGISTRY_DIR/meta/DOCUMENTATION_GUIDELINES.md
-   # $KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template → $REGISTRY_DIR/projects/INDEX.md
+   # $TEMPLATE_DIR/knowledge/meta/INDEX.md.template → $REGISTRY_DIR/meta/INDEX.md
+   # $TEMPLATE_DIR/knowledge/meta/GETTING_STARTED.md → $REGISTRY_DIR/meta/GETTING_STARTED.md
+   # $TEMPLATE_DIR/knowledge/meta/DOCUMENTATION_GUIDELINES.md → $REGISTRY_DIR/meta/DOCUMENTATION_GUIDELINES.md
+   # $TEMPLATE_DIR/knowledge/projects/INDEX.md.template → $REGISTRY_DIR/projects/INDEX.md
    ```
 3. 拒否された場合、レジストリ選択に戻る
 
@@ -108,7 +113,7 @@ done
 
 ### 6. CLAUDE.md の生成
 
-`$KAIZEN_CLI_DIR/framework/CLAUDE.md.template` を読み取り、プレースホルダを置換してCLAUDE.mdを生成。
+`$KAIZEN_CLI_DIR/framework/templates/$LANG/CLAUDE.md.template` を読み取り、プレースホルダを置換してCLAUDE.mdを生成。
 
 **置換対象**:
 - `{{PROJECT_DESCRIPTION}}`: Step 3で取得した概要
@@ -125,7 +130,7 @@ done
 
 ### 7. docs/PROJECT_SUMMARY.md の生成
 
-`$KAIZEN_CLI_DIR/framework/docs/PROJECT_SUMMARY.md.template` を読み取り、プレースホルダを置換。
+`$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/PROJECT_SUMMARY.md.template` を読み取り、プレースホルダを置換。
 
 ```bash
 mkdir -p docs
@@ -142,7 +147,7 @@ mkdir -p docs
 選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
 
 1. `knowledge/projects/` ディレクトリが存在しない場合は作成
-2. `knowledge/projects/INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template` から生成
+2. `knowledge/projects/INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/templates/$LANG/knowledge/projects/INDEX.md.template` から生成
 3. INDEX.mdの一覧テーブルに行を追加:
    - `| {id} | {name} | planning | | {date} |`
 

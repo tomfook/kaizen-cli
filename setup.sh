@@ -147,6 +147,44 @@ if [ -d "$KAIZEN_KNOWLEDGE_DIR/meta" ] && [ ! -d "$KAIZEN_KNOWLEDGE_DIR/default"
   fi
 fi
 
+# --- Step 2.7: Select template language ---
+
+LANG_CHOICE=""
+if [ -f "$REGISTRY_DIR/.lang" ]; then
+  # Existing registry with .lang — use stored value
+  LANG_CHOICE="$(cat "$REGISTRY_DIR/.lang")"
+  echo "  Using registry language: $LANG_CHOICE"
+elif [ "$FORCE" = true ]; then
+  # --force mode without .lang — default to en (do not prompt)
+  LANG_CHOICE="en"
+  echo "  Using default language: $LANG_CHOICE"
+else
+  # New setup — ask user
+  echo ""
+  echo "  Select a template language."
+  read -rp "  Language (en/ja) [en]: " LANG_CHOICE
+  LANG_CHOICE="${LANG_CHOICE:-en}"
+  if [ "$LANG_CHOICE" != "en" ] && [ "$LANG_CHOICE" != "ja" ]; then
+    echo "  Error: Language must be 'en' or 'ja'."
+    exit 1
+  fi
+fi
+
+# Determine template directory with fallback
+TEMPLATE_DIR="$KAIZEN_CLI_DIR/framework/templates/$LANG_CHOICE"
+if [ ! -d "$TEMPLATE_DIR" ]; then
+  echo "  Warning: Template directory for '$LANG_CHOICE' not found. Falling back to 'en'."
+  LANG_CHOICE="en"
+  TEMPLATE_DIR="$KAIZEN_CLI_DIR/framework/templates/en"
+fi
+
+# Save .lang file (only if it doesn't exist yet)
+if [ ! -f "$REGISTRY_DIR/.lang" ]; then
+  mkdir -p "$REGISTRY_DIR"
+  echo "$LANG_CHOICE" > "$REGISTRY_DIR/.lang"
+  echo "  Saved language preference: $REGISTRY_DIR/.lang ($LANG_CHOICE)"
+fi
+
 # --- Step 3: Expand templates ---
 
 echo ""
@@ -167,19 +205,19 @@ copy_if_not_exists() {
 }
 
 # Copy templates (strip .template extension)
-copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/INDEX.md.template" \
+copy_if_not_exists "$TEMPLATE_DIR/knowledge/meta/INDEX.md.template" \
   "$REGISTRY_DIR/meta/INDEX.md"
 
-copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/GETTING_STARTED.md" \
+copy_if_not_exists "$TEMPLATE_DIR/knowledge/meta/GETTING_STARTED.md" \
   "$REGISTRY_DIR/meta/GETTING_STARTED.md"
 
-copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/meta/DOCUMENTATION_GUIDELINES.md" \
+copy_if_not_exists "$TEMPLATE_DIR/knowledge/meta/DOCUMENTATION_GUIDELINES.md" \
   "$REGISTRY_DIR/meta/DOCUMENTATION_GUIDELINES.md"
 
 # projects/
 mkdir -p "$REGISTRY_DIR/projects"
 
-copy_if_not_exists "$KAIZEN_CLI_DIR/framework/knowledge/projects/INDEX.md.template" \
+copy_if_not_exists "$TEMPLATE_DIR/knowledge/projects/INDEX.md.template" \
   "$REGISTRY_DIR/projects/INDEX.md"
 
 # --- Step 4: Add environment variables to ~/.bashrc ---
