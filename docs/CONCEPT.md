@@ -107,24 +107,32 @@ This keeps project context accurate for future sessions and for `/kaizen-suggest
 
 ---
 
-## Two Layers of Knowledge
+## Three Layers of Knowledge
 
-Knowledge accumulated through work naturally falls into two categories — and mixing them creates problems.
-
-**Project-specific knowledge** belongs to one project. Architecture decisions, tech stack choices, naming conventions, and stakeholder requirements are relevant in that project but irrelevant — or even misleading — in others.
+Knowledge accumulated through work naturally falls into three categories — and mixing them creates problems.
 
 **Cross-project knowledge** transcends any single project. API pitfalls, domain expertise, tool quirks, coding patterns, and implicit rules are valuable everywhere. These are the insights that, once learned, should never need to be learned again.
 
-| Layer | Location | Examples |
-|-------|----------|----------|
-| **Project-specific** | `CLAUDE.md`, `docs/` | Architecture, config, roadmap, team conventions |
-| **Cross-project** | `knowledge/` (shared) | Domain expertise, pitfall records, reusable patterns, implicit rules |
+**Project-specific lessons** are failures, constraints, and pitfalls discovered during a project's development. "This API has a rate limit of 100/min" or "CSV export breaks on Unicode characters" — these are hard-won findings specific to this project's context. Some may eventually generalize into cross-project knowledge; others remain relevant only here.
 
-Kaizen-CLI keeps these two layers explicitly separate.
+**Project documentation** describes what the project is and how it works. Architecture decisions, tech stack choices, naming conventions, roadmaps, and design rationale are facts about the project, not lessons learned from friction.
 
-Project-specific context stays in each project's `CLAUDE.md` and `docs/` directory. Cross-project knowledge lives in a shared `knowledge/` directory, symlinked into every project. When reflect-learning captures a reusable insight in any project, it is immediately available in every other project — without manual copying, syncing, or maintenance. Meanwhile, project-specific details do not leak across boundaries and pollute other projects' context.
+| Layer | Location | Examples | Updated by |
+|-------|----------|----------|------------|
+| **Cross-project knowledge** | `knowledge/` (shared) | Domain expertise, reusable patterns, implicit rules | `/kaizen-reflect-learning` |
+| **Project-specific lessons** | `docs/LEARNINGS.md` | Failures, constraints, pitfalls | `/kaizen-update-docs` |
+| **Project documentation** | `CLAUDE.md`, `docs/` | Architecture, config, roadmap, team conventions | `/kaizen-update-docs` |
 
-The decision rule is simple: **if the insight still makes sense after removing the project name, it belongs in `knowledge/`.**
+Kaizen-CLI keeps these three layers explicitly separate.
+
+Cross-project knowledge lives in a shared `knowledge/` directory, symlinked into every project. When reflect-learning captures a reusable insight in any project, it is immediately available in every other project — without manual copying, syncing, or maintenance. Project-specific lessons stay in `docs/LEARNINGS.md`, where they serve as a memory of what went wrong and what to watch out for. Project documentation stays in `CLAUDE.md` and `docs/`, describing the project itself.
+
+The decision rules are simple:
+- **If the insight still makes sense after removing the project name** → `knowledge/`
+- **If it records a failure, constraint, or pitfall specific to this project** → `docs/LEARNINGS.md`
+- **If it describes the project itself** → `CLAUDE.md` or `docs/`
+
+Lessons have a lifecycle: general patterns **graduate** to `knowledge/` via reflect-learning, stale entries (resolved constraints) are removed, and lessons already embedded in the design are retired. This prevents indefinite accumulation and keeps each entry actionable.
 
 This separation is what turns Kaizen-CLI from a per-project tool into a cross-project knowledge platform. Without it, you would either keep all knowledge local (losing the compound effect) or dump everything into a shared space (creating noise that degrades usefulness).
 
@@ -156,7 +164,7 @@ Project A (personal)        Project B (work)         Project C (work)
 
 Key points:
 
-1. **Project-specific information** (CLAUDE.md, docs/) and **cross-cutting knowledge** (knowledge/) are separated — as described in the Two Layers model above
+1. **Project-specific information** (CLAUDE.md, docs/, LEARNINGS.md) and **cross-cutting knowledge** (knowledge/) are separated — as described in the Three Layers model above
 2. knowledge/ is a symlink so all projects sharing a registry reference the same underlying data
 3. Every time reflect-learning accumulates knowledge, it becomes instantly available in every project within that registry
 4. **Registries isolate knowledge by context** — Work knowledge and personal knowledge never mix. Each registry has its own meta/, projects/, and accumulated domain files
