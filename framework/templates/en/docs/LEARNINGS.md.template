@@ -1,0 +1,19 @@
+# {{PROJECT_NAME}} - Lessons Learned
+
+Project-specific lessons. Record failures, constraints, and pitfalls discovered during development.
+
+> **Distribution criteria**: If a lesson is a general pattern applicable across projects, promote it to `knowledge/` using `/kaizen-reflect-learning`. Keep only project-specific lessons here.
+
+## Entry Format
+
+```markdown
+### [Short title] (YYYY-MM-DD)
+
+- **Situation**: What you were trying to do
+- **Problem**: What went wrong or what constraint was discovered
+- **Lesson**: What to do differently next time
+```
+
+## Lessons
+
+(No entries yet)

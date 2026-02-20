@@ -46,6 +46,7 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" verify
   2. **上書き** — テンプレートから新規生成（既存内容は失われる）
   3. **スキップ** — 何もしない
 - `docs/PROJECT_SUMMARY.md` — 既に存在する場合はスキップ
+- `docs/LEARNINGS.md` — 既に存在する場合はスキップ
 
 ### 3. ユーザーへの質問
 
@@ -140,7 +141,14 @@ mkdir -p docs
 - `{{PROJECT_PURPOSE}}`: Step 3で取得した目的
 - `{{DATE}}`: 今日の日付
 
-### 8. プロジェクトレジストリへの登録
+### 8. docs/LEARNINGS.md の生成
+
+`$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/LEARNINGS.md.template` を読み取り、プレースホルダを置換。
+
+**置換対象**:
+- `{{PROJECT_NAME}}`: Step 3で取得したプロジェクト名
+
+### 9. プロジェクトレジストリへの登録
 
 選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
 
@@ -149,13 +157,14 @@ mkdir -p docs
 3. INDEX.mdの一覧テーブルに行を追加:
    - `| {id} | {name} | planning | | {date} |`
 
-### 9. 完了確認
+### 10. 完了確認
 
 ```bash
 # プロジェクト構造を表示
 ls -la knowledge
 ls -la .claude/skills/
 ls docs/PROJECT_SUMMARY.md
+ls docs/LEARNINGS.md
 ```
 
 ユーザーに以下を案内:
@@ -163,9 +172,10 @@ ls docs/PROJECT_SUMMARY.md
 - `.claude/skills/` にKaizen-CLIスキルへのsymlinkが作成されたこと
 - `CLAUDE.md` が生成されたこと
 - `docs/PROJECT_SUMMARY.md` が生成されたこと
+- `docs/LEARNINGS.md` が生成されたこと
 - プロジェクトレジストリに登録されたこと
 
-### 10. 次のステップの案内
+### 11. 次のステップの案内
 
 1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
 2. `CLAUDE.md` をカスタマイズ

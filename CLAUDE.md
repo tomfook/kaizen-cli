@@ -38,6 +38,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **setup.sh --force preserves user data**: `--force` only updates env vars and symlinks. Knowledge files (template-expanded into `$KAIZEN_KNOWLEDGE_DIR`) are never overwritten, as they accumulate user data.
 - **MIT License**: Maximum adoption, minimum friction
 - **framework/bin/ for mechanical processing**: SKILL.md from mechanical steps (environment validation, registry listing, etc.) are extracted into testable shell scripts under `framework/bin/`. Skills call these scripts and parse structured output. This improves testability and fixes bugs like Issue #26.
+- **docs/LEARNINGS.md for project-specific lessons**: Captures failures, constraints, and pitfalls specific to the project. `update-docs` extracts lessons from work history and performs periodic review (graduating general patterns to `knowledge/`, removing stale entries).
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
 
 ## Current Progress
