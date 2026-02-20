@@ -20,6 +20,7 @@
 
 ### Project Information
 - **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — Project overview, purpose, and tech stack
+- **[docs/LEARNINGS.md](./docs/LEARNINGS.md)** — Project-specific lessons (failures, constraints, pitfalls)
 
 ### Knowledge Base
 - **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — Find documents by what you want to do

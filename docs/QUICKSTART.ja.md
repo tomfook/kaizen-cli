@@ -69,7 +69,8 @@ my-python-project/
 ├── knowledge/             ← $KAIZEN_KNOWLEDGE_DIR/default へのsymlink
 ├── .claude/skills/        ← Kaizen-CLIスキルへのsymlink
 └── docs/
-    └── PROJECT_SUMMARY.md ← プロジェクト概要
+    ├── PROJECT_SUMMARY.md ← プロジェクト概要
+    └── LEARNINGS.md       ← プロジェクト固有の教訓
 ```
 
 `knowledge/` が共有ディレクトリへのsymlinkになっていることがポイントです。他のプロジェクトで蓄積された知識が、ここからすぐに参照できます。

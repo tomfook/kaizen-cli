@@ -20,6 +20,7 @@
 
 ### プロジェクト情報
 - **[docs/PROJECT_SUMMARY.md](./docs/PROJECT_SUMMARY.md)** — プロジェクト概要、目的、技術スタック
+- **[docs/LEARNINGS.md](./docs/LEARNINGS.md)** — プロジェクト固有の教訓（失敗、制約、落とし穴）
 
 ### ナレッジベース
 - **[knowledge/meta/INDEX.md](./knowledge/meta/INDEX.md)** — やりたいことからドキュメントを探す
