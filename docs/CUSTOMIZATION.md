@@ -52,9 +52,17 @@ The `knowledge/` symlink will point to the selected registry. All knowledge accu
 | Client work with NDA | Separate `client-x` registry per client |
 | Domain separation | `data-analysis`, `web-dev` etc. |
 
+### Template Language
+
+Each registry has a template language (`en` or `ja`) stored in `$REGISTRY_DIR/.lang`. This determines which language is used for generated files (CLAUDE.md, PROJECT_SUMMARY.md, knowledge templates).
+
+- Language is selected when creating a new registry (default: `en`)
+- Existing registries without `.lang` default to `en`
+- Language applies to newly generated files only — already-expanded templates are not overwritten
+
 ### Important Notes
 
-- Each registry is completely independent (separate meta/, projects/, and domain files)
+- Each registry is completely independent (separate meta/, projects/, domain files, and language setting)
 - A project belongs to exactly one registry (determined by the knowledge/ symlink target)
 - Registries are simply subdirectories of `$KAIZEN_KNOWLEDGE_DIR` — no config file needed
 - To check which registry a project uses: `ls -la knowledge/`

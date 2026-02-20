@@ -1,0 +1,35 @@
+# Meta - 逆引きリファレンス
+
+プロジェクト運用、ナレッジ管理、Kaizen-CLI の設定に関するガイド。
+
+**重要**: プロジェクト横断ファイルのみ。プロジェクト固有の内容を追加しないこと。
+
+---
+
+## やりたいことから探す
+
+### プロジェクト運用
+
+| やりたいこと | 参照先 |
+|-------------|--------|
+| 新しいプロジェクトを始める | [GETTING_STARTED.md § 新規プロジェクトセットアップ](./GETTING_STARTED.md#新規プロジェクトセットアップ) |
+| ドキュメントのルールを確認する | [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md) |
+
+### ナレッジ管理
+
+| やりたいこと | 参照先 |
+|-------------|--------|
+| ファイルサイズ管理のルールを確認する | [DOCUMENTATION_GUIDELINES.md § ファイルサイズ管理](./DOCUMENTATION_GUIDELINES.md#ファイルサイズ管理) |
+| INDEX.md の設計ルールを確認する | [DOCUMENTATION_GUIDELINES.md § INDEX設計](./DOCUMENTATION_GUIDELINES.md#indexmd-設計ガイドライン) |
+| 品質チェックリストを確認する | [DOCUMENTATION_GUIDELINES.md § 品質](./DOCUMENTATION_GUIDELINES.md#ドキュメント品質) |
+
+<!-- ナレッジベースの成長に伴い、ドメイン別セクションをここに追加 -->
+
+## ファイル一覧
+
+| ファイル | 説明 | 行数 |
+|---------|------|------|
+| [GETTING_STARTED.md](./GETTING_STARTED.md) | プロジェクトセットアップ、ワークフロー概要、編集ガイドライン | ~XXX |
+| [DOCUMENTATION_GUIDELINES.md](./DOCUMENTATION_GUIDELINES.md) | ファイルサイズ管理、INDEX設計、品質維持 | ~XXX |
+
+<!-- 必要に応じて関連ガイドへのリンクを追加 -->

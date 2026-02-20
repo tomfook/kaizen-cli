@@ -11,12 +11,12 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 
 - `docs/` — Methodology documentation (CONCEPT, DESIGN_PRINCIPLES, QUICKSTART, CUSTOMIZATION)
 - `docs/internal/` — Development-only documents (.gitignore, not published). Includes PLAN_KAIZEN_CLI_OSS.md
-- `framework/` — Copy-and-use template set (knowledge/, .claude/commands/, .claude/skills/)
+- `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/)
 - `examples/` — Domain-specific examples (data-analysis, web-development)
 
 ## Language Policy
 
-- Templates (user-facing): English
+- Templates (user-facing): English and Japanese (per-registry language selection)
 - Commands, skills: Description/heading in English, body in Japanese
 - Documentation (docs/): Bilingual (English + Japanese)
 - README: English (README.md) + Japanese (README.ja.md)
@@ -34,6 +34,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **Project registry**: `$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` maintains a table of all registered projects. `kaizen-init-project` registers, `kaizen-update-docs` syncs.
 - **Multiple registries**: Subdirectories of `$KAIZEN_KNOWLEDGE_DIR` act as isolated knowledge bases. No config file needed — directory existence defines a registry. Commands work unchanged via the knowledge/ symlink.
 - **Registry selection always prompts**: `kaizen-init-project` always asks which registry to use (even if only one exists). This allows users to create a new registry in-place without leaving Claude Code. Default is `default` (press Enter to accept).
+- **Per-registry language selection**: Each registry stores its language in `$REGISTRY_DIR/.lang` (`en` or `ja`). Templates under `framework/templates/{en,ja}/` are selected accordingly. Registries without `.lang` default to `en` (backward compatible).
 - **setup.sh --force preserves user data**: `--force` only updates env vars and symlinks. Knowledge files (template-expanded into `$KAIZEN_KNOWLEDGE_DIR`) are never overwritten, as they accumulate user data.
 - **MIT License**: Maximum adoption, minimum friction
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
