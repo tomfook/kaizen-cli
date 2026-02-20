@@ -76,6 +76,7 @@ kaizen-cli/
 │   └── CUSTOMIZATION.md     # How to adapt for your domain
 │
 ├── framework/               # Copy-and-use template set
+│   ├── bin/                 # Helper shell scripts
 │   ├── templates/           # Locale-separated templates
 │   │   ├── en/              # English templates
 │   │   └── ja/              # Japanese templates

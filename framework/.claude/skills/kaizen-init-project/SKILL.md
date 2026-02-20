@@ -22,20 +22,18 @@ disable-model-invocation: true
 
 ### 1. 環境検証
 
-以下を確認し、問題があればエラーメッセージを表示して終了:
+ヘルパースクリプトを実行して環境を検証する:
 
 ```bash
-# 環境変数の存在チェック
-echo "$KAIZEN_CLI_DIR"
-echo "$KAIZEN_KNOWLEDGE_DIR"
-
-# ディレクトリの存在チェック
-ls "$KAIZEN_CLI_DIR/framework/.claude/skills/"
-ls "$KAIZEN_KNOWLEDGE_DIR"
-
-# レジストリの存在チェック（サブディレクトリが1つ以上あること）
-ls -d "$KAIZEN_KNOWLEDGE_DIR"/*/
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" verify
 ```
+
+出力の `[kaizen-verify]` ブロックを解析:
+- `status=error` → `error` の内容をユーザーに表示して終了
+- `status=ok` → 以下の値を後続ステップで使用:
+  - `registries` — Step 3 のレジストリ選択肢として表示
+  - `kaizen_cli_dir` — テンプレートパスの基点
+  - `template_dir` — テンプレートの存在確認
 
 ### 2. 既存ファイルの確認
 
