@@ -80,9 +80,9 @@
 3. **プロジェクト固有情報は追加しない**: knowledge/はプロジェクト横断。プロジェクト固有の教訓は `/kaizen-update-docs` で `docs/LEARNINGS.md` に記載
 
 **knowledge/の検索方法**:
-- knowledge/はシンボリックリンクの場合がある
-- 検索前に実体の場所を確認: `ls -la knowledge`
-- Globで見つからない場合は `readlink -f knowledge` で解決したパスを使用
+- knowledge/はシンボリックリンクであり、Glob ツールはシンボリンク先を辿れない
+- ファイル読み取り・存在確認には Read ツールで直接パスを指定すること
+- ファイル検索には Grep ツールを使用すること（Glob は不可）
 
 ---
 
