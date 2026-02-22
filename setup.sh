@@ -28,6 +28,43 @@ if [ "$FORCE" = true ]; then
 fi
 echo ""
 
+# --- Detect shell RC file ---
+
+detect_shell_rc() {
+  case "${SHELL:-/bin/bash}" in
+    */zsh)
+      echo "$HOME/.zshrc"
+      ;;
+    */bash)
+      if [ "$(uname)" = "Darwin" ] && [ -f "$HOME/.bash_profile" ]; then
+        echo "$HOME/.bash_profile"
+      else
+        echo "$HOME/.bashrc"
+      fi
+      ;;
+    *)
+      echo "$HOME/.profile"
+      ;;
+  esac
+}
+
+# Search for an existing env var value across common RC files
+find_env_in_rc() {
+  local var_name="$1"
+  for rc_file in "$SHELL_RC" "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.profile"; do
+    if [ -f "$rc_file" ]; then
+      local val
+      if val=$(sed -n "s/^export ${var_name}=\"\([^\"]*\)\".*/\1/p" "$rc_file" 2>/dev/null) && [ -n "$val" ]; then
+        echo "$val"
+        return 0
+      fi
+    fi
+  done
+  return 1
+}
+
+SHELL_RC="$(detect_shell_rc)"
+
 # --- Step 1: Auto-detect KAIZEN_CLI_DIR ---
 
 KAIZEN_CLI_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -46,12 +83,12 @@ DEFAULT_KNOWLEDGE_DIR="$HOME/kaizen-knowledge"
 echo ""
 
 if [ "$FORCE" = true ]; then
-  # In --force mode, reuse existing value (env var > ~/.bashrc > default)
+  # In --force mode, reuse existing value (env var > RC file > default)
   if [ -n "${KAIZEN_KNOWLEDGE_DIR:-}" ]; then
     echo "[2/6] Using existing KAIZEN_KNOWLEDGE_DIR: $KAIZEN_KNOWLEDGE_DIR"
-  elif existing_val=$(grep -oP '^export KAIZEN_KNOWLEDGE_DIR="\K[^"]+' "$HOME/.bashrc" 2>/dev/null); then
+  elif existing_val=$(find_env_in_rc "KAIZEN_KNOWLEDGE_DIR"); then
     KAIZEN_KNOWLEDGE_DIR="$existing_val"
-    echo "[2/6] Read from ~/.bashrc: KAIZEN_KNOWLEDGE_DIR=$KAIZEN_KNOWLEDGE_DIR"
+    echo "[2/6] Read from RC file: KAIZEN_KNOWLEDGE_DIR=$KAIZEN_KNOWLEDGE_DIR"
   else
     echo "[2/6] Specify the path for your shared knowledge directory."
     echo "  (Press Enter to use the default)"
@@ -220,28 +257,29 @@ mkdir -p "$REGISTRY_DIR/projects"
 copy_if_not_exists "$TEMPLATE_DIR/knowledge/projects/INDEX.md.template" \
   "$REGISTRY_DIR/projects/INDEX.md"
 
-# --- Step 4: Add environment variables to ~/.bashrc ---
+# --- Step 4: Add environment variables to shell RC file ---
 
 echo ""
-echo "[4/6] Setting environment variables..."
+echo "[4/6] Setting environment variables in $SHELL_RC ..."
 
-BASHRC="$HOME/.bashrc"
+# Ensure the RC file exists
+touch "$SHELL_RC"
 
 add_env_var() {
   local var_name="$1"
   local var_value="$2"
-  if grep -q "^export ${var_name}=" "$BASHRC" 2>/dev/null; then
+  if grep -q "^export ${var_name}=" "$SHELL_RC" 2>/dev/null; then
     if [ "$FORCE" = true ]; then
-      sed -i "s|^export ${var_name}=.*|export ${var_name}=\"${var_value}\"|" "$BASHRC"
-      echo "  Updated: export ${var_name}=\"${var_value}\" in $BASHRC"
+      sed -i.bak "s|^export ${var_name}=.*|export ${var_name}=\"${var_value}\"|" "$SHELL_RC" && rm -f "$SHELL_RC.bak"
+      echo "  Updated: export ${var_name}=\"${var_value}\" in $SHELL_RC"
     else
-      echo "  Skipped (exists): $var_name in $BASHRC"
+      echo "  Skipped (exists): $var_name in $SHELL_RC"
     fi
   else
-    echo "" >> "$BASHRC"
-    echo "# Kaizen-CLI" >> "$BASHRC"
-    echo "export ${var_name}=\"${var_value}\"" >> "$BASHRC"
-    echo "  Added: export ${var_name}=\"${var_value}\" -> $BASHRC"
+    echo "" >> "$SHELL_RC"
+    echo "# Kaizen-CLI" >> "$SHELL_RC"
+    echo "export ${var_name}=\"${var_value}\"" >> "$SHELL_RC"
+    echo "  Added: export ${var_name}=\"${var_value}\" -> $SHELL_RC"
   fi
 }
 
@@ -300,7 +338,7 @@ echo ""
 echo "=== Setup complete ==="
 echo ""
 echo "Next steps:"
-echo "  1. source ~/.bashrc    (apply environment variables)"
+echo "  1. source $SHELL_RC    (apply environment variables)"
 echo "  2. cd your-project && claude"
 echo "  3. /kaizen-init-project (initialize your project)"
 echo ""
