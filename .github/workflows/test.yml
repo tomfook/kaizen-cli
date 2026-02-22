@@ -1,0 +1,19 @@
+name: Shell Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run kaizen-init.sh tests
+        run: bash tests/test_kaizen_init.sh
+
+      - name: Run setup.sh tests
+        run: bash tests/test_setup.sh
