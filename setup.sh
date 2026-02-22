@@ -54,7 +54,7 @@ find_env_in_rc() {
   for rc_file in "$SHELL_RC" "$HOME/.bashrc" "$HOME/.zshrc" "$HOME/.bash_profile" "$HOME/.profile"; do
     if [ -f "$rc_file" ]; then
       local val
-      if val=$(grep -oP "^export ${var_name}=\"\K[^\"]+" "$rc_file" 2>/dev/null); then
+      if val=$(sed -n "s/^export ${var_name}=\"\([^\"]*\)\".*/\1/p" "$rc_file" 2>/dev/null) && [ -n "$val" ]; then
         echo "$val"
         return 0
       fi
@@ -270,7 +270,7 @@ add_env_var() {
   local var_value="$2"
   if grep -q "^export ${var_name}=" "$SHELL_RC" 2>/dev/null; then
     if [ "$FORCE" = true ]; then
-      sed -i "s|^export ${var_name}=.*|export ${var_name}=\"${var_value}\"|" "$SHELL_RC"
+      sed -i.bak "s|^export ${var_name}=.*|export ${var_name}=\"${var_value}\"|" "$SHELL_RC" && rm -f "$SHELL_RC.bak"
       echo "  Updated: export ${var_name}=\"${var_value}\" in $SHELL_RC"
     else
       echo "  Skipped (exists): $var_name in $SHELL_RC"
