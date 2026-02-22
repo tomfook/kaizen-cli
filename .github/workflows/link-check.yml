@@ -15,8 +15,10 @@ jobs:
       - name: Check markdown links
         uses: lycheeverse/lychee-action@v2
         with:
+          # knowledge/ is a symlink to $KAIZEN_KNOWLEDGE_DIR (not in repo)
           args: >-
             --no-progress
             --exclude '^https?://'
+            --exclude 'knowledge/'
             '**/*.md'
           fail: true

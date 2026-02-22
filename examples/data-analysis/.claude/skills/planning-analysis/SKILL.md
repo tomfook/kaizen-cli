@@ -99,7 +99,7 @@ description: 分析プロジェクトの計画立案・仮説設計を構造化�
 | 期間×比較軸の整合性 | YoY比較の場合、データが比較期間を含んでいるか |
 | カラム名・指標の意味 | 使用カラムの業務上の意味を確認 |
 
-> 参照: [PITFALLS.md § 1](../../knowledge/analysis/PITFALLS.md#1-データ前処理の落とし穴)
+> 参照: [PITFALLS.md § 1](../../../knowledge/analysis/PITFALLS.md#1-データ前処理の落とし穴)
 
 ### 出力物
 
@@ -134,7 +134,7 @@ EDA後に暫定基準が妥当でないと判明した場合、根拠を明記�
 - 因果関係と相関関係の混同
 - 確証バイアス
 
-> 参照: [PITFALLS.md § 2](../../knowledge/analysis/PITFALLS.md#2-統計分析の注意点)
+> 参照: [PITFALLS.md § 2](../../../knowledge/analysis/PITFALLS.md#2-統計分析の注意点)
 
 ---
 

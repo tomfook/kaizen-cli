@@ -60,7 +60,7 @@ description: コードレビューを構造化するスキル。セキュリテ�
 | 機密情報 | APIキー・パスワード・トークンがコードにハードコードされていないか |
 | 依存パッケージ | 既知の脆弱性がある依存が追加されていないか |
 
-> 参照: [PATTERNS.md § 1](../../knowledge/development/PATTERNS.md#1-セキュリティ)
+> 参照: [PATTERNS.md § 1](../../../knowledge/development/PATTERNS.md#1-セキュリティ)
 
 ### 2.3 パフォーマンス
 
@@ -71,7 +71,7 @@ description: コードレビューを構造化するスキル。セキュリテ�
 | メモリ使用 | 大量データを一度にメモリに載せていないか |
 | 不要な再計算 | ループ内で同じ計算を繰り返していないか |
 
-> 参照: [PATTERNS.md § 2](../../knowledge/development/PATTERNS.md#2-パフォーマンス)
+> 参照: [PATTERNS.md § 2](../../../knowledge/development/PATTERNS.md#2-パフォーマンス)
 
 ### 2.4 保守性
 
@@ -92,7 +92,7 @@ description: コードレビューを構造化するスキル。セキュリテ�
 | テストの独立性 | 他のテストに依存していないか |
 | テスト名 | 何をテストしているか名前から分かるか |
 
-> 参照: [PATTERNS.md § 4](../../knowledge/development/PATTERNS.md#4-テスト戦略)
+> 参照: [PATTERNS.md § 4](../../../knowledge/development/PATTERNS.md#4-テスト戦略)
 
 ---
 
