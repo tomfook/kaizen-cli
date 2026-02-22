@@ -2,6 +2,7 @@
 
 - Respond in the user's language.
 - When the user omits the year from a date (e.g., "March 5"), interpret it as the current year. Determine the year dynamically at runtime and always verify when writing dates.
+- `knowledge/` is a symlink. The Glob tool cannot follow symlinks, so use Read or Grep (not Glob) to access files under `knowledge/`.
 
 ## Project Overview
 

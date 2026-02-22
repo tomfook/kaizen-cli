@@ -5,7 +5,7 @@ project:
   status: released          # planning | developing | released | completed | on-hold
   keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates]
   created: "2026-02-18"
-  updated: "2026-02-21"
+  updated: "2026-02-22"
 ---
 
 # Kaizen-CLI

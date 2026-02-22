@@ -120,6 +120,8 @@ PROJECT_SUMMARY.md更新後、`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` への�
 
 **前提条件**: `knowledge/projects/INDEX.md` が存在すること。不在の場合はスキップ。
 
+**注意**: `knowledge/` はシンボリンクであり、Glob ツールはシンボリンク先を辿れない。Read ツールで直接読み取ること（ファイルが存在しなければ Read がエラーを返す）。
+
 1. PROJECT_SUMMARY.mdのYAMLフロントマターから `id`, `name`, `status`, `keywords`, `updated` を抽出
 2. `knowledge/projects/INDEX.md` の一覧テーブルの該当行を更新
    - 該当IDが存在しない場合は行を追加
