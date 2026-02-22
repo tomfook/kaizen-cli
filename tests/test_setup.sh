@@ -371,6 +371,33 @@ test_force_cross_shell_read() {
   teardown_test_env
 }
 
+# --- Test 10: Symlink warning present in templates and commands ---
+
+test_symlink_warnings() {
+  local test_name="Symlink warnings in templates and commands"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # CLAUDE.md templates should warn about Glob + symlink
+  assert_file_contains "$KAIZEN_CLI_DIR/framework/templates/en/CLAUDE.md.template" \
+    "Glob tool cannot follow symlinks" \
+    "en/CLAUDE.md.template should contain symlink warning" || ok=1
+  assert_file_contains "$KAIZEN_CLI_DIR/framework/templates/ja/CLAUDE.md.template" \
+    "Glob ツールはシンボリンク先を辿れない" \
+    "ja/CLAUDE.md.template should contain symlink warning" || ok=1
+
+  # Commands that access knowledge/ should have symlink notes
+  assert_file_contains "$KAIZEN_CLI_DIR/framework/.claude/commands/kaizen-update-docs.md" \
+    "Glob ツールはシンボリンク先を辿れない" \
+    "kaizen-update-docs.md should contain symlink warning" || ok=1
+  assert_file_contains "$KAIZEN_CLI_DIR/framework/.claude/commands/kaizen-suggest-next.md" \
+    "Glob ツールはシンボリンク先を辿れない" \
+    "kaizen-suggest-next.md should contain symlink warning" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== Kaizen-CLI setup.sh tests ==="
@@ -385,6 +412,7 @@ test_force_preserves_lang
 test_invalid_language
 test_zsh_shell_detection
 test_force_cross_shell_read
+test_symlink_warnings
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

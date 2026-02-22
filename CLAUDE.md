@@ -39,6 +39,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - **MIT License**: Maximum adoption, minimum friction
 - **framework/bin/ for mechanical processing**: SKILL.md from mechanical steps (environment validation, registry listing, etc.) are extracted into testable shell scripts under `framework/bin/`. Skills call these scripts and parse structured output. This improves testability and fixes bugs like Issue #26.
 - **docs/LEARNINGS.md for project-specific lessons**: Captures failures, constraints, and pitfalls specific to the project. `update-docs` extracts lessons from work history and performs periodic review (graduating general patterns to `knowledge/`, removing stale entries).
+- **Symlink + Glob workaround**: Claude Code's Glob tool cannot follow symlinks. Since `knowledge/` is a symlink, all templates and commands include explicit guidance to use Read/Grep instead of Glob for `knowledge/` access. `reflect-learning` already had a workaround (ls -la + readlink -f); `update-docs` and `suggest-next` were patched in v0.1.1.
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs
 
 ## Current Progress
