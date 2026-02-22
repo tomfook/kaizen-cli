@@ -34,6 +34,8 @@ This separation ensures:
 - Environment variables connect the two:
   - `$KAIZEN_CLI_DIR`: Root of the kaizen-cli repository (auto-detected by setup.sh). Used during setup and project initialization to locate templates and skills
   - `$KAIZEN_KNOWLEDGE_DIR`: User's shared knowledge directory. Referenced at runtime via symlinks from each project
+- `setup.sh --force` only updates env vars and symlinks — never overwrites knowledge files, preserving accumulated user data
+- `kaizen-init-project` is installed as a global skill (`~/.claude/skills/`) by setup.sh, because it must be available before any project is initialized
 
 ### Cross-Project Sharing via Symlinks
 
@@ -56,6 +58,8 @@ Project A                       Project B                      Project C
 - **Registry isolation**: Projects sharing a registry share knowledge. Projects on different registries are completely isolated
 - **Registries are subdirectories**: A registry is simply a subdirectory of `$KAIZEN_KNOWLEDGE_DIR` — no configuration file is needed. Directory existence defines a registry
 - skills/ also uses symlinks (per individual skill, to allow coexistence with user-defined skills)
+- **Registry selection**: `kaizen-init-project` always prompts for registry choice (even if only one exists), allowing users to create new registries without leaving Claude Code
+- **Per-registry language**: Each registry stores its language in `$REGISTRY_DIR/.lang` (`en` or `ja`). Templates under `framework/templates/{en,ja}/` are selected accordingly. Default: `en`
 
 **Caveats**:
 - Run `git rm` in the actual directory (`$KAIZEN_KNOWLEDGE_DIR`), not through symlinks
@@ -85,6 +89,11 @@ If all three are Yes → add it to knowledge/.
 - suggest-next **suggests** next actions. The user chooses what to execute
 - reflect-learning **extracts and presents** insights. Updates to knowledge/ require user approval
 - Skills provide **checklists and guidelines**. They do not auto-execute tasks
+
+### Naming and Scope Decisions
+
+- **knowledge/** (not context/): Named to align with "knowledge-accumulating" branding and avoid confusion with LLM "context window"
+- **committing-project excluded**: Commit formatting is not core to the Kaizen cycle. Claude Code already has built-in commit conventions
 
 ---
 

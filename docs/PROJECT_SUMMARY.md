@@ -26,7 +26,7 @@ A framework that embeds a knowledge-accumulation loop into everyday Claude Code 
 
 ## Design Decisions
 
-See CLAUDE.md "Key Design Decisions" section for comprehensive list.
+See [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md) for architecture decisions and knowledge management patterns.
 
 ## Notes
 
