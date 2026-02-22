@@ -36,6 +36,7 @@ See CLAUDE.md "Key Design Decisions" section for comprehensive list.
 ## Project Documentation
 
 - `PROJECT_SUMMARY.md` - Project overview (this file)
+- [LEARNINGS.md](./LEARNINGS.md) - Project-specific lessons
 - [CONCEPT.md](./CONCEPT.md) - Methodology concept
 - [CONCEPT.ja.md](./CONCEPT.ja.md) - Methodology concept (Japanese)
 - [CUSTOMIZATION.md](./CUSTOMIZATION.md) - Customization guide
