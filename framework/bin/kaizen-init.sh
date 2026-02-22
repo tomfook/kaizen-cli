@@ -4,7 +4,8 @@
 #
 # Usage: bash kaizen-init.sh <subcommand>
 # Subcommands:
-#   verify  — Validate environment and list registries
+#   verify           — Validate environment and list registries
+#   list-registries  — List registry names (one per line)
 #
 # Exit codes: 0=success, 1=environment error, 2=usage error
 
@@ -44,14 +45,11 @@ do_verify() {
 
   # 3. List registries (subdirectories of KAIZEN_KNOWLEDGE_DIR)
   if [ "$status" = "ok" ]; then
-    local reg_list=()
-    for entry in "$knowledge_dir"/*/; do
-      # Skip if glob didn't match (no subdirectories)
-      [ -d "$entry" ] || continue
-      reg_list+=("$(basename "$entry")")
-    done
-    # Join with commas
-    registries="$(IFS=,; echo "${reg_list[*]+"${reg_list[*]}"}")"
+    local reg_output
+    reg_output="$(do_list_registries "$knowledge_dir")"
+    if [ -n "$reg_output" ]; then
+      registries="$(printf '%s' "$reg_output" | tr '\n' ',')"
+    fi
   fi
 
   # 4. Check template directory
@@ -79,12 +77,34 @@ do_verify() {
   return 0
 }
 
+# --- list-registries subcommand ---
+
+do_list_registries() {
+  local knowledge_dir="${1:-${KAIZEN_KNOWLEDGE_DIR:-}}"
+
+  if [ -z "$knowledge_dir" ]; then
+    echo "Error: No knowledge directory specified and KAIZEN_KNOWLEDGE_DIR is not set" >&2
+    return 1
+  fi
+  if [ ! -d "$knowledge_dir" ]; then
+    echo "Error: Directory does not exist: $knowledge_dir" >&2
+    return 1
+  fi
+
+  for entry in "$knowledge_dir"/*/; do
+    [ -d "$entry" ] || continue
+    basename "$entry"
+  done
+  return 0
+}
+
 # --- Main dispatch ---
 
 case "${1:-}" in
   verify) shift; do_verify "$@" ;;
+  list-registries) shift; do_list_registries "$@" ;;
   *)
-    echo "Usage: kaizen-init.sh <verify>" >&2
+    echo "Usage: kaizen-init.sh <verify|list-registries>" >&2
     exit 2
     ;;
 esac

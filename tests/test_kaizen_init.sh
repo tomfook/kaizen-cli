@@ -242,6 +242,141 @@ test_invalid_subcommand() {
   teardown_test_env
 }
 
+# --- Test 8: list-registries with argument ---
+
+test_list_registries_with_arg() {
+  local test_name="list-registries: argument specifies directory"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR/default" "$TEST_KNOWLEDGE_DIR/work"
+  local output
+  output=$(bash "$KAIZEN_INIT" list-registries "$TEST_KNOWLEDGE_DIR") || ok=1
+
+  local line_count
+  line_count=$(echo "$output" | wc -l)
+  if [ "$line_count" -ne 2 ]; then
+    echo "  FAIL: expected 2 lines, got $line_count"
+    ok=1
+  fi
+  if ! echo "$output" | grep -qx "default"; then
+    echo "  FAIL: output should contain line 'default'"
+    ok=1
+  fi
+  if ! echo "$output" | grep -qx "work"; then
+    echo "  FAIL: output should contain line 'work'"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 9: list-registries env var fallback ---
+
+test_list_registries_env_fallback() {
+  local test_name="list-registries: env var fallback when no argument"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR/default"
+  local output
+  output=$(KAIZEN_KNOWLEDGE_DIR="$TEST_KNOWLEDGE_DIR" bash "$KAIZEN_INIT" list-registries) || ok=1
+
+  if ! echo "$output" | grep -qx "default"; then
+    echo "  FAIL: output should contain line 'default'"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 10: list-registries with 0 registries ---
+
+test_list_registries_empty() {
+  local test_name="list-registries: 0 registries returns empty output"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR"
+  local output exit_code=0
+  output=$(bash "$KAIZEN_INIT" list-registries "$TEST_KNOWLEDGE_DIR") || exit_code=$?
+
+  if [ "$exit_code" -ne 0 ]; then
+    echo "  FAIL: exit code should be 0, got $exit_code"
+    ok=1
+  fi
+  if [ -n "$output" ]; then
+    echo "  FAIL: output should be empty, got: $output"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 11: list-registries directory does not exist ---
+
+test_list_registries_dir_missing() {
+  local test_name="list-registries: nonexistent directory returns error"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local output exit_code=0
+  output=$(bash "$KAIZEN_INIT" list-registries "$TEST_KNOWLEDGE_DIR/nonexistent" 2>&1) || exit_code=$?
+
+  if [ "$exit_code" -ne 1 ]; then
+    echo "  FAIL: exit code should be 1, got $exit_code"
+    ok=1
+  fi
+  assert_output_contains "$output" "Directory does not exist" \
+    "error should mention directory does not exist" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 12: list-registries excludes files (Issue #26 parity) ---
+
+test_list_registries_no_files() {
+  local test_name="list-registries: files are not listed (Issue #26 parity)"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR/default"
+  touch "$TEST_KNOWLEDGE_DIR/somefile.txt"
+  local output
+  output=$(bash "$KAIZEN_INIT" list-registries "$TEST_KNOWLEDGE_DIR") || ok=1
+
+  if [ "$output" != "default" ]; then
+    echo "  FAIL: output should be exactly 'default', got: $output"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 13: list-registries no arg and no env var ---
+
+test_list_registries_no_arg_no_env() {
+  local test_name="list-registries: no argument and no env var returns error"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local exit_code=0
+  (unset KAIZEN_KNOWLEDGE_DIR; bash "$KAIZEN_INIT" list-registries) 2>/dev/null || exit_code=$?
+
+  if [ "$exit_code" -ne 1 ]; then
+    echo "  FAIL: exit code should be 1, got $exit_code"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== kaizen-init.sh tests ==="
@@ -254,6 +389,12 @@ test_verify_no_registries
 test_verify_multiple_registries
 test_verify_no_root_dir_leak
 test_invalid_subcommand
+test_list_registries_with_arg
+test_list_registries_env_fallback
+test_list_registries_empty
+test_list_registries_dir_missing
+test_list_registries_no_files
+test_list_registries_no_arg_no_env
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

@@ -126,15 +126,16 @@ else
   # Show existing registries if any
   existing_registries=""
   if [ -d "$KAIZEN_KNOWLEDGE_DIR" ]; then
-    for reg_dir in "$KAIZEN_KNOWLEDGE_DIR"/*/; do
-      [ -d "$reg_dir" ] || continue
-      reg_name="$(basename "$reg_dir")"
-      if [ -z "$existing_registries" ]; then
-        existing_registries="$reg_name"
-      else
-        existing_registries="$existing_registries, $reg_name"
-      fi
-    done
+    reg_output="$(bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" list-registries "$KAIZEN_KNOWLEDGE_DIR")" || true
+    if [ -n "$reg_output" ]; then
+      while IFS= read -r name; do
+        if [ -z "$existing_registries" ]; then
+          existing_registries="$name"
+        else
+          existing_registries="$existing_registries, $name"
+        fi
+      done <<< "$reg_output"
+    fi
   fi
   if [ -n "$existing_registries" ]; then
     echo "  Existing registries: $existing_registries"
