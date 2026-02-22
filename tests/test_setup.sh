@@ -362,6 +362,11 @@ test_force_cross_shell_read() {
     "export KAIZEN_CLI_DIR=" \
     ".zshrc should contain KAIZEN_CLI_DIR" || ok=1
 
+  # Verify KAIZEN_KNOWLEDGE_DIR value was correctly read from .bashrc
+  assert_file_contains "$TEST_HOME/.zshrc" \
+    "export KAIZEN_KNOWLEDGE_DIR=\"$TEST_KNOWLEDGE_DIR\"" \
+    ".zshrc should contain correct KAIZEN_KNOWLEDGE_DIR value from .bashrc" || ok=1
+
   record_result "$test_name" "$ok"
   teardown_test_env
 }
