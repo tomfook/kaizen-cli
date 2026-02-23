@@ -4,10 +4,11 @@
 #
 # Usage: bash kaizen-init.sh <subcommand>
 # Subcommands:
-#   verify           — Validate environment and list registries
-#   list-registries  — List registry names (one per line)
+#   verify                        — Validate environment and list registries
+#   list-registries               — List registry names (one per line)
+#   validate-registry-name <name> — Validate a registry name
 #
-# Exit codes: 0=success, 1=environment error, 2=usage error
+# Exit codes: 0=success, 1=validation/environment error, 2=usage error
 
 set -euo pipefail
 
@@ -98,13 +99,32 @@ do_list_registries() {
   return 0
 }
 
+# --- validate-registry-name subcommand ---
+
+do_validate_registry_name() {
+  local name="${1:-}"
+
+  if [ -z "$name" ]; then
+    echo "Error: Registry name is required" >&2
+    return 2
+  fi
+
+  if echo "$name" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+    return 0
+  else
+    echo "Error: Registry name must match ^[a-z0-9][a-z0-9-]*$ (lowercase letters, numbers, hyphens; must start with letter or number)" >&2
+    return 1
+  fi
+}
+
 # --- Main dispatch ---
 
 case "${1:-}" in
   verify) shift; do_verify "$@" ;;
   list-registries) shift; do_list_registries "$@" ;;
+  validate-registry-name) shift; do_validate_registry_name "$@" ;;
   *)
-    echo "Usage: kaizen-init.sh <verify|list-registries>" >&2
+    echo "Usage: kaizen-init.sh <verify|list-registries|validate-registry-name>" >&2
     exit 2
     ;;
 esac

@@ -377,6 +377,80 @@ test_list_registries_no_arg_no_env() {
   teardown_test_env
 }
 
+# --- Test 14: validate-registry-name valid names ---
+
+test_validate_registry_name_valid() {
+  local test_name="validate-registry-name: valid names accepted"
+  setup_test_env "$test_name"
+  local ok=0
+
+  for name in "default" "work" "client-x" "a" "123" "a1-b2"; do
+    local exit_code=0
+    bash "$KAIZEN_INIT" validate-registry-name "$name" 2>/dev/null || exit_code=$?
+    if [ "$exit_code" -ne 0 ]; then
+      echo "  FAIL: '$name' should be valid, got exit code $exit_code"
+      ok=1
+    fi
+  done
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 15: validate-registry-name invalid names ---
+
+test_validate_registry_name_invalid() {
+  local test_name="validate-registry-name: invalid names rejected"
+  setup_test_env "$test_name"
+  local ok=0
+
+  for name in "-leading" "UPPER" "has space" "under_score" ".dot" "日本語"; do
+    local exit_code=0
+    bash "$KAIZEN_INIT" validate-registry-name "$name" 2>/dev/null || exit_code=$?
+    if [ "$exit_code" -ne 1 ]; then
+      echo "  FAIL: '$name' should be invalid (exit 1), got exit code $exit_code"
+      ok=1
+    fi
+  done
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 16: validate-registry-name no argument ---
+
+test_validate_registry_name_no_arg() {
+  local test_name="validate-registry-name: no argument returns exit 2"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local exit_code=0
+  bash "$KAIZEN_INIT" validate-registry-name 2>/dev/null || exit_code=$?
+  if [ "$exit_code" -ne 2 ]; then
+    echo "  FAIL: exit code should be 2, got $exit_code"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 17: validate-registry-name stderr message ---
+
+test_validate_registry_name_error_message() {
+  local test_name="validate-registry-name: error message on invalid name"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local output
+  output=$(bash "$KAIZEN_INIT" validate-registry-name "INVALID" 2>&1) || true
+  assert_output_contains "$output" "Registry name must match" \
+    "stderr should contain validation rule" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== kaizen-init.sh tests ==="
@@ -395,6 +469,10 @@ test_list_registries_empty
 test_list_registries_dir_missing
 test_list_registries_no_files
 test_list_registries_no_arg_no_env
+test_validate_registry_name_valid
+test_validate_registry_name_invalid
+test_validate_registry_name_no_arg
+test_validate_registry_name_error_message
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

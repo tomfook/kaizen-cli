@@ -142,7 +142,7 @@ else
   fi
   read -rp "  Registry name [$DEFAULT_REGISTRY]: " REGISTRY_NAME
   REGISTRY_NAME="${REGISTRY_NAME:-$DEFAULT_REGISTRY}"
-  if ! echo "$REGISTRY_NAME" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+  if ! bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REGISTRY_NAME" 2>/dev/null; then
     echo "  Error: Registry name must contain only lowercase letters, numbers, and hyphens (e.g., 'default', 'work', 'client-x')."
     exit 1
   fi
