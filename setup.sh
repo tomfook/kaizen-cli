@@ -258,6 +258,33 @@ mkdir -p "$REGISTRY_DIR/projects"
 copy_if_not_exists "$TEMPLATE_DIR/knowledge/projects/INDEX.md.template" \
   "$REGISTRY_DIR/projects/INDEX.md"
 
+# --- Step 3.5: Initialize Git in KAIZEN_KNOWLEDGE_DIR ---
+
+if command -v git >/dev/null 2>&1; then
+  if [ ! -d "$KAIZEN_KNOWLEDGE_DIR/.git" ]; then
+    echo ""
+    echo "  Initializing Git repository in $KAIZEN_KNOWLEDGE_DIR ..."
+    git -C "$KAIZEN_KNOWLEDGE_DIR" init -q
+    git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+    # Use fallback author if git user is not configured
+    if git -C "$KAIZEN_KNOWLEDGE_DIR" -c commit.gpgSign=false commit -q -m "Initial commit by kaizen-cli setup" 2>/dev/null; then
+      echo "  Created initial commit."
+    elif git -C "$KAIZEN_KNOWLEDGE_DIR" -c commit.gpgSign=false \
+        -c user.name="kaizen-cli" -c user.email="kaizen-cli@localhost" \
+        commit -q -m "Initial commit by kaizen-cli setup" 2>/dev/null; then
+      echo "  Created initial commit."
+    else
+      echo "  Warning: Could not create initial commit (git user may not be configured)."
+    fi
+  else
+    echo ""
+    echo "  Git repository already exists in $KAIZEN_KNOWLEDGE_DIR (skipped)"
+  fi
+else
+  echo ""
+  echo "  Warning: git not found. Skipping knowledge directory Git initialization."
+fi
+
 # --- Step 4: Add environment variables to shell RC file ---
 
 echo ""

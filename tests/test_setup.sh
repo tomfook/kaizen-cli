@@ -401,6 +401,116 @@ test_symlink_warnings() {
   teardown_test_env
 }
 
+# --- Test 11: New setup initializes git in KAIZEN_KNOWLEDGE_DIR ---
+
+test_git_init_new_setup() {
+  local test_name="New setup initializes git in knowledge dir"
+  setup_test_env "$test_name"
+  local ok=0
+
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  # .git directory should exist in KAIZEN_KNOWLEDGE_DIR
+  if [ ! -d "$TEST_KNOWLEDGE_DIR/.git" ]; then
+    echo "  FAIL: .git directory should exist in KAIZEN_KNOWLEDGE_DIR"
+    ok=1
+  fi
+
+  # Should have an initial commit
+  if [ "$ok" -eq 0 ]; then
+    local commit_count
+    commit_count=$(git -C "$TEST_KNOWLEDGE_DIR" rev-list --count HEAD 2>/dev/null || echo "0")
+    if [ "$commit_count" -lt 1 ]; then
+      echo "  FAIL: Should have at least one commit, got $commit_count"
+      ok=1
+    fi
+  fi
+
+  # Template files should be tracked
+  if [ "$ok" -eq 0 ]; then
+    local tracked
+    tracked=$(git -C "$TEST_KNOWLEDGE_DIR" ls-files | wc -l)
+    if [ "$tracked" -lt 1 ]; then
+      echo "  FAIL: Should have tracked files, got $tracked"
+      ok=1
+    fi
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 12: Existing git repo is not re-initialized ---
+
+test_git_init_skip_existing() {
+  local test_name="Existing git repo is not re-initialized"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # Pre-create knowledge dir with an existing git repo and a custom commit
+  mkdir -p "$TEST_KNOWLEDGE_DIR"
+  git -C "$TEST_KNOWLEDGE_DIR" init -q
+  echo "user data" > "$TEST_KNOWLEDGE_DIR/notes.md"
+  git -C "$TEST_KNOWLEDGE_DIR" add -A
+  git -C "$TEST_KNOWLEDGE_DIR" -c commit.gpgSign=false commit -q -m "User's own commit"
+  local original_hash
+  original_hash=$(git -C "$TEST_KNOWLEDGE_DIR" rev-parse HEAD)
+
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  # Original commit should still be the first commit
+  local first_hash
+  first_hash=$(git -C "$TEST_KNOWLEDGE_DIR" rev-list --max-parents=0 HEAD)
+  if [ "$first_hash" != "$original_hash" ]; then
+    echo "  FAIL: Original commit should be preserved"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 13: --force does not destroy existing git repo ---
+
+test_git_init_force_preserves_repo() {
+  local test_name="--force preserves existing git repo"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # Run normal setup first
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  local original_hash
+  original_hash=$(git -C "$TEST_KNOWLEDGE_DIR" rev-parse HEAD)
+
+  echo "export KAIZEN_CLI_DIR=\"$KAIZEN_CLI_DIR\"" >> "$TEST_BASHRC"
+  echo "export KAIZEN_KNOWLEDGE_DIR=\"$TEST_KNOWLEDGE_DIR\"" >> "$TEST_BASHRC"
+
+  # Run --force
+  HOME="$TEST_HOME" SHELL=/bin/bash KAIZEN_CLI_DIR="$KAIZEN_CLI_DIR" KAIZEN_KNOWLEDGE_DIR="$TEST_KNOWLEDGE_DIR" \
+    bash "$KAIZEN_CLI_DIR/setup.sh" --force > /dev/null 2>&1 || true
+
+  # Git repo should still exist with original commit
+  if [ ! -d "$TEST_KNOWLEDGE_DIR/.git" ]; then
+    echo "  FAIL: .git should still exist after --force"
+    ok=1
+  fi
+  if [ "$ok" -eq 0 ]; then
+    local current_hash
+    current_hash=$(git -C "$TEST_KNOWLEDGE_DIR" rev-list --max-parents=0 HEAD)
+    if [ "$current_hash" != "$original_hash" ]; then
+      echo "  FAIL: Initial commit should be preserved after --force"
+      ok=1
+    fi
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== Kaizen-CLI setup.sh tests ==="
@@ -416,6 +526,9 @@ test_invalid_language
 test_zsh_shell_detection
 test_force_cross_shell_read
 test_symlink_warnings
+test_git_init_new_setup
+test_git_init_skip_existing
+test_git_init_force_preserves_repo
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
