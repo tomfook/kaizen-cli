@@ -2,7 +2,7 @@
 name: kaizen-init-project
 description: >-
   Initial setup for a Kaizen-CLI project.
-  Creates knowledge/ and skills/ symlinks, generates CLAUDE.md and PROJECT_SUMMARY.md,
+  Creates knowledge/, commands/, and skills/ symlinks, generates CLAUDE.md and PROJECT_SUMMARY.md,
   and registers the project in the registry.
   Usage: "/kaizen-init-project"
 disable-model-invocation: true
@@ -40,6 +40,7 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" verify
 上書き防止のため、以下が既に存在しないか確認:
 
 - `knowledge/` — 既にsymlinkまたはディレクトリが存在する場合はスキップ
+- `.claude/commands/` — 既にkaizen-*のsymlinkが存在する場合はスキップ
 - `.claude/skills/` — 既にsymlinkが存在する場合はスキップ
 - `CLAUDE.md` — 既に存在する場合はユーザーに以下の3択を提示:
   1. **追記** — テンプレートの「Reference Documentation」「Kaizen-CLI Workflow」セクションを既存ファイルの末尾に追記
@@ -101,7 +102,20 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REG
 ln -s "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME" knowledge
 ```
 
-### 5. skills/ symlinkの作成
+### 5. commands/ symlinkの作成
+
+個別コマンドごとにsymlinkを作成（ユーザー独自コマンドとの共存のため）:
+
+```bash
+mkdir -p .claude/commands
+
+for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
+  cmd_name=$(basename "$cmd_file")
+  ln -s "$cmd_file" ".claude/commands/$cmd_name"
+done
+```
+
+### 6. skills/ symlinkの作成
 
 個別スキルごとにsymlinkを作成（ユーザー独自スキルとの共存のため）:
 
@@ -118,7 +132,7 @@ for skill_dir in "$KAIZEN_CLI_DIR/framework/.claude/skills"/*/; do
 done
 ```
 
-### 6. CLAUDE.md の生成
+### 7. CLAUDE.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/CLAUDE.md.template` を読み取り、プレースホルダを置換してCLAUDE.mdを生成。
 
@@ -135,7 +149,7 @@ done
 4. 含まれていないセクションのみ、既存ファイルの末尾に追記
 5. プレースホルダ（`{{PROJECT_DESCRIPTION}}` 等）は追記内容にも適用する
 
-### 7. docs/PROJECT_SUMMARY.md の生成
+### 8. docs/PROJECT_SUMMARY.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/PROJECT_SUMMARY.md.template` を読み取り、プレースホルダを置換。
 
@@ -149,14 +163,14 @@ mkdir -p docs
 - `{{PROJECT_PURPOSE}}`: Step 3で取得した目的
 - `{{DATE}}`: 今日の日付
 
-### 8. docs/LEARNINGS.md の生成
+### 9. docs/LEARNINGS.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/LEARNINGS.md.template` を読み取り、プレースホルダを置換。
 
 **置換対象**:
 - `{{PROJECT_NAME}}`: Step 3で取得したプロジェクト名
 
-### 9. プロジェクトレジストリへの登録
+### 10. プロジェクトレジストリへの登録
 
 選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
 
@@ -165,11 +179,12 @@ mkdir -p docs
 3. INDEX.mdの一覧テーブルに行を追加:
    - `| {id} | {name} | planning | | {date} |`
 
-### 10. 完了確認
+### 11. 完了確認
 
 ```bash
 # プロジェクト構造を表示
 ls -la knowledge
+ls -la .claude/commands/
 ls -la .claude/skills/
 ls docs/PROJECT_SUMMARY.md
 ls docs/LEARNINGS.md
@@ -177,13 +192,14 @@ ls docs/LEARNINGS.md
 
 ユーザーに以下を案内:
 - `knowledge/` が `$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME` へのsymlinkであること
+- `.claude/commands/` にKaizen-CLIコマンドへのsymlinkが作成されたこと
 - `.claude/skills/` にKaizen-CLIスキルへのsymlinkが作成されたこと
 - `CLAUDE.md` が生成されたこと
 - `docs/PROJECT_SUMMARY.md` が生成されたこと
 - `docs/LEARNINGS.md` が生成されたこと
 - プロジェクトレジストリに登録されたこと
 
-### 11. 次のステップの案内
+### 12. 次のステップの案内
 
 1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
 2. `CLAUDE.md` をカスタマイズ

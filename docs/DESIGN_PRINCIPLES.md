@@ -14,7 +14,7 @@ A collection of principles underpinning the design of Kaizen-CLI. This document 
 $KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
   framework/
     bin/                           <- Helper shell scripts for mechanical processing
-    .claude/commands/              <- Symlinked to ~/.claude/commands/
+    .claude/commands/              <- Symlinked into each project
     .claude/skills/                <- Symlinked into each project
     templates/{en,ja}/             <- Locale-separated templates (selected per registry)
 

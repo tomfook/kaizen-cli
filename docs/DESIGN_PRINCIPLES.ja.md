@@ -14,7 +14,7 @@ Kaizen-CLI の設計を支える原則集。システムアーキテクチャの
 $KAIZEN_CLI_DIR (= kaizen-cli/)  ← 配布。git pull で安全に更新可能
   framework/
     bin/                           ← 機械的処理のヘルパーシェルスクリプト
-    .claude/commands/              ← ~/.claude/commands/ にsymlink
+    .claude/commands/              ← 各プロジェクトにsymlink
     .claude/skills/                ← 各プロジェクトにsymlink
     templates/{en,ja}/             ← ロケール別テンプレート（レジストリ単位で選択）
 

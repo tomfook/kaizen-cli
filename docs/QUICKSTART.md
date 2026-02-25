@@ -27,7 +27,7 @@ setup.sh does the following:
 3. Selects or creates a knowledge registry (default: `default`)
 4. Selects a template language (`en` or `ja`, default: `en`) — stored in `$REGISTRY_DIR/.lang`
 5. Expands template files into the selected registry (in the chosen language)
-6. Globally links commands and skills
+6. Globally links the `kaizen-init-project` skill
 
 ```bash
 # Apply environment variables
@@ -67,7 +67,9 @@ Once complete, the following structure is created:
 my-python-project/
 ├── CLAUDE.md              ← Project-specific settings
 ├── knowledge/             ← symlink to $KAIZEN_KNOWLEDGE_DIR/default
-├── .claude/skills/        ← symlink to Kaizen-CLI skills
+├── .claude/
+│   ├── commands/          ← symlinks to Kaizen-CLI commands
+│   └── skills/            ← symlinks to Kaizen-CLI skills
 └── docs/
     ├── PROJECT_SUMMARY.md ← Project overview
     └── LEARNINGS.md       ← Project-specific lessons

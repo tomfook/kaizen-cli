@@ -27,7 +27,7 @@ setup.sh が以下を行います:
 3. ナレッジレジストリを選択・作成（デフォルト: `default`）
 4. テンプレート言語を選択（`en` または `ja`、デフォルト: `en`）— `$REGISTRY_DIR/.lang` に保存
 5. テンプレートファイルを選択した言語で選択したレジストリ内に展開
-6. コマンドとスキルをグローバルにリンク
+6. `kaizen-init-project` スキルをグローバルにリンク
 
 ```bash
 # 環境変数を反映
@@ -67,7 +67,9 @@ Claude Code 内で:
 my-python-project/
 ├── CLAUDE.md              ← プロジェクト固有の設定
 ├── knowledge/             ← $KAIZEN_KNOWLEDGE_DIR/default へのsymlink
-├── .claude/skills/        ← Kaizen-CLIスキルへのsymlink
+├── .claude/
+│   ├── commands/          ← Kaizen-CLIコマンドへのsymlink
+│   └── skills/            ← Kaizen-CLIスキルへのsymlink
 └── docs/
     ├── PROJECT_SUMMARY.md ← プロジェクト概要
     └── LEARNINGS.md       ← プロジェクト固有の教訓
