@@ -92,8 +92,8 @@ If all three are Yes → add it to knowledge/.
 
 ### Naming and Scope Decisions
 
-- **knowledge/** (not context/): Named to align with "knowledge-accumulating" branding and avoid confusion with LLM "context window"
-- **committing-project excluded**: Commit formatting is not core to the Kaizen cycle. Claude Code already has built-in commit conventions
+- **knowledge/ directory name**: Named to align with "knowledge-accumulating" branding, also avoiding confusion with LLM "context window"
+- **Commit formatting is out of scope**: Commit formatting is not core to the Kaizen cycle. Claude Code already has built-in commit conventions
 
 ---
 
