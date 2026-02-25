@@ -90,11 +90,6 @@ If all three are Yes → add it to knowledge/.
 - reflect-learning **extracts and presents** insights. Updates to knowledge/ require user approval
 - Skills provide **checklists and guidelines**. They do not auto-execute tasks
 
-### Naming and Scope Decisions
-
-- **knowledge/ directory name**: Named to align with "knowledge-accumulating" branding, also avoiding confusion with LLM "context window"
-- **Commit formatting is out of scope**: Commit formatting is not core to the Kaizen cycle. Claude Code already has built-in commit conventions
-
 ---
 
 ## Knowledge Management Patterns
