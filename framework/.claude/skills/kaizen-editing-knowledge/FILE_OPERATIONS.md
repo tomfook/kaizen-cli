@@ -26,13 +26,13 @@ git -C "$KAIZEN_KNOWLEDGE_DIR" rm some-topic/SOME_FILE.md
 
 ### git add / commit
 
-通常の編集は、どのプロジェクトからでも可能:
+`/kaizen-reflect-learning` と `/kaizen-update-docs` は、knowledge/ への変更後に自動で git commit する（`$KAIZEN_KNOWLEDGE_DIR` が git リポジトリの場合）。
+
+手動でコミットが必要な場合:
 
 ```bash
-# 編集後、$KAIZEN_KNOWLEDGE_DIRでコミット（git管理している場合）
-cd "$KAIZEN_KNOWLEDGE_DIR"
-git add .
-git commit -m "Update knowledge files"
+git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "Update knowledge files"
 ```
 
 ---
