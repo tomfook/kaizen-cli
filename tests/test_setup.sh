@@ -21,6 +21,10 @@ setup_test_env() {
   TEST_KNOWLEDGE_DIR="$TEST_HOME/kaizen-knowledge"
   TEST_BASHRC="$TEST_HOME/.bashrc"
   touch "$TEST_BASHRC"
+  export GIT_AUTHOR_NAME="kaizen-test"
+  export GIT_AUTHOR_EMAIL="test@kaizen-cli"
+  export GIT_COMMITTER_NAME="kaizen-test"
+  export GIT_COMMITTER_EMAIL="test@kaizen-cli"
   echo "--- [$test_name] ---"
 }
 
@@ -401,6 +405,82 @@ test_symlink_warnings() {
   teardown_test_env
 }
 
+# --- Test 11: New setup initializes git repo in knowledge directory ---
+
+test_git_init_new_setup() {
+  local test_name="New setup initializes git repo"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # Pipe: knowledge dir path, registry name (default), language (default en)
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  # Knowledge dir should be a git repository
+  if ! git -C "$TEST_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "  FAIL: $TEST_KNOWLEDGE_DIR should be a git repository"
+    ok=1
+  fi
+
+  # Should have at least 1 commit
+  if [ "$ok" -eq 0 ]; then
+    local commit_count
+    commit_count="$(git -C "$TEST_KNOWLEDGE_DIR" rev-list --count HEAD 2>/dev/null || echo 0)"
+    if [ "$commit_count" -lt 1 ]; then
+      echo "  FAIL: Should have at least 1 commit, got $commit_count"
+      ok=1
+    fi
+  fi
+
+  # Template files should be tracked
+  if [ "$ok" -eq 0 ]; then
+    local tracked
+    tracked="$(git -C "$TEST_KNOWLEDGE_DIR" ls-files)"
+    if ! echo "$tracked" | grep -q "default/meta/INDEX.md"; then
+      echo "  FAIL: default/meta/INDEX.md should be tracked"
+      ok=1
+    fi
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 12: --force skips existing git repo ---
+
+test_git_init_force_skip() {
+  local test_name="--force skips existing git repo"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # First: normal setup to create knowledge dir with git repo
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  # Record the HEAD commit before --force
+  local head_before
+  head_before="$(git -C "$TEST_KNOWLEDGE_DIR" rev-parse HEAD 2>/dev/null)"
+
+  # Pre-set env vars in bashrc (so --force can read them)
+  echo "export KAIZEN_CLI_DIR=\"$KAIZEN_CLI_DIR\"" >> "$TEST_BASHRC"
+  echo "export KAIZEN_KNOWLEDGE_DIR=\"$TEST_KNOWLEDGE_DIR\"" >> "$TEST_BASHRC"
+
+  # Run --force
+  HOME="$TEST_HOME" SHELL=/bin/bash KAIZEN_CLI_DIR="$KAIZEN_CLI_DIR" KAIZEN_KNOWLEDGE_DIR="$TEST_KNOWLEDGE_DIR" \
+    bash "$KAIZEN_CLI_DIR/setup.sh" --force > /dev/null 2>&1 || true
+
+  # HEAD should not have changed (no new commit)
+  local head_after
+  head_after="$(git -C "$TEST_KNOWLEDGE_DIR" rev-parse HEAD 2>/dev/null)"
+  if [ "$head_before" != "$head_after" ]; then
+    echo "  FAIL: HEAD should not change after --force (before=$head_before, after=$head_after)"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== Kaizen-CLI setup.sh tests ==="
@@ -416,6 +496,8 @@ test_invalid_language
 test_zsh_shell_detection
 test_force_cross_shell_read
 test_symlink_warnings
+test_git_init_new_setup
+test_git_init_force_skip
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="

@@ -27,7 +27,8 @@ setup.sh does the following:
 3. Selects or creates a knowledge registry (default: `default`)
 4. Selects a template language (`en` or `ja`, default: `en`) — stored in `$REGISTRY_DIR/.lang`
 5. Expands template files into the selected registry (in the chosen language)
-6. Globally links commands and skills
+6. Initializes `$KAIZEN_KNOWLEDGE_DIR` as a git repository (skipped if already initialized)
+7. Globally links commands and skills
 
 ```bash
 # Apply environment variables
@@ -198,7 +199,7 @@ With each cycle, knowledge/ grows, and repeated explanations, rework, and known 
 
 ## Tips
 
-- **Version-control knowledge/**: Run `git init` in `$KAIZEN_KNOWLEDGE_DIR` to track changes to your accumulated knowledge
+- **Version-control knowledge/**: `setup.sh` automatically initializes a git repository in `$KAIZEN_KNOWLEDGE_DIR`. To back up remotely, add a remote with `git -C $KAIZEN_KNOWLEDGE_DIR remote add origin <url> && git -C $KAIZEN_KNOWLEDGE_DIR push -u origin main`
 - **When work reaches a stopping point**: Make `/kaizen-reflect-learning` → `/kaizen-update-docs` a habit to steadily build up knowledge and keep documentation in sync
 
 ---
