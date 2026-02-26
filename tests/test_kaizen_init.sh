@@ -377,6 +377,43 @@ test_list_registries_no_arg_no_env() {
   teardown_test_env
 }
 
+# --- Test 14: verify knowledge_git=no when not a git repo ---
+
+test_verify_knowledge_git_no() {
+  local test_name="verify: knowledge_git=no when not a git repo"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR/default"
+  local output
+  output=$(KAIZEN_KNOWLEDGE_DIR="$TEST_KNOWLEDGE_DIR" bash "$KAIZEN_INIT" verify) || ok=1
+
+  assert_output_contains "$output" "knowledge_git=no" \
+    "knowledge_git should be no for non-git directory" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 15: verify knowledge_git=yes when git initialized ---
+
+test_verify_knowledge_git_yes() {
+  local test_name="verify: knowledge_git=yes when git initialized"
+  setup_test_env "$test_name"
+  local ok=0
+
+  mkdir -p "$TEST_KNOWLEDGE_DIR/default"
+  git -C "$TEST_KNOWLEDGE_DIR" init -q
+  local output
+  output=$(KAIZEN_KNOWLEDGE_DIR="$TEST_KNOWLEDGE_DIR" bash "$KAIZEN_INIT" verify) || ok=1
+
+  assert_output_contains "$output" "knowledge_git=yes" \
+    "knowledge_git should be yes for git-initialized directory" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== kaizen-init.sh tests ==="
@@ -395,6 +432,8 @@ test_list_registries_empty
 test_list_registries_dir_missing
 test_list_registries_no_files
 test_list_registries_no_arg_no_env
+test_verify_knowledge_git_no
+test_verify_knowledge_git_yes
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
