@@ -68,7 +68,7 @@ SHELL_RC="$(detect_shell_rc)"
 # --- Step 1: Auto-detect KAIZEN_CLI_DIR ---
 
 KAIZEN_CLI_DIR="$(cd "$(dirname "$0")" && pwd)"
-echo "[1/6] Detected KAIZEN_CLI_DIR: $KAIZEN_CLI_DIR"
+echo "[1/7] Detected KAIZEN_CLI_DIR: $KAIZEN_CLI_DIR"
 
 # Verify framework/ directory exists
 if [ ! -d "$KAIZEN_CLI_DIR/framework" ]; then
@@ -85,19 +85,19 @@ echo ""
 if [ "$FORCE" = true ]; then
   # In --force mode, reuse existing value (env var > RC file > default)
   if [ -n "${KAIZEN_KNOWLEDGE_DIR:-}" ]; then
-    echo "[2/6] Using existing KAIZEN_KNOWLEDGE_DIR: $KAIZEN_KNOWLEDGE_DIR"
+    echo "[2/7] Using existing KAIZEN_KNOWLEDGE_DIR: $KAIZEN_KNOWLEDGE_DIR"
   elif existing_val=$(find_env_in_rc "KAIZEN_KNOWLEDGE_DIR"); then
     KAIZEN_KNOWLEDGE_DIR="$existing_val"
-    echo "[2/6] Read from RC file: KAIZEN_KNOWLEDGE_DIR=$KAIZEN_KNOWLEDGE_DIR"
+    echo "[2/7] Read from RC file: KAIZEN_KNOWLEDGE_DIR=$KAIZEN_KNOWLEDGE_DIR"
   else
-    echo "[2/6] Specify the path for your shared knowledge directory."
+    echo "[2/7] Specify the path for your shared knowledge directory."
     echo "  (Press Enter to use the default)"
     read -rp "  Path [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
     KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
     KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR/#\~/$HOME}"
   fi
 else
-  echo "[2/6] Specify the path for your shared knowledge directory."
+  echo "[2/7] Specify the path for your shared knowledge directory."
   echo "  (Press Enter to use the default)"
   read -rp "  Path [$DEFAULT_KNOWLEDGE_DIR]: " KAIZEN_KNOWLEDGE_DIR
   KAIZEN_KNOWLEDGE_DIR="${KAIZEN_KNOWLEDGE_DIR:-$DEFAULT_KNOWLEDGE_DIR}"
@@ -226,7 +226,7 @@ fi
 # --- Step 3: Expand templates ---
 
 echo ""
-echo "[3/6] Expanding templates..."
+echo "[3/7] Expanding templates..."
 
 # meta/
 mkdir -p "$REGISTRY_DIR/meta"
@@ -258,10 +258,25 @@ mkdir -p "$REGISTRY_DIR/projects"
 copy_if_not_exists "$TEMPLATE_DIR/knowledge/projects/INDEX.md.template" \
   "$REGISTRY_DIR/projects/INDEX.md"
 
-# --- Step 4: Add environment variables to shell RC file ---
+# --- Step 4: Initialize git in knowledge directory ---
 
 echo ""
-echo "[4/6] Setting environment variables in $SHELL_RC ..."
+echo "[4/7] Initializing git in knowledge directory..."
+
+if git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  echo "  Skipped (already a git repository): $KAIZEN_KNOWLEDGE_DIR"
+else
+  git -C "$KAIZEN_KNOWLEDGE_DIR" init -q
+  git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+  git -C "$KAIZEN_KNOWLEDGE_DIR" commit -q -m "Initialize knowledge repository via kaizen-cli setup"
+  echo "  Initialized git repository: $KAIZEN_KNOWLEDGE_DIR"
+  echo "  Created initial commit with template files"
+fi
+
+# --- Step 5: Add environment variables to shell RC file ---
+
+echo ""
+echo "[5/7] Setting environment variables in $SHELL_RC ..."
 
 # Ensure the RC file exists
 touch "$SHELL_RC"
@@ -287,10 +302,10 @@ add_env_var() {
 add_env_var "KAIZEN_CLI_DIR" "$KAIZEN_CLI_DIR"
 add_env_var "KAIZEN_KNOWLEDGE_DIR" "$KAIZEN_KNOWLEDGE_DIR"
 
-# --- Step 5: Symlink global commands ---
+# --- Step 6: Symlink global commands ---
 
 echo ""
-echo "[5/6] Linking global commands..."
+echo "[6/7] Linking global commands..."
 
 mkdir -p "$HOME/.claude/commands"
 
@@ -310,10 +325,10 @@ for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
   fi
 done
 
-# --- Step 6: Symlink kaizen-init-project skill ---
+# --- Step 7: Symlink kaizen-init-project skill ---
 
 echo ""
-echo "[6/6] Linking kaizen-init-project skill..."
+echo "[7/7] Linking kaizen-init-project skill..."
 
 mkdir -p "$HOME/.claude/skills"
 

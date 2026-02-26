@@ -5,6 +5,7 @@
 # Usage: bash kaizen-init.sh <subcommand>
 # Subcommands:
 #   verify                        — Validate environment and list registries
+#                                   Output includes knowledge_git=yes|no (git status of knowledge dir)
 #   list-registries               — List registry names (one per line)
 #   validate-registry-name <name> — Validate a registry name
 #
@@ -53,7 +54,15 @@ do_verify() {
     fi
   fi
 
-  # 4. Check template directory
+  # 4. Check git status of knowledge directory
+  local knowledge_git="no"
+  if [ "$status" = "ok" ]; then
+    if git -C "$knowledge_dir" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      knowledge_git="yes"
+    fi
+  fi
+
+  # 5. Check template directory
   if [ "$status" = "ok" ] && [ ! -d "$template_dir" ]; then
     status="error"
     error="Template directory not found: $template_dir"
@@ -66,6 +75,7 @@ do_verify() {
     echo "kaizen_cli_dir=$KAIZEN_CLI_DIR"
     echo "knowledge_dir=$knowledge_dir"
     echo "registries=$registries"
+    echo "knowledge_git=$knowledge_git"
     echo "template_dir=$template_dir"
   else
     echo "error=$error"

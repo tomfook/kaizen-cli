@@ -129,6 +129,22 @@ PROJECT_SUMMARY.md更新後、`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` への�
 
 **不在の場合**: 「projects/INDEX.md が見つかりません。スキップします。」と表示してスキップ。
 
+### Step 6: knowledge/ の自動コミット
+
+Step 5 で `knowledge/projects/INDEX.md` を更新した場合、変更を git にコミットする。
+
+1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
+   ```bash
+   git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree
+   ```
+2. git リポジトリかつ未コミットの変更がある場合、自動コミット:
+   ```bash
+   git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen sync: update project registry for <project-id>"
+   ```
+3. git リポジトリでない場合、または Step 5 をスキップした場合はスキップ
+4. コミットに失敗した場合、警告を表示して続行
+
 ---
 
 ## docs/ 推奨構成・CLAUDE.md 管理ルール

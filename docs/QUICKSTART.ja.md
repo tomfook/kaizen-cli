@@ -27,7 +27,8 @@ setup.sh が以下を行います:
 3. ナレッジレジストリを選択・作成（デフォルト: `default`）
 4. テンプレート言語を選択（`en` または `ja`、デフォルト: `en`）— `$REGISTRY_DIR/.lang` に保存
 5. テンプレートファイルを選択した言語で選択したレジストリ内に展開
-6. コマンドとスキルをグローバルにリンク
+6. `$KAIZEN_KNOWLEDGE_DIR` を git リポジトリとして初期化（初期化済みの場合はスキップ）
+7. コマンドとスキルをグローバルにリンク
 
 ```bash
 # 環境変数を反映
@@ -198,7 +199,7 @@ Claude Code が CLAUDE.md と docs/ を分析し、更新を提案します:
 
 ## Tips
 
-- **knowledge/ のgit管理**: `$KAIZEN_KNOWLEDGE_DIR` で `git init` を実行すると、蓄積された知識の変更履歴を管理できます
+- **knowledge/ のgit管理**: `setup.sh` が `$KAIZEN_KNOWLEDGE_DIR` に git リポジトリを自動初期化します。リモートバックアップには `git -C $KAIZEN_KNOWLEDGE_DIR remote add origin <url> && git -C $KAIZEN_KNOWLEDGE_DIR push -u origin main` でリモートを追加してください
 - **作業が一段落ついたら**: `/kaizen-reflect-learning` → `/kaizen-update-docs` を習慣にすると、知識が着実に蓄積され、ドキュメントも常に最新に保てます
 
 ---

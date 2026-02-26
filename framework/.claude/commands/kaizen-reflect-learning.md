@@ -18,6 +18,7 @@
 4. **承認後、編集前にkaizen-editing-knowledge Skillを発動**（下記参照）
 5. 適切なknowledge/ファイルに**可能な限り簡潔に**知見を反映
 6. 変更内容を報告
+7. knowledge/ の変更を git に自動コミット（git リポジトリの場合のみ）
 
 **knowledge/編集前の必須手順**:
 ユーザー承認後、ファイル編集前に以下でSkillを発動すること:
@@ -103,6 +104,24 @@
 ```
 
 作業完了後、Claude Codeとの会話コンテキストが残っている状態で実行してください。
+
+---
+
+## knowledge/ の自動コミット
+
+knowledge/ への反映完了後、以下を実行する:
+
+1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
+   ```bash
+   git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree
+   ```
+2. git リポジトリの場合、未コミットの変更があれば自動コミット:
+   ```bash
+   git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen reflect: <知見の要約（1行、英語）>"
+   ```
+3. git リポジトリでない場合はスキップ（警告不要）
+4. コミットに失敗した場合、警告を表示して続行（knowledge/ の変更自体は保持）
 
 ---
 
