@@ -313,28 +313,30 @@ add_env_var() {
 add_env_var "KAIZEN_CLI_DIR" "$KAIZEN_CLI_DIR"
 add_env_var "KAIZEN_KNOWLEDGE_DIR" "$KAIZEN_KNOWLEDGE_DIR"
 
-# --- Step 6: Symlink global commands ---
+# --- Step 6: Clean up legacy global commands (if --force) ---
 
 echo ""
-echo "[6/7] Linking global commands..."
+echo "[6/7] Checking global commands..."
 
-mkdir -p "$HOME/.claude/commands"
-
-for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
-  cmd_name="$(basename "$cmd_file")"
-  dest="$HOME/.claude/commands/$cmd_name"
-  if [ -e "$dest" ] || [ -L "$dest" ]; then
-    if [ "$FORCE" = true ]; then
-      ln -sf "$cmd_file" "$dest"
-      echo "  Re-linked: $dest -> $cmd_file"
-    else
-      echo "  Skipped (exists): $dest"
-    fi
+# kaizen commands are now project-local (created by kaizen-init-project).
+# Remove legacy global symlinks if they exist.
+legacy_removed=0
+for cmd_file in "$HOME/.claude/commands"/kaizen-*.md; do
+  [ -e "$cmd_file" ] || [ -L "$cmd_file" ] || continue
+  if [ "$FORCE" = true ]; then
+    rm -f "$cmd_file"
+    echo "  Removed legacy global command: $(basename "$cmd_file")"
+    legacy_removed=$((legacy_removed + 1))
   else
-    ln -s "$cmd_file" "$dest"
-    echo "  Linked: $dest -> $cmd_file"
+    echo "  Warning: Legacy global command found: $(basename "$cmd_file")"
+    echo "           Run setup.sh --force to clean up."
   fi
 done
+if [ "$legacy_removed" -gt 0 ]; then
+  echo "  Kaizen commands are now project-local. Run /kaizen-init-project in existing projects to add command links."
+elif [ "$FORCE" = true ]; then
+  echo "  No legacy global commands found."
+fi
 
 # --- Step 7: Symlink kaizen-init-project skill ---
 
