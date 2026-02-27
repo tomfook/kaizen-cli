@@ -481,6 +481,38 @@ test_git_init_force_skip() {
   teardown_test_env
 }
 
+# --- Test 13: Pre-existing user git repo is not re-initialized ---
+
+test_git_init_preserves_user_repo() {
+  local test_name="Pre-existing user git repo is preserved"
+  setup_test_env "$test_name"
+  local ok=0
+
+  # Pre-create knowledge dir with user's own git repo and custom commit
+  mkdir -p "$TEST_KNOWLEDGE_DIR"
+  git -C "$TEST_KNOWLEDGE_DIR" init -q
+  echo "user data" > "$TEST_KNOWLEDGE_DIR/notes.md"
+  git -C "$TEST_KNOWLEDGE_DIR" add -A
+  git -C "$TEST_KNOWLEDGE_DIR" -c commit.gpgSign=false commit -q -m "User's own commit"
+  local original_hash
+  original_hash="$(git -C "$TEST_KNOWLEDGE_DIR" rev-parse HEAD)"
+
+  # Run setup
+  printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
+    HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
+
+  # Original commit should still be the first commit
+  local first_hash
+  first_hash="$(git -C "$TEST_KNOWLEDGE_DIR" rev-list --max-parents=0 HEAD)"
+  if [ "$first_hash" != "$original_hash" ]; then
+    echo "  FAIL: Original user commit should be preserved"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== Kaizen-CLI setup.sh tests ==="
@@ -498,6 +530,7 @@ test_force_cross_shell_read
 test_symlink_warnings
 test_git_init_new_setup
 test_git_init_force_skip
+test_git_init_preserves_user_repo
 
 echo ""
 echo "=== Results: $PASS passed, $FAIL failed ==="
