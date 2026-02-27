@@ -35,7 +35,35 @@ setup.sh does the following:
 source ~/.bashrc
 ```
 
-> **Tip**: After updating kaizen-cli with `git pull`, re-run `bash kaizen-cli/setup.sh --force` to update environment variables and symlinks. Knowledge files are preserved.
+---
+
+## Upgrading (Existing Users)
+
+After updating kaizen-cli to a newer version, run `setup.sh --force` to apply the latest changes.
+
+```bash
+cd kaizen-cli
+git pull
+bash setup.sh --force
+source ~/.bashrc   # or: source ~/.zshrc
+```
+
+### What `--force` does
+
+| Action | Detail |
+|---|---|
+| Update environment variables | Re-writes `$KAIZEN_CLI_DIR` and `$KAIZEN_KNOWLEDGE_DIR` in your shell RC file |
+| Re-link symlinks | Re-creates the `kaizen-init-project` skill symlink to point to the latest version |
+| Clean up legacy commands | Removes old global kaizen commands that have been replaced by project-local commands |
+| Auto-migrate knowledge structure | Detects legacy flat-layout knowledge and migrates it to the registry-based layout |
+
+### What is preserved
+
+- **Knowledge files are never overwritten** — all accumulated user data remains intact
+- Registry selection and language preference (`.lang`) are retained
+- Existing project configurations are not affected
+
+> **When should you run `--force`?** Every time you update kaizen-cli with `git pull`. It is safe to run repeatedly.
 
 ---
 
