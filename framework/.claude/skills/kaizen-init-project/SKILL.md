@@ -132,6 +132,10 @@ mkdir -p .claude/commands
 
 for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
   cmd_name=$(basename "$cmd_file")
+  # べき等: 既にsymlinkが存在する場合はスキップ
+  if [ -L ".claude/commands/$cmd_name" ]; then
+    continue
+  fi
   ln -s "$cmd_file" ".claude/commands/$cmd_name"
 done
 ```
