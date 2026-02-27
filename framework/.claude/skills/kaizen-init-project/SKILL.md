@@ -115,6 +115,10 @@ for skill_dir in "$KAIZEN_CLI_DIR/framework/.claude/skills"/*/; do
   if [ "$skill_name" = "kaizen-init-project" ]; then
     continue
   fi
+  # べき等: 既にsymlinkが存在する場合はスキップ
+  if [ -L ".claude/skills/$skill_name" ]; then
+    continue
+  fi
   ln -s "$skill_dir" ".claude/skills/$skill_name"
 done
 ```
@@ -176,8 +180,10 @@ mkdir -p docs
 
 1. `knowledge/projects/` ディレクトリが存在しない場合は作成
 2. `knowledge/projects/INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/templates/$LANG/knowledge/projects/INDEX.md.template` から生成
-3. INDEX.mdの一覧テーブルに行を追加:
-   - `| {id} | {name} | planning | | {date} |`
+3. べき等: INDEX.md 内にプロジェクトIDが既に存在するか確認する（テーブル行の先頭カラムを検索）
+   - 既に存在する場合 → 登録をスキップし、ユーザーに「プロジェクト '{id}' は既にレジストリに登録されています」と通知
+   - 存在しない場合 → INDEX.mdの一覧テーブルに行を追加:
+     - `| {id} | {name} | planning | | {date} |`
 
 ### 11. 完了確認
 
