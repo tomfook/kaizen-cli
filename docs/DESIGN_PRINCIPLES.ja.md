@@ -14,8 +14,8 @@ Kaizen-CLI の設計を支える原則集。システムアーキテクチャの
 $KAIZEN_CLI_DIR (= kaizen-cli/)  ← 配布。git pull で安全に更新可能
   framework/
     bin/                           ← 機械的処理のヘルパーシェルスクリプト
-    .claude/commands/              ← ~/.claude/commands/ にsymlink
-    .claude/skills/                ← 各プロジェクトにsymlink
+    .claude/commands/              ← kaizen-init-project で各プロジェクトにsymlink
+    .claude/skills/                ← kaizen-init-project で各プロジェクトにsymlink
     templates/{en,ja}/             ← ロケール別テンプレート（レジストリ単位で選択）
 
 $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される場所
@@ -35,7 +35,7 @@ $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される�
   - `$KAIZEN_CLI_DIR`: kaizen-cli リポジトリのルート（setup.sh が自動検出）。セットアップとプロジェクト初期化時にテンプレートやスキルの参照に使用
   - `$KAIZEN_KNOWLEDGE_DIR`: ユーザーの共有ナレッジディレクトリ。各プロジェクトからsymlink経由で常時参照
 - `setup.sh --force` は環境変数とシンボリックリンクのみ更新する。ナレッジファイルは上書きしない（蓄積データの保護）
-- `kaizen-init-project` は setup.sh によりグローバルスキル（`~/.claude/skills/`）としてインストールされる。プロジェクト初期化前に利用可能である必要があるため
+- `kaizen-init-project` は setup.sh によりグローバルスキル（`~/.claude/skills/`）としてインストールされる。プロジェクト初期化前に利用可能である必要があるため。他の kaizen コマンドはプロジェクトローカルで、`kaizen-init-project` が作成する
 
 ### シンボリックリンクによる横断共有
 

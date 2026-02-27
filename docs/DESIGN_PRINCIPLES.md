@@ -14,8 +14,8 @@ A collection of principles underpinning the design of Kaizen-CLI. This document 
 $KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
   framework/
     bin/                           <- Helper shell scripts for mechanical processing
-    .claude/commands/              <- Symlinked to ~/.claude/commands/
-    .claude/skills/                <- Symlinked into each project
+    .claude/commands/              <- Symlinked into each project by kaizen-init-project
+    .claude/skills/                <- Symlinked into each project by kaizen-init-project
     templates/{en,ja}/             <- Locale-separated templates (selected per registry)
 
 $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
@@ -35,7 +35,7 @@ This separation ensures:
   - `$KAIZEN_CLI_DIR`: Root of the kaizen-cli repository (auto-detected by setup.sh). Used during setup and project initialization to locate templates and skills
   - `$KAIZEN_KNOWLEDGE_DIR`: User's shared knowledge directory. Referenced at runtime via symlinks from each project
 - `setup.sh --force` only updates env vars and symlinks — never overwrites knowledge files, preserving accumulated user data
-- `kaizen-init-project` is installed as a global skill (`~/.claude/skills/`) by setup.sh, because it must be available before any project is initialized
+- `kaizen-init-project` is installed as a global skill (`~/.claude/skills/`) by setup.sh, because it must be available before any project is initialized. All other kaizen commands are project-local, created by `kaizen-init-project`
 
 ### Cross-Project Sharing via Symlinks
 

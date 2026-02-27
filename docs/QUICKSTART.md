@@ -28,7 +28,7 @@ setup.sh does the following:
 4. Selects a template language (`en` or `ja`, default: `en`) — stored in `$REGISTRY_DIR/.lang`
 5. Expands template files into the selected registry (in the chosen language)
 6. Initializes `$KAIZEN_KNOWLEDGE_DIR` as a git repository (skipped if already initialized)
-7. Globally links commands and skills
+7. Links `kaizen-init-project` skill globally
 
 ```bash
 # Apply environment variables
