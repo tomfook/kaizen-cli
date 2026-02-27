@@ -243,7 +243,7 @@ test_invalid_language() {
   output=$(printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "fr" | \
     HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" 2>&1 || true)
 
-  if echo "$output" | grep -q "Error.*Language must be"; then
+  if grep -q "Error.*Language must be" <<<"$output"; then
     : # expected
   else
     echo "  FAIL: Should show error for invalid language 'fr'"
@@ -436,7 +436,7 @@ test_git_init_new_setup() {
   if [ "$ok" -eq 0 ]; then
     local tracked
     tracked="$(git -C "$TEST_KNOWLEDGE_DIR" ls-files)"
-    if ! echo "$tracked" | grep -q "default/meta/INDEX.md"; then
+    if ! grep -q "default/meta/INDEX.md" <<<"$tracked"; then
       echo "  FAIL: default/meta/INDEX.md should be tracked"
       ok=1
     fi
@@ -552,7 +552,7 @@ test_force_removes_legacy_commands() {
   fi
 
   # Output should mention removal
-  if ! echo "$output" | grep -q "Removed legacy global command"; then
+  if ! grep -q "Removed legacy global command" <<<"$output"; then
     echo "  FAIL: Output should mention removed legacy commands"
     ok=1
   fi
@@ -589,7 +589,7 @@ test_no_force_warns_legacy_commands() {
   fi
 
   # Output should warn
-  if ! echo "$output" | grep -q "Legacy global command found"; then
+  if ! grep -q "Legacy global command found" <<<"$output"; then
     echo "  FAIL: Output should warn about legacy command"
     ok=1
   fi

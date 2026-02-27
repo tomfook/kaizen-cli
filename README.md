@@ -61,7 +61,7 @@ claude  # Start Claude Code, then:
         # /kaizen-reflect-learning — capture lessons learned
 ```
 
-`setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and installs global commands. The `knowledge/` in each project is a symlink to a registry within this shared directory — knowledge accumulated in one project is automatically available to all others sharing the same registry. You can create multiple registries (e.g., work and personal) to keep knowledge separated by context.
+`setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and links the `kaizen-init-project` skill. Run `/kaizen-init-project` in each project to set up kaizen commands and symlinks. The `knowledge/` in each project is a symlink to a registry within this shared directory — knowledge accumulated in one project is automatically available to all others sharing the same registry. You can create multiple registries (e.g., work and personal) to keep knowledge separated by context.
 
 For a detailed walkthrough, see [docs/QUICKSTART.md](docs/QUICKSTART.md).
 
