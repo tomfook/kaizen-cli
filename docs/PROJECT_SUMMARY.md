@@ -3,9 +3,9 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init]
   created: "2026-02-18"
-  updated: "2026-02-23"
+  updated: "2026-02-27"
 ---
 
 # Kaizen-CLI
@@ -21,7 +21,7 @@ A framework that embeds a knowledge-accumulation loop into everyday Claude Code 
 ## Tech Stack
 
 - Pure Claude Code skills/commands/knowledge files (no runtime dependencies)
-- Bash (setup.sh)
+- Bash (setup.sh, framework/bin/)
 - GitHub Actions (link-check CI)
 
 ## Design Decisions
@@ -32,6 +32,7 @@ See [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md) for architecture decisions an
 
 - This repo is distribution-only (read-only). User knowledge lives in `$KAIZEN_KNOWLEDGE_DIR`.
 - `git pull` never conflicts with user data by design.
+- Kaizen commands are project-local (created by `kaizen-init-project`), not global.
 
 ## Project Documentation
 
