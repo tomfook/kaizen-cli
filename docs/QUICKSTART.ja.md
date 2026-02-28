@@ -35,7 +35,35 @@ setup.sh が以下を行います:
 source ~/.bashrc
 ```
 
-> **Tip**: `git pull` で kaizen-cli を更新した後は、`bash kaizen-cli/setup.sh --force` を再実行すると環境変数とシンボリックリンクが最新化されます。knowledge ファイルは保持されます。
+---
+
+## アップグレード（既存ユーザー向け）
+
+kaizen-cli を新しいバージョンに更新した後は、`setup.sh --force` を実行して最新の変更を適用します。
+
+```bash
+cd kaizen-cli
+git pull
+bash setup.sh --force
+source ~/.bashrc   # または: source ~/.zshrc
+```
+
+### `--force` が行うこと
+
+| 操作 | 詳細 |
+|---|---|
+| 環境変数の更新 | シェルRCファイル内の `$KAIZEN_CLI_DIR` と `$KAIZEN_KNOWLEDGE_DIR` を再設定 |
+| シンボリックリンクの再リンク | `kaizen-init-project` スキルのシンボリックリンクを最新版に再作成 |
+| レガシーコマンドのクリーンアップ | プロジェクトローカルに移行済みの旧グローバルkaizenコマンドを削除 |
+| ナレッジ構造の自動マイグレーション | 旧フラットレイアウトのknowledgeを検出し、レジストリベースのレイアウトに移行 |
+
+### 保持されるもの
+
+- **knowledgeファイルは上書きされません** — 蓄積されたユーザーデータはすべてそのまま残ります
+- レジストリの選択と言語設定（`.lang`）は維持されます
+- 既存のプロジェクト設定は影響を受けません
+
+> **いつ `--force` を実行すべき？** `git pull` で kaizen-cli を更新するたびに実行してください。繰り返し実行しても安全です。
 
 ---
 
