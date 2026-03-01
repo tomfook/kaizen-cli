@@ -22,6 +22,8 @@ $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される�
   default/                         ← デフォルトレジストリ
     meta/                          ← 運用ガイドライン
     projects/                      ← プロジェクトレジストリ
+      INDEX.md                     ← メタデータテーブル（自動同期）
+      details/                     ← プロジェクト概要全文（自動同期）
     (ドメイン別ファイル)             ← reflect-learning の蓄積先
   work/                            ← 追加レジストリ（ユーザーが作成）
     meta/

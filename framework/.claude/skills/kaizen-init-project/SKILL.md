@@ -3,7 +3,7 @@ name: kaizen-init-project
 description: >-
   Initial setup for a Kaizen-CLI project.
   Creates knowledge/, skills/, and commands symlinks, generates CLAUDE.md and PROJECT_SUMMARY.md,
-  and registers the project in the registry.
+  and registers the project in the registry (INDEX.md row + details/ copy).
   Usage: "/kaizen-init-project"
 disable-model-invocation: true
 ---
@@ -188,6 +188,10 @@ mkdir -p docs
    - 既に存在する場合 → 登録をスキップし、ユーザーに「プロジェクト '{id}' は既にレジストリに登録されています」と通知
    - 存在しない場合 → INDEX.mdの一覧テーブルに行を追加:
      - `| {id} | {name} | planning | | {date} |`
+4. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
+   - `knowledge/projects/details/` ディレクトリが存在しない場合は作成: `mkdir -p "knowledge/projects/details"`
+   - Step 8 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
+   - コピー先が既に存在する場合は上書き
 
 ### 11. 完了確認
 
@@ -208,6 +212,7 @@ ls docs/LEARNINGS.md
 - `docs/PROJECT_SUMMARY.md` が生成されたこと
 - `docs/LEARNINGS.md` が生成されたこと
 - プロジェクトレジストリに登録されたこと
+- `knowledge/projects/details/{id}.md` にプロジェクト概要のコピーが配置されたこと
 
 ### 12. 次のステップの案内
 

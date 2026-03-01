@@ -125,13 +125,16 @@ PROJECT_SUMMARY.md更新後、`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` への�
 1. PROJECT_SUMMARY.mdのYAMLフロントマターから `id`, `name`, `status`, `keywords`, `updated` を抽出
 2. `knowledge/projects/INDEX.md` の一覧テーブルの該当行を更新
    - 該当IDが存在しない場合は行を追加
-3. 同期結果を報告
+3. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
+   - `knowledge/projects/details/` ディレクトリが存在しない場合は作成
+   - `docs/PROJECT_SUMMARY.md` の全内容で上書き
+4. 同期結果を報告
 
 **不在の場合**: 「projects/INDEX.md が見つかりません。スキップします。」と表示してスキップ。
 
 ### Step 6: knowledge/ の自動コミット
 
-Step 5 で `knowledge/projects/INDEX.md` を更新した場合、変更を git にコミットする。
+Step 5 で `knowledge/projects/` 配下のファイルを更新した場合、変更を git にコミットする。
 
 1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
    ```bash
