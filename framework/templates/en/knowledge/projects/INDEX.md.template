@@ -4,6 +4,8 @@ List of registered projects. Auto-registered by kaizen-init-project, synced by k
 
 **Important**: This file is auto-updated by commands. Manual editing is not recommended.
 
+Full project summaries are available in `details/{project-id}.md`, synced by kaizen-update-docs.
+
 ---
 
 ## Projects

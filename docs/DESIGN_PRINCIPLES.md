@@ -22,6 +22,8 @@ $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
   default/                         <- Default registry
     meta/                          <- Operational guidelines
     projects/                      <- Project registry
+      INDEX.md                     <- Metadata table (auto-synced)
+      details/                     <- Full project summaries (auto-synced)
     (domain-specific files)        <- Destination for reflect-learning output
   work/                            <- Additional registry (user-created)
     meta/
