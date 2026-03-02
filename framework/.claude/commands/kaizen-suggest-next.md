@@ -25,12 +25,11 @@
 | `knowledge/` | 蓄積済みの知識・ガイドライン | 任意 |
 | `knowledge/projects/INDEX.md` | 同一レジストリ内の他プロジェクト一覧 | 任意 |
 | `knowledge/projects/details/*.md` | 他プロジェクトの概要全文（横展開の検討に使用） | 任意 |
+| 最近更新されたファイル | 作業中の領域特定 | 任意 |
 
 **注意**: `knowledge/` はシンボリンクであり、Glob ツールはシンボリンク先を辿れない。Read ツールで直接パスを指定して読むこと。
 
 **他プロジェクト参照の手順**: まず `knowledge/projects/INDEX.md` を読み、現在のプロジェクト以外の ID を特定する。次に `knowledge/projects/details/{id}.md` を読み込む。details/ が存在しない場合はスキップする。
-
-| 最近更新されたファイル | 作業中の領域特定 | 任意 |
 
 ### Step 2: 作業内容の深い理解
 
