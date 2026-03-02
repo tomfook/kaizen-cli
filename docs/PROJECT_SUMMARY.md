@@ -3,9 +3,9 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry]
   created: "2026-02-18"
-  updated: "2026-02-27"
+  updated: "2026-03-02"
 ---
 
 # Kaizen-CLI
