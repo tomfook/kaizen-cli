@@ -4,63 +4,9 @@
 #
 # Runs in isolated temp directories — does not affect the real environment.
 
-set -euo pipefail
+source "$(cd "$(dirname "$0")" && pwd)/helper.sh"
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-KAIZEN_CLI_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 KAIZEN_INIT="$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh"
-PASS=0
-FAIL=0
-ERRORS=""
-
-# --- Helpers ---
-
-setup_test_env() {
-  local test_name="$1"
-  TEST_HOME="$(mktemp -d)"
-  TEST_KNOWLEDGE_DIR="$TEST_HOME/kaizen-knowledge"
-  echo "--- [$test_name] ---"
-}
-
-teardown_test_env() {
-  rm -rf "$TEST_HOME"
-}
-
-assert_output_contains() {
-  local output="$1"
-  local pattern="$2"
-  local msg="${3:-Output should contain '$pattern'}"
-  if grep -qF "$pattern" <<<"$output"; then
-    return 0
-  else
-    echo "  FAIL: $msg"
-    return 1
-  fi
-}
-
-assert_output_not_contains() {
-  local output="$1"
-  local pattern="$2"
-  local msg="${3:-Output should not contain '$pattern'}"
-  if grep -qF "$pattern" <<<"$output"; then
-    echo "  FAIL: $msg"
-    return 1
-  else
-    return 0
-  fi
-}
-
-record_result() {
-  local test_name="$1"
-  local exit_code="$2"
-  if [ "$exit_code" -eq 0 ]; then
-    PASS=$((PASS + 1))
-    echo "  PASS"
-  else
-    FAIL=$((FAIL + 1))
-    ERRORS="$ERRORS\n  - $test_name"
-  fi
-}
 
 # --- Test 1: verify normal case ---
 
@@ -513,9 +459,4 @@ test_validate_registry_name_error_message
 test_verify_knowledge_git_no
 test_verify_knowledge_git_yes
 
-echo ""
-echo "=== Results: $PASS passed, $FAIL failed ==="
-if [ "$FAIL" -gt 0 ]; then
-  echo -e "Failed tests:$ERRORS"
-  exit 1
-fi
+print_results
