@@ -12,8 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run kaizen-init.sh tests
-        run: bash tests/test_kaizen_init.sh
-
-      - name: Run setup.sh tests
-        run: bash tests/test_setup.sh
+      - name: Run all tests
+        run: bash tests/run_all.sh
