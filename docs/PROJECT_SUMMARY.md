@@ -3,9 +3,9 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing]
   created: "2026-02-18"
-  updated: "2026-03-02"
+  updated: "2026-03-06"
 ---
 
 # Kaizen-CLI
@@ -21,7 +21,7 @@ A framework that embeds a knowledge-accumulation loop into everyday Claude Code 
 ## Tech Stack
 
 - Pure Claude Code skills/commands/knowledge files (no runtime dependencies)
-- Bash (setup.sh, framework/bin/)
+- Bash (setup.sh, framework/bin/, tests/)
 - GitHub Actions (link-check CI)
 
 ## Design Decisions
