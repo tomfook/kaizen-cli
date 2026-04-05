@@ -168,6 +168,50 @@ test_invalid_language() {
   teardown_test_env
 }
 
+# --- Test 6: Agent files exist in framework ---
+
+test_agent_files_exist() {
+  local test_name="Agent files exist in framework/.claude/agents/"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local agents_dir="$KAIZEN_CLI_DIR/framework/.claude/agents"
+  assert_file_exists "$agents_dir/kaizen-learning-reflector.md" \
+    "kaizen-learning-reflector.md should exist" || ok=1
+  assert_file_exists "$agents_dir/kaizen-learning-verifier.md" \
+    "kaizen-learning-verifier.md should exist" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 7: Agent files have required frontmatter ---
+
+test_agent_frontmatter() {
+  local test_name="Agent files have required frontmatter (name, description, tools)"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local agents_dir="$KAIZEN_CLI_DIR/framework/.claude/agents"
+  for agent_file in "$agents_dir"/kaizen-*.md; do
+    local basename
+    basename=$(basename "$agent_file")
+    assert_file_contains "$agent_file" "^name:" \
+      "$basename should have name field" || ok=1
+    assert_file_contains "$agent_file" "^description:" \
+      "$basename should have description field" || ok=1
+    assert_file_contains "$agent_file" "^tools:" \
+      "$basename should have tools field" || ok=1
+  done
+
+  # Verifier should specify model: sonnet
+  assert_file_contains "$agents_dir/kaizen-learning-verifier.md" "^model: sonnet" \
+    "verifier should specify model: sonnet" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== setup.sh template & language tests ==="
@@ -178,5 +222,7 @@ test_template_paths_valid
 test_new_setup_en
 test_new_setup_ja
 test_invalid_language
+test_agent_files_exist
+test_agent_frontmatter
 
 print_results
