@@ -16,6 +16,7 @@ $KAIZEN_CLI_DIR (= kaizen-cli/)  ← 配布。git pull で安全に更新可能
     bin/                           ← 機械的処理のヘルパーシェルスクリプト
     .claude/commands/              ← kaizen-init-project で各プロジェクトにsymlink
     .claude/skills/                ← kaizen-init-project で各プロジェクトにsymlink
+    .claude/agents/                ← kaizen-init-project で各プロジェクトにsymlink
     templates/{en,ja}/             ← ロケール別テンプレート（レジストリ単位で選択）
 
 $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される場所
@@ -91,6 +92,33 @@ knowledge/ にプロジェクト固有情報を書いてはいけません。判
 - suggest-next は次のアクションを**提案**する。何を実行するかはユーザーが決める
 - reflect-learning は知見を**抽出・提示**する。knowledge/ への反映はユーザーの承認を経る
 - スキルは**チェックリストやガイドライン**を提供する。作業を自動実行しない
+
+### コンテキスト分離による独立検証
+
+**同一LLMコンテキスト内の自己チェックは機能しない。検証にはサブエージェント分離を使う。**
+
+LLMが同一コンテキスト内で自分の判断を検証すると、確認バイアスにより元の結論を覆せない。「再確認しました。やはり問題ありません」という結果になる。これはプロンプトエンジニアリングの問題ではなく、コンテキスト内自己レビューの本質的な限界。
+
+解決策は**コンテキスト分離**: 事実と判定結果のみを受け取り、元の推論過程を受け取らない別のサブエージェントに検証を委譲する。
+
+```
+[Reflector エージェント]         [Verifier エージェント]
+  セッションを分析                 受け取るもの:
+  基準を適用                       - 事実（何が起きたか）
+  提案を作成                       - 判定（通過/不通過、理由なし）
+  推論過程を含めて返却              受け取らないもの:
+         │                        - Reflectorの推論過程
+         │                        - 不通過理由の詳細
+         ▼
+  メインエージェントが
+  推論過程を除去してから
+  Verifierに渡す
+```
+
+- **reflect-learning** がこのパターンを使用: `kaizen-learning-reflector`（分析）+ `kaizen-learning-verifier`（独立再判定）
+- Verifier は異なるモデル（`model: sonnet`）で実行し、Opusユーザーにはモデル多様性の恩恵を提供しつつコストを抑える
+- メインエージェントが**情報分離**の責務を負う — Reflectorの推論過程をVerifierに渡す前に除去する
+- ReflectorとVerifierが不一致の場合、両方の見解をユーザーに提示して最終判断を委ねる
 
 ---
 
