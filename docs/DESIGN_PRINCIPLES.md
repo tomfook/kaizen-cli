@@ -16,6 +16,7 @@ $KAIZEN_CLI_DIR (= kaizen-cli/)  <- Distribution. Safely updatable via git pull
     bin/                           <- Helper shell scripts for mechanical processing
     .claude/commands/              <- Symlinked into each project by kaizen-init-project
     .claude/skills/                <- Symlinked into each project by kaizen-init-project
+    .claude/agents/                <- Symlinked into each project by kaizen-init-project
     templates/{en,ja}/             <- Locale-separated templates (selected per registry)
 
 $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
@@ -91,6 +92,33 @@ If all three are Yes → add it to knowledge/.
 - suggest-next **suggests** next actions. The user chooses what to execute
 - reflect-learning **extracts and presents** insights. Updates to knowledge/ require user approval
 - Skills provide **checklists and guidelines**. They do not auto-execute tasks
+
+### Context Separation for Independent Verification
+
+**Self-check within the same LLM context does not work. Use subagent separation for verification.**
+
+When an LLM verifies its own judgment in the same context, confirmation bias prevents it from overturning its original conclusion — the result is "I checked again and my answer is still correct." This is not a prompt engineering problem; it is an inherent limitation of in-context self-review.
+
+The solution is **context separation**: delegate verification to a separate subagent that receives only facts and verdicts, not the original reasoning process.
+
+```
+[Reflector Agent]              [Verifier Agent]
+  Analyzes session               Receives ONLY:
+  Applies criteria               - Facts (what happened)
+  Produces proposals             - Verdicts (pass/fail, no reasons)
+  Returns reasoning              Does NOT receive:
+         │                       - Reflector's reasoning
+         │                       - Rejection rationales
+         ▼
+  Main agent strips
+  reasoning before
+  passing to verifier
+```
+
+- **reflect-learning** uses this pattern: `kaizen-learning-reflector` (analysis) + `kaizen-learning-verifier` (independent re-judgment)
+- The verifier runs on a different model (`model: sonnet`) to provide model diversity for Opus users while keeping costs lower
+- The main agent is responsible for **information separation** — stripping the reflector's reasoning before passing to the verifier
+- When reflector and verifier disagree, both views are presented to the user for final judgment
 
 ---
 
