@@ -11,7 +11,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 
 - `docs/` — Methodology documentation (CONCEPT, DESIGN_PRINCIPLES, QUICKSTART, CUSTOMIZATION)
 - `docs/internal/` — Development-only documents (.gitignore, not published). Includes PLAN_KAIZEN_CLI_OSS.md
-- `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/, bin/)
+- `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/, .claude/agents/, bin/)
 - `examples/` — Domain-specific examples (data-analysis, web-development)
 
 ## Language Policy
