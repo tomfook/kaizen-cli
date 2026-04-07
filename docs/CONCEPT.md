@@ -66,6 +66,8 @@ The only required step is **Execute (= your everyday work)**. Suggest, Reflect, 
 
 This makes all knowledge accumulated from past projects immediately available.
 
+To remove a project from the registry, run `/kaizen-unregister-project`. This deletes the registry entry only — symlinks and project files are not affected.
+
 ### Suggest — Proposing Next Actions
 
 Run `/kaizen-suggest-next` when you finish a chunk of work or are unsure what to do next.
