@@ -98,6 +98,8 @@ An important rule: **Any information involving failures or retries during a sess
 
 Reflected knowledge becomes instantly available across all your projects through the symlink.
 
+As knowledge/ grows, run `/kaizen-audit-knowledge` periodically to detect redundancy, SSOT violations, and stale content. The auditor proposes deletions — you approve before anything is changed.
+
 ### Update Docs — Syncing Project Documents and Registry
 
 Run `/kaizen-update-docs` after reflect-learning to bring project-side documentation up to date.

@@ -60,6 +60,7 @@ claude  # Start Claude Code, then:
         # /kaizen-suggest-next       — get next step suggestions
         # /kaizen-reflect-learning   — capture lessons learned
         # /kaizen-unregister-project — remove a project from the registry
+        # /kaizen-audit-knowledge   — audit knowledge files for quality
 ```
 
 `setup.sh` creates the shared knowledge directory (`$KAIZEN_KNOWLEDGE_DIR`) and links the `kaizen-init-project` skill. Run `/kaizen-init-project` in each project to set up kaizen commands and symlinks. The `knowledge/` in each project is a symlink to a registry within this shared directory — knowledge accumulated in one project is automatically available to all others sharing the same registry. You can create multiple registries (e.g., work and personal) to keep knowledge separated by context.
