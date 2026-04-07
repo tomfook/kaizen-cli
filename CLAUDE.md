@@ -53,3 +53,4 @@ Rules that prevent bugs or design violations. For design rationale, see [DESIGN_
 - `/kaizen-suggest-next` — Get suggestions for next steps
 - `/kaizen-reflect-learning` — Record learnings to knowledge files
 - `/kaizen-update-docs` — Update project documents (including PROJECT_SUMMARY sync)
+- `/kaizen-unregister-project` — Remove a project from the registry
