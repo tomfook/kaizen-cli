@@ -3,9 +3,9 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing, subagent, verification, unregister]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing, subagent, verification, unregister, audit]
   created: "2026-02-18"
-  updated: "2026-04-07"
+  updated: "2026-04-08"
 ---
 
 # Kaizen-CLI
@@ -16,7 +16,7 @@ Development and distribution of a knowledge-accumulating workflow framework for 
 
 ## Overview
 
-A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → reflect → update docs), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification of extracted learnings. Projects can be unregistered from the registry via `kaizen-unregister-project`.
+A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → reflect → update docs), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification of extracted learnings. Projects can be unregistered from the registry via `kaizen-unregister-project`. Knowledge files can be periodically audited for redundancy and quality via `kaizen-audit-knowledge`.
 
 ## Tech Stack
 

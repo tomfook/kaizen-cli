@@ -60,6 +60,7 @@ claude  # Claude Code を起動し:
         # /kaizen-suggest-next       — 次ステップの提案を取得
         # /kaizen-reflect-learning   — 学んだことを記録
         # /kaizen-unregister-project — プロジェクトをレジストリから登録解除
+        # /kaizen-audit-knowledge   — knowledge/ファイルの品質監査
 ```
 
 `setup.sh` は共有知識ディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）の作成と `kaizen-init-project` スキルのリンクを行います。各プロジェクトで `/kaizen-init-project` を実行すると、kaizen コマンドとシンボリックリンクがセットアップされます。`knowledge/` はこの共有ディレクトリ内のレジストリへのシンボリックリンクとなり、同じレジストリ内のプロジェクトで蓄積された知識が自動的に共有されます。レジストリを複数作成すれば（例: 職場用と個人用）、文脈ごとに知識を分離できます。

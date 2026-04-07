@@ -98,6 +98,8 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 反映された知識は symlink を通じて、すべてのプロジェクトで即座に利用可能になります。
 
+knowledge/ が蓄積されてきたら、`/kaizen-audit-knowledge` で定期的に品質監査を実施できます。冗長情報、SSOT違反、陳腐化した内容を検出し、ユーザーの承認後に削減します。
+
 ### Update Docs — プロジェクトドキュメントとレジストリの同期
 
 reflect-learning の後に `/kaizen-update-docs` を実行し、プロジェクト側のドキュメントを最新化します。
