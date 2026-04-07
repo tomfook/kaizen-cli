@@ -65,6 +65,8 @@ source ~/.bashrc   # or: source ~/.zshrc
 
 > **When should you run `--force`?** Every time you update kaizen-cli with `git pull`. It is safe to run repeatedly.
 
+> **How do existing projects get new commands?** After `git pull`, re-run `/kaizen-init-project` in each project. It is idempotent — existing symlinks are skipped, and only new commands/agents are added.
+
 ---
 
 ## Step 2: Initialize Your Project
