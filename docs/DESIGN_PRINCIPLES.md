@@ -177,6 +177,14 @@ Keep CLAUDE.md under 200 lines as a guideline. If it exceeds 300 lines, move det
 
 This lifecycle prevents lessons from accumulating indefinitely and ensures each entry remains actionable. General patterns flow upward to `knowledge/` via `/kaizen-reflect-learning`, while project-specific lessons stay in `docs/LEARNINGS.md` until they are no longer relevant.
 
+### Knowledge Quality: Accumulation and Pruning
+
+`/kaizen-reflect-learning` adds knowledge; `/kaizen-audit-knowledge` trims it. These two commands form a complementary pair that keeps `knowledge/` both comprehensive and maintainable.
+
+The auditor applies six review criteria (defined in `DOCUMENTATION_GUIDELINES.md`) to detect redundancy, SSOT violations, and stale content. Crucially, it also applies **protection criteria** — failure-based knowledge, domain-specific context, and "why" explanations are never removed, even if they appear obvious. This ensures that hard-won operational insights survive pruning.
+
+The auditor proposes changes; users approve before anything is modified. This human-in-the-loop design prevents automated over-deletion.
+
 ---
 
 ## Related Documents
