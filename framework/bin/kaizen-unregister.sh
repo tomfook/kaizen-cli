@@ -153,7 +153,7 @@ do_execute() {
   fi
 
   # Remove row from INDEX.md
-  sed -i "/^| *${project_id} *|/d" "$index_file"
+  sed "/^| *${project_id} *|/d" "$index_file" > "$index_file.tmp" && mv "$index_file.tmp" "$index_file"
 
   # Remove details file
   local details_file="$registry_dir/projects/details/${project_id}.md"
