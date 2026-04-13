@@ -78,13 +78,13 @@ This will:
 Kaizen-CLI commands form the following improvement cycle:
 
 ```
-suggest-next → plan & execute → reflect-learning → update-docs → suggest-next → ...
+suggest-next → plan & execute → update-docs → reflect-learning → suggest-next → ...
 ```
 
 1. **Suggest**: `/kaizen-suggest-next` — After task completion, suggest next steps
 2. **Plan & Execute**: Plan and execute based on suggestions (normal Claude Code work)
-3. **Reflect**: `/kaizen-reflect-learning` — At session end, accumulate learnings in knowledge
-4. **Update Docs**: `/kaizen-update-docs` — Update project documents and sync to registry
+3. **Update Docs**: `/kaizen-update-docs` — Update project documents and sync to registry
+4. **Reflect**: `/kaizen-reflect-learning` — At session end, accumulate learnings in knowledge
 
 Accumulated knowledge improves the quality of subsequent suggestions, accelerating improvement with each cycle.
 
@@ -103,8 +103,8 @@ Accumulated knowledge improves the quality of subsequent suggestions, accelerati
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/kaizen-suggest-next` | Suggest next steps | After task completion |
+| `/kaizen-update-docs` | Update project documents and sync to registry | After work, or when documentation needs updating |
 | `/kaizen-reflect-learning` | Record learnings to knowledge files | At session end |
-| `/kaizen-update-docs` | Update project documents and sync to registry | After reflect, or when documentation needs updating |
 
 ---
 

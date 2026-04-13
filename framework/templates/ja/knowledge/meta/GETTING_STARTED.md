@@ -78,13 +78,13 @@ project-root/
 Kaizen-CLIのコマンドは、以下の改善サイクルを構成しています:
 
 ```
-suggest-next → 計画・実行 → reflect-learning → update-docs → suggest-next → ...
+suggest-next → 計画・実行 → update-docs → reflect-learning → suggest-next → ...
 ```
 
 1. **Suggest**: `/kaizen-suggest-next` — タスク完了後、次のステップを提案
 2. **Plan & Execute**: 提案を元に計画・実行（通常のClaude Code作業）
-3. **Reflect**: `/kaizen-reflect-learning` — セッション終了時、学びをknowledgeに蓄積
-4. **Update Docs**: `/kaizen-update-docs` — プロジェクトドキュメントを更新し、レジストリに同期
+3. **Update Docs**: `/kaizen-update-docs` — プロジェクトドキュメントを更新し、レジストリに同期
+4. **Reflect**: `/kaizen-reflect-learning` — セッション終了時、学びをknowledgeに蓄積
 
 蓄積された知識が次のsuggestの質を高め、サイクルを回すほど改善が加速します。
 
@@ -103,8 +103,8 @@ suggest-next → 計画・実行 → reflect-learning → update-docs → sugges
 | コマンド | 用途 | 使うタイミング |
 |---------|------|--------------|
 | `/kaizen-suggest-next` | 次のステップを提案 | タスク完了時 |
+| `/kaizen-update-docs` | プロジェクトドキュメントを更新し、レジストリに同期 | 作業後、またはドキュメント更新が必要なとき |
 | `/kaizen-reflect-learning` | 学びをknowledgeファイルに記録 | セッション終了時 |
-| `/kaizen-update-docs` | プロジェクトドキュメントを更新し、レジストリに同期 | reflect後、またはドキュメント更新が必要なとき |
 
 ---
 

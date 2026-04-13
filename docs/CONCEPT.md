@@ -40,16 +40,16 @@ These are not "improvement items" to add to a backlog. They are natural byproduc
 
 The cycle wraps around your everyday work. You do not "run the cycle" — learning is captured as you do your work.
 
-The only required step is **Execute (= your everyday work)**. Suggest, Reflect, and Update Docs are optional — if you already know what to do, you can jump straight into work.
+The only required step is **Execute (= your everyday work)**. Suggest, Update Docs, and Reflect are optional — if you already know what to do, you can jump straight into work.
 
 ```
-┌─────────┐    ┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐
-│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Reflect │───▶│ Update   │
-│         │    │  Next   │    │(= your  │    │         │    │  Docs    │
-│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen  │    │/kaizen   │
-│-init    │    │-suggest │    │  work)  │    │-reflect │    │-update   │
-│-project │    │-next    │    │         │    │-learning│    │-docs     │
-└─────────┘    └─────────┘    └─────────┘    └─────────┘    └──────────┘
+┌─────────┐    ┌─────────┐    ┌─────────┐    ┌──────────┐    ┌─────────┐
+│  Init   │───▶│ Suggest │───▶│ Execute │───▶│ Update   │───▶│ Reflect │
+│         │    │  Next   │    │(= your  │    │  Docs    │    │         │
+│/kaizen  │    │/kaizen  │    │ actual  │    │/kaizen   │    │/kaizen  │
+│-init    │    │-suggest │    │  work)  │    │-update   │    │-reflect │
+│-project │    │-next    │    │         │    │-docs     │    │-learning│
+└─────────┘    └─────────┘    └─────────┘    └──────────┘    └─────────┘
                     ▲                                              │
                     │     Friction from work feeds knowledge/      │
                     │       which accelerates the next cycle       │
@@ -85,9 +85,18 @@ This is not a simple TODO list — it draws on accumulated knowledge and project
 - Work with accumulated knowledge/ as a reference. The more cycles you complete, the more past pitfalls, researched techniques, and implicit rules are already in place when you start working
 - skills/ detects certain task patterns and automatically activates to provide guardrails
 
+### Update Docs — Syncing Project Documents and Registry
+
+Run `/kaizen-update-docs` after finishing your work to bring project-side documentation up to date.
+
+- Updates CLAUDE.md and docs/ based on changes during work
+- Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
+
+This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
+
 ### Reflect — Turning Friction into Knowledge
 
-Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. It analyzes friction encountered during your work and reflects it into knowledge/.
+Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction encountered during your work and reflects it into knowledge/.
 
 - Contrasts failure patterns with successful approaches
 - Makes implicit rules explicit
@@ -96,16 +105,7 @@ Run `/kaizen-reflect-learning` when your work reaches a natural stopping point. 
 
 An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
 
-Reflected knowledge becomes instantly available across all your projects through the symlink.
-
-### Update Docs — Syncing Project Documents and Registry
-
-Run `/kaizen-update-docs` after reflect-learning to bring project-side documentation up to date.
-
-- Updates CLAUDE.md and docs/ based on changes during work
-- Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
-
-This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
+Reflected knowledge becomes instantly available across all your projects through the symlink — and feeds directly into the next cycle's Suggest.
 
 ---
 

@@ -230,7 +230,7 @@ With each cycle, knowledge/ grows, and repeated explanations, rework, and known 
 ## Tips
 
 - **Version-control knowledge/**: `setup.sh` automatically initializes a git repository in `$KAIZEN_KNOWLEDGE_DIR`. To back up remotely, add a remote with `git -C $KAIZEN_KNOWLEDGE_DIR remote add origin <url> && git -C $KAIZEN_KNOWLEDGE_DIR push -u origin main`
-- **When work reaches a stopping point**: Make `/kaizen-reflect-learning` → `/kaizen-update-docs` a habit to steadily build up knowledge and keep documentation in sync
+- **When work reaches a stopping point**: Make `/kaizen-update-docs` → `/kaizen-reflect-learning` a habit to keep documentation in sync and steadily build up knowledge
 - **Removing a project from the registry**: Run `/kaizen-unregister-project <project-id>` to remove the registry entry. Symlinks and project files are not deleted — clean them up manually if needed
 - **Auditing knowledge quality**: Run `/kaizen-audit-knowledge` periodically to detect redundancy, SSOT violations, and stale content in knowledge/. The auditor proposes changes — you approve before anything is modified
 

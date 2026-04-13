@@ -230,7 +230,7 @@ Claude Code が CLAUDE.md と docs/ を分析し、更新を提案します:
 ## Tips
 
 - **knowledge/ のgit管理**: `setup.sh` が `$KAIZEN_KNOWLEDGE_DIR` に git リポジトリを自動初期化します。リモートバックアップには `git -C $KAIZEN_KNOWLEDGE_DIR remote add origin <url> && git -C $KAIZEN_KNOWLEDGE_DIR push -u origin main` でリモートを追加してください
-- **作業が一段落ついたら**: `/kaizen-reflect-learning` → `/kaizen-update-docs` を習慣にすると、知識が着実に蓄積され、ドキュメントも常に最新に保てます
+- **作業が一段落ついたら**: `/kaizen-update-docs` → `/kaizen-reflect-learning` を習慣にすると、ドキュメントが常に最新に保たれ、知識が着実に蓄積されます
 - **プロジェクトのレジストリ登録解除**: `/kaizen-unregister-project <project-id>` でレジストリのエントリを削除できます。symlinkやプロジェクトファイルは削除されません — 必要に応じて手動で削除してください
 - **knowledge/ の品質監査**: `/kaizen-audit-knowledge` で定期的に冗長情報・SSOT違反・陳腐化した内容を検出できます。変更はユーザーの承認後に実行されます
 
