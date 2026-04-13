@@ -61,6 +61,7 @@ claude  # Claude Code を起動し:
 # 3. Kaizenサイクルを開始
         # /kaizen-suggest-next       — 次ステップの提案を取得
         # /kaizen-reflect-learning   — 学んだことを記録
+        # /kaizen-update-docs        — プロジェクトドキュメント同期・auto memory棚卸し
         # /kaizen-unregister-project — プロジェクトをレジストリから登録解除
         # /kaizen-audit-knowledge   — knowledge/ファイルの品質監査
 ```

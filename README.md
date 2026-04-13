@@ -61,6 +61,7 @@ claude  # Start Claude Code, then:
 # 3. Start the Kaizen cycle
         # /kaizen-suggest-next       — get next step suggestions
         # /kaizen-reflect-learning   — capture lessons learned
+        # /kaizen-update-docs        — sync project docs and inventory auto memory
         # /kaizen-unregister-project — remove a project from the registry
         # /kaizen-audit-knowledge   — audit knowledge files for quality
 ```
