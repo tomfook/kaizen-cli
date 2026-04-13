@@ -220,8 +220,8 @@ Once approved, PROJECT_SUMMARY.md is updated. The changes are also automatically
 
 1. **Suggest**: Receive proposals for what to do next
 2. **Execute**: Do the actual work (= your regular tasks)
-3. **Reflect**: Turn friction into knowledge
-4. **Update Docs**: Sync project documents and registry
+3. **Update Docs**: Sync project documents and registry
+4. **Reflect**: Turn friction into knowledge
 
 With each cycle, knowledge/ grows, and repeated explanations, rework, and known pitfalls decrease over time.
 

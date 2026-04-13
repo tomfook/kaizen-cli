@@ -266,8 +266,7 @@ project:
 
 ## 関連コマンド
 
-| コマンド | 対象 | 目的 |
-|---------|------|------|
-| `/kaizen-update-docs`（本コマンド） | docs/, CLAUDE.md | プロジェクトドキュメントの更新 |
-| `/kaizen-reflect-learning` | knowledge/ | 横断知識への知見反映 |
-| `/kaizen-suggest-next` | — | 次のステップの提案 |
+| コマンド | 目的 |
+|---------|------|
+| `/kaizen-suggest-next` | 次のステップの提案 |
+| `/kaizen-reflect-learning` | knowledge/ への知見反映 |
