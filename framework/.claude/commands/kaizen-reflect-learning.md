@@ -188,5 +188,5 @@ knowledge/ への反映完了後、以下を実行する:
 
 | コマンド | 目的 |
 |---------|------|
-| `/kaizen-suggest-next` | 次のステップの提案 |
 | `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
+| `/kaizen-suggest-next` | 次のステップの提案 |

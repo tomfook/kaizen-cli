@@ -97,6 +97,6 @@ Skill 発動後、承認された各候補の削減方法に従って knowledge/
 
 | コマンド | 目的 |
 |---------|------|
-| `/kaizen-reflect-learning` | knowledge/ への知見反映（追加） |
-| `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
 | `/kaizen-suggest-next` | 次のステップの提案 |
+| `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
+| `/kaizen-reflect-learning` | knowledge/ への知見反映（追加） |

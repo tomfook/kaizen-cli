@@ -125,6 +125,6 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-unregister.sh" execute "$(readlink -f
 
 | コマンド | 目的 |
 |---------|------|
-| `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
-| `/kaizen-reflect-learning` | knowledge/への知見反映 |
 | `/kaizen-suggest-next` | 次のステップの提案 |
+| `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
+| `/kaizen-reflect-learning` | knowledge/ への知見反映 |

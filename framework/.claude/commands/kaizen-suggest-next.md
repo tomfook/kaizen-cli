@@ -131,4 +131,4 @@
 | コマンド | 目的 |
 |---------|------|
 | `/kaizen-update-docs` | プロジェクトドキュメントの更新 |
-| `/kaizen-reflect-learning` | knowledge/への知見反映 |
+| `/kaizen-reflect-learning` | knowledge/ への知見反映 |
