@@ -236,6 +236,20 @@ Kaizen-CLI organizes knowledge into three layers.
 
 A key design decision: **reflect-learning only accumulates into knowledge/**. skills/ are static files and are never modified automatically. This keeps skill behavior predictable.
 
+### How Knowledge Is Stored
+
+Knowledge files are **plain Markdown** — no special tooling, no database, no build step. Claude Code reads and writes them directly.
+
+Inside `knowledge/`, files are organized by topic, not by date or project. A file might cover "AWS Lambda pitfalls" or "CSV handling patterns" — whatever cross-project theme emerges from your work. Each file is self-contained: it carries its own title and context so that it makes sense on its own.
+
+Three structural principles keep `knowledge/` navigable as it grows:
+
+- **INDEX as task dispatcher**: Each subdirectory has an `INDEX.md` that maps "what you want to do" to "which file and section to read." This is not a table of contents — it is a reverse-lookup reference that lets Claude Code (and you) jump straight to the relevant knowledge without scanning every file.
+- **Single Source of Truth (SSOT)**: The same information lives in exactly one place. Other files link to it rather than duplicating it. This prevents conflicting versions from accumulating across files.
+- **800-line rule**: Individual files stay under 800 lines. When a file grows too large, content is first reviewed and reduced, then split if necessary. This keeps each file within Claude Code's effective working range and forces knowledge to stay focused.
+
+These principles are explained in detail in [DESIGN_PRINCIPLES.md](./DESIGN_PRINCIPLES.md). Operational guidelines for editing knowledge files live in `knowledge/meta/DOCUMENTATION_GUIDELINES.md`.
+
 ---
 
 ## Target Users
