@@ -179,6 +179,65 @@ When editing or adding `knowledge/` files:
 
 ---
 
+## Auto Memory (~/.claude/projects/)
+
+Claude Code's auto memory is a local storage where the AI accumulates observations across conversations.
+
+### Memory Characteristics
+
+| Characteristic | Implication |
+|---------------|-------------|
+| **Per-project** | Isolated by working directory |
+| **Outside git** | No history, diffs, or reviews |
+| **Machine-local** | Lost on environment migration |
+| **AI-only** | Not regularly viewed or managed by humans |
+
+### Document vs Memory Decision Criteria
+
+When recording information, if **any one** of the following applies, use a document (`docs/`, `CLAUDE.md`, `knowledge/`):
+
+| Criterion | Use document if... |
+|-----------|-------------------|
+| **Restoration cost** | Losing it would be costly to reconstruct |
+| **Reader existence** | Teammates or your future self may reference it |
+| **Decision basis** | Tracing "why we did this" is needed |
+
+**Only when none of the above apply** should information go to memory. Memory is particularly suited for short-term, temporary information.
+
+### Specific Placement Examples
+
+| Information | Location | Reason |
+|------------|----------|--------|
+| "Use pytest for testing" | CLAUDE.md | Team rule — loss would hurt |
+| "This approach works because X" | docs/ | Operational insight, decision basis |
+| "We chose this design because X" | docs/ | Decision basis |
+| "Keep explanations brief" | memory | Personal preference — just ask again |
+| "Release freeze this week" | memory | Temporary — meaningless next week |
+| "I'm a data scientist" | memory | Personal profile |
+
+### Promotion from Memory to Documents
+
+Use memory as a low-cost recording mechanism, and promote to documents once value is confirmed.
+
+**Promotion signals**:
+- Referenced repeatedly across multiple sessions
+- Managed in relation to other documentation or rules
+- Feels like "I'd be in trouble if this were lost"
+
+**Promotion destinations**:
+- Project-specific knowledge → `docs/LEARNINGS.md`, `CLAUDE.md`
+- Cross-project knowledge → the appropriate `knowledge/` file
+
+**After promotion**: Delete the original memory file and its `MEMORY.md` entry (SSOT maintenance).
+
+### Instructions for Claude
+
+- When writing to memory, follow the criteria above — **do not write document-worthy information to memory**
+- If the information qualifies as a document, propose adding it to the appropriate document instead of memory
+- If you notice a memory entry matches a promotion signal, propose promoting it to a document
+
+---
+
 ## Backup File Management
 
 **Important**: Do not create backup files (`*.backup`, `*.tmp`, etc.) inside the `knowledge/` directory.

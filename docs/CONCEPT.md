@@ -159,6 +159,17 @@ Lessons have a lifecycle: general patterns **graduate** to `knowledge/` via refl
 
 This separation is what turns Kaizen-CLI from a per-project tool into a cross-project knowledge platform. Without it, you would either keep all knowledge local (losing the compound effect) or dump everything into a shared space (creating noise that degrades usefulness).
 
+### Where Auto Memory Fits
+
+Claude Code's auto memory (`~/.claude/projects/`) sits below these three layers as a low-friction scratch pad for session observations — personal preferences, temporary context, and one-time notes. It is not version-controlled, not shared across projects, and not reviewed by humans.
+
+Information that meets any of these criteria should be promoted out of memory into the appropriate layer:
+- **Restoration cost** — losing it would be costly to reconstruct
+- **Reader existence** — teammates or your future self may reference it
+- **Decision basis** — tracing "why we did this" is needed
+
+`/kaizen-update-docs` periodically inventories memory files, routing permanent information to `docs/` or `knowledge/` and cleaning up stale entries. This prevents valuable observations from being trapped in an unversioned, machine-local store.
+
 ---
 
 ## Why It Gets Faster the More You Use It

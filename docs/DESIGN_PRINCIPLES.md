@@ -185,6 +185,18 @@ The auditor applies six review criteria (defined in `DOCUMENTATION_GUIDELINES.md
 
 The auditor proposes changes; users approve before anything is modified. This human-in-the-loop design prevents automated over-deletion.
 
+### Auto Memory Boundary
+
+**Auto memory is a session-level scratch pad — not a knowledge store.**
+
+Claude Code's auto memory (`~/.claude/projects/`) records personal preferences, temporary context, and one-time notes. It is not version-controlled, not shared, and not reviewed. The boundary between memory and documents is defined by three criteria: if information has **high restoration cost**, **future readers**, or **needs decision tracing**, it belongs in documents, not memory.
+
+`/kaizen-update-docs` enforces this boundary through periodic inventory: checking each memory file against the three criteria, verifying no duplicates exist at the destination (by actually reading the target file), and proposing promotion or deletion. This prevents two failure modes:
+- **Valuable information trapped in memory** — observations that should be permanent but remain in an unversioned, machine-local store
+- **SSOT violations** — the same information existing in both memory and documents
+
+> Detailed criteria and examples: `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Auto Memory
+
 ---
 
 ## Related Documents
