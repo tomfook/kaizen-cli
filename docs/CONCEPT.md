@@ -98,8 +98,6 @@ An important rule: **Any information involving failures or retries during a sess
 
 Reflected knowledge becomes instantly available across all your projects through the symlink.
 
-As knowledge/ grows, run `/kaizen-audit-knowledge` periodically to detect redundancy, SSOT violations, and stale content. The auditor proposes deletions — you approve before anything is changed.
-
 ### Update Docs — Syncing Project Documents and Registry
 
 Run `/kaizen-update-docs` after reflect-learning to bring project-side documentation up to date.
@@ -108,6 +106,27 @@ Run `/kaizen-update-docs` after reflect-learning to bring project-side documenta
 - Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
 
 This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
+
+---
+
+## Knowledge Lifecycle: Accumulate and Curate
+
+The cycle above captures the **short-term loop** — the rhythm of everyday work. But knowledge has a longer arc. Left to pure accumulation, `knowledge/` eventually drifts: entries overlap, specs go stale, noise drowns out signal. Compound returns require both halves of the lifecycle.
+
+- **Reflect** accumulates. Every session's friction becomes knowledge.
+- **Audit** curates. Periodically, `/kaizen-audit-knowledge` scans for redundancy, SSOT violations, and staleness — and proposes deletions for your approval.
+
+Audit deliberately sits outside the everyday cycle. It runs on a slower clock — weeks or months, not per-session — because the judgments it requires only come into focus once knowledge has had time to settle.
+
+Two principles guide the auditor's judgment, and both are counterintuitive.
+
+**Operability over familiarity.** "Knowing something" and "being able to operate it reliably" are not the same. Knowledge that Claude can apply reliably without reminders is a candidate for removal — it takes up space without changing behavior. Knowledge that is easily mis-applied, even if widely known, stays. The question is not "is this common?" but "would removing this degrade outcomes?"
+
+**Protect failure-derived knowledge.** Any entry born from an actual failure or incident is never removed on grounds of self-evidence. General-seeming advice that was in fact learned the hard way carries context that pure reasoning cannot reconstruct. The auditor distinguishes textbook knowledge from scar tissue and protects the latter.
+
+A lightweight **freshness signal** (within 90 days / over 90 days / over 180 days) prioritizes which files to inspect. Crucially, low freshness does not imply deletion — naming conventions and terminology can remain valid for years. Freshness focuses attention; it does not dictate action.
+
+Together, Reflect and Audit keep `knowledge/` a high-signal resource rather than a growing archive. The compound effect described below depends on both halves working.
 
 ---
 

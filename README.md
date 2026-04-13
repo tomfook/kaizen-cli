@@ -35,6 +35,7 @@ Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **
 |-----------|-------------|
 | **Shared knowledge base** | `knowledge/` is symlinked across all projects with optional registry isolation. Industry expertise, technical insights, and hard-won lessons accumulate over time |
 | **Work-embedded Kaizen cycle** | Suggest → execute → reflect wraps around your real work — not a separate improvement process |
+| **Knowledge curation** | `/kaizen-audit-knowledge` periodically trims redundancy and stale content — reflect accumulates, audit curates |
 | **Project context** | PROJECT_SUMMARY and a project registry maintain cross-project context |
 
 ## Why Kaizen-CLI?
@@ -42,6 +43,7 @@ Kaizen-CLI doesn't ask you to run a separate improvement process. Instead, it **
 - **No extra process**: You don't need to think about improvements separately. Friction that naturally arises during real work becomes the input for knowledge updates
 - **Knowledge persists**: Lessons learned are written to `knowledge/` files and available across all your projects
 - **Cross-project learning**: Shared knowledge via symlinks means one project's insights benefit all projects
+- **Signal stays high**: Accumulation is paired with periodic curation, so `knowledge/` grows as a resource — not as noise
 - **Faster over time**: Accumulated knowledge means less repeated explanations, fewer regressions, and fewer known pitfalls
 
 ## Quick Start
