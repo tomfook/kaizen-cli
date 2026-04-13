@@ -224,12 +224,12 @@ Unlike the traditional experience of "resetting every time," you get a developme
 
 ---
 
-## The Knowledge Layer Structure
+## Framework Components
 
-Kaizen-CLI organizes knowledge into three layers.
+Kaizen-CLI is built from three components, each with a distinct role.
 
-| Layer | Location | Nature | When It Changes |
-|-------|----------|--------|-----------------|
+| Component | Location | Nature | When It Changes |
+|-----------|----------|--------|-----------------|
 | **Reference knowledge** | `knowledge/` | Domain knowledge, patterns, guidelines | Accumulated via reflect-learning |
 | **Procedural knowledge** | `skills/` | Step-by-step procedures for specific tasks | Static (created and updated manually by the user) |
 | **Operations** | `commands/` | Workflow triggers | Static (provided by Kaizen-CLI) |
