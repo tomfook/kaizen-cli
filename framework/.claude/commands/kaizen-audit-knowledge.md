@@ -28,6 +28,20 @@ knowledge/ファイルの品質監査を実施し、冗長情報の削減・SSOT
 存在しない場合:
 - 「knowledge/ symlinkが見つかりません。/kaizen-init-project でプロジェクトを初期化してください。」と表示して終了
 
+### Step 1.5: 機械チェックの実行
+
+`framework/bin/kaizen-check-knowledge.sh` を **常に knowledge/ 全体** に対して実行する（引数を渡さない）。
+
+```bash
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-knowledge.sh"
+```
+
+**全体スキャン固定の理由**: 機械チェックは安価（数秒）で、部分監査時でも他ディレクトリの鮮度警告・行数乖離を発見できるため。
+
+**結果の振り分け**:
+- 部分監査（`$ARGUMENTS` あり）: 対象ディレクトリの行のみ抜粋を Step 2 の auditor プロンプトに渡し、対象外の警告は Step 3 の「対象外の警告」セクションに保持
+- 全体監査（`$ARGUMENTS` なし）: 全結果を auditor に渡す
+
 ### Step 2: kaizen-knowledge-auditor 呼び出し
 
 Agent ツールで `kaizen-knowledge-auditor` を呼び出し、監査レポートを取得する。
@@ -36,6 +50,7 @@ Agent ツールで `kaizen-knowledge-auditor` を呼び出し、監査レポー�
 - 「knowledge/ 配下のファイルを監査し、監査レポートを作成せよ」
 - `$ARGUMENTS` にディレクトリ指定がある場合: 「対象ディレクトリ: `knowledge/$ARGUMENTS`」
 - knowledge/ の実体パス: `readlink -f knowledge` の結果
+- Step 1.5 の機械チェック結果（該当範囲）を「【機械チェック結果】」ブロックとして添付。**この結果は確定事実として扱い、鮮度・行数・INDEX乖離の再計算を行わない**旨を明示
 
 ### Step 3: 監査レポートの提示
 
@@ -67,7 +82,21 @@ auditor から返却された監査レポートをユーザーに提示する。
 
 Skill 発動後、承認された各候補の削減方法に従って knowledge/ ファイルを編集する。
 
-### Step 6: knowledge/ の自動コミット
+### Step 6: AUDIT_HISTORY.md への記録
+
+auditor の返却に「ログ用サマリー」ブロックが含まれている場合、`knowledge/meta/AUDIT_HISTORY.md` に追記する。
+
+1. `knowledge/meta/AUDIT_HISTORY.md` が存在しなければ、`framework/templates/{en,ja}/knowledge/meta/AUDIT_HISTORY.md` からコピーして作成（レジストリの言語に合わせる）
+2. ファイル末尾の `**Last updated**:` / `**最終更新**:` 行の直前に、auditor が返したログ用サマリーブロックを追記
+3. 日付行を今日に更新
+4. 個別候補の採用/却下が Step 5 で確定したら、追記したエントリに `- **実施結果**: ...` 行を追加する。各候補を以下のタグで分類する:
+   - `[採用]` / `[Adopted]`: 削減候補を反映した
+   - `[保護]` / `[Protected]`: 削減対象から除外した
+   - `[補完]` / `[Supplemented]`: 削減ではなく追補で対応した
+   - `[スコープ外]` / `[Out-of-scope]`: 今回の監査範囲外として持ち越した
+   - `[過剰]` / `[Overreach]`: 候補自体が過剰反映だったため却下した
+
+### Step 7: knowledge/ の自動コミット
 
 1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
    ```bash
