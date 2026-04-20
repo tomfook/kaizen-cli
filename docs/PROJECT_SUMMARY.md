@@ -5,7 +5,7 @@ project:
   status: released          # planning | developing | released | completed | on-hold
   keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing, subagent, verification, unregister, audit, auto-memory]
   created: "2026-02-18"
-  updated: "2026-04-13"
+  updated: "2026-04-20"
 ---
 
 # Kaizen-CLI
@@ -16,7 +16,7 @@ Development and distribution of a knowledge-accumulating workflow framework for 
 
 ## Overview
 
-A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → update docs → reflect), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification of extracted learnings. Projects can be unregistered from the registry via `kaizen-unregister-project`. Knowledge files can be periodically audited for redundancy and quality via `kaizen-audit-knowledge`. The update-docs command also inventories Claude Code's auto memory, promoting permanent information to docs/ or knowledge/ and cleaning up stale entries.
+A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → update docs → reflect), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification, scanning nine categories that include accuracy improvements to existing knowledge and filing-back of external research. Projects can be unregistered from the registry via `kaizen-unregister-project`. Knowledge files can be periodically audited via `kaizen-audit-knowledge`, which combines a mechanical check (line count, freshness, INDEX deviation, broken links) with an auditor pass (redundancy, contradictions, cross-boundary SSOT, consolidation) and records results to `knowledge/meta/AUDIT_HISTORY.md` for repeat-finding detection. The update-docs command also inventories Claude Code's auto memory, promoting permanent information to docs/ or knowledge/ and cleaning up stale entries.
 
 ## Tech Stack
 
