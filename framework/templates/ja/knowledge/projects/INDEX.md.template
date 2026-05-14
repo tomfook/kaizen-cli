@@ -6,6 +6,8 @@
 
 各プロジェクトの概要全文は `details/{project-id}.md` にあり、kaizen-update-docs で同期されます。
 
+各プロジェクトの教訓（`docs/LEARNINGS.md` から同期）は `learnings/{project-id}.md` にあり、これも kaizen-update-docs で同期され、`/kaizen-audit-knowledge` のクロスプロジェクトパスの入力として使われます。
+
 ---
 
 ## プロジェクト

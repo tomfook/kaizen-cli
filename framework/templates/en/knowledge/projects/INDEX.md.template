@@ -6,6 +6,8 @@ List of registered projects. Auto-registered by kaizen-init-project, synced by k
 
 Full project summaries are available in `details/{project-id}.md`, synced by kaizen-update-docs.
 
+Project lessons (synced from each project's `docs/LEARNINGS.md`) are in `learnings/{project-id}.md`, also synced by kaizen-update-docs and used as input by `/kaizen-audit-knowledge`'s cross-project pass.
+
 ---
 
 ## Projects
