@@ -59,13 +59,14 @@ knowledge/meta/AUDIT_HISTORY.md
 knowledge/ 配下の `.md` ファイルを一覧取得する。
 
 ```bash
-find "$(readlink -f knowledge)" -name "*.md" -type f | sort
+find "$(readlink -f knowledge)" -name "*.md" -type f -not -path '*/projects/*' | sort
 ```
 
 - **ディレクトリ指定あり**: 指定ディレクトリに絞る（例: `meta/`）
 - **指定なし**: knowledge/ 全体を対象
 - **除外**: 100行未満のファイルは精査対象外（コスト対効果が低い）
 - **除外**: INDEX.md ファイルはナビゲーション用のため対象外
+- **除外**: `projects/` 配下のファイル（`projects/details/{id}.md` と `projects/learnings/{id}.md` は kaizen-update-docs が自動同期する registry データであり、knowledge content として精査する対象ではない。手動編集も禁止）
 
 #### 機械チェック結果の利用
 

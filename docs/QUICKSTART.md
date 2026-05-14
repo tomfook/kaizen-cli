@@ -67,6 +67,8 @@ source ~/.bashrc   # or: source ~/.zshrc
 
 > **How do existing projects get new commands?** After `git pull`, re-run `/kaizen-init-project` in each project. It is idempotent — existing symlinks are skipped, and only new commands/agents are added.
 
+> **What about the new `knowledge/projects/learnings/` directory?** It is created automatically the first time `/kaizen-update-docs` runs in any registered project after upgrade. No manual action needed — your existing `docs/LEARNINGS.md` files become input for `/kaizen-audit-knowledge`'s cross-project pass on the next run.
+
 ---
 
 ## Step 2: Initialize Your Project

@@ -4,6 +4,11 @@
 # Usage: bash kaizen-check-knowledge.sh [subdir]
 #   subdir: path relative to $KAIZEN_KNOWLEDGE_DIR (optional; default: whole tree)
 #
+# Note: knowledge/projects/ is always excluded from scanning. The files under
+# projects/details/ and projects/learnings/ are registry data automatically
+# synced from each project's PROJECT_SUMMARY.md / LEARNINGS.md by
+# /kaizen-update-docs — they are not knowledge content and must not be audited.
+#
 # Checks:
 #   1. File inventory (line count, size warning)
 #   2. Freshness (days since last updated)
@@ -40,7 +45,7 @@ if [ ! -d "$SCAN_PATH" ]; then
 fi
 
 TODAY_TS=$(date +%s)
-files=$(find "$SCAN_PATH" -name "*.md" -type f | sort)
+files=$(find "$SCAN_PATH" -name "*.md" -type f -not -path '*/projects/*' | sort)
 
 # Extract last-updated date from a markdown file. Supports both:
 #   **Last updated**: YYYY-MM-DD
@@ -151,7 +156,7 @@ echo "### INDEX.md line-count deviation (±50)"
 echo ""
 
 deviations=""
-index_files=$(find "$SCAN_PATH" -name "INDEX.md" -type f | sort)
+index_files=$(find "$SCAN_PATH" -name "INDEX.md" -type f -not -path '*/projects/*' | sort)
 
 while IFS= read -r index; do
     [ -z "$index" ] && continue

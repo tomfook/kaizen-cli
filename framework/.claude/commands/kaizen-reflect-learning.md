@@ -64,6 +64,8 @@ verifierの返却結果に基づき統合する:
 
 適切なknowledge/ファイルに**可能な限り簡潔に**知見を反映する。
 
+**出力先制約**: `knowledge/projects/` 配下には書かない。`projects/details/` は kaizen-update-docs が PROJECT_SUMMARY から sync し、`projects/learnings/` は同様に LEARNINGS から sync する registry 自動同期データであり、reflect-learning が直接編集する領域ではない（Tier 2 / learning-auditor の管理領域）。横断知見は `knowledge/` 直下の各カテゴリディレクトリまたは `knowledge/meta/` のみを対象とする。
+
 ### Step 8: 変更内容報告
 
 反映した変更内容をユーザーに報告する。

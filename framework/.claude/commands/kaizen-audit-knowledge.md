@@ -16,7 +16,7 @@ knowledge/ファイルの品質監査と、プロジェクト横断教訓の昇�
 - `--scope=knowledge`: learning-auditor をスキップして knowledge-auditor のみ実施
 - `--scope=learnings`: knowledge-auditor をスキップして learning-auditor のみ実施
 - `--scope=all`（デフォルト）: 両方実施
-- `directory` が `projects/learnings/` 配下、または `projects/` の場合、knowledge-auditor の対象は通常通り絞り込むが、learning-auditor は常に `projects/learnings/` 全体を対象とする（部分監査の概念がない）
+- `directory` が `projects/learnings/` 配下、または `projects/` の場合、knowledge-auditor は対象ファイルなしとして空のレポートを返す（`projects/` 配下は registry 自動同期データであり、knowledge content として精査する対象ではない）。learning-auditor は常に `projects/learnings/` 全体を対象とする（部分監査の概念がない）
 
 **言語**: ユーザーの言語に合わせて応答すること
 
