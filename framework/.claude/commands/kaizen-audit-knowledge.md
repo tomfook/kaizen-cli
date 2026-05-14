@@ -1,19 +1,22 @@
 # Audit knowledge files
 
-knowledge/ファイルの品質監査を実施し、冗長情報の削減・SSOT違反の検出・鮮度チェックを行う。
+knowledge/ファイルの品質監査と、プロジェクト横断教訓の昇格候補レビューを実施する。
 
 **実行内容**:
-1. knowledge/ 配下のファイルを精査
-2. 削減候補・SSOT違反候補を検出
-3. 監査レポートを提示し、承認された候補を反映
+1. `kaizen-knowledge-auditor`: knowledge/ 内部の冗長性・SSOT 違反・鮮度を精査
+2. `kaizen-learning-auditor`: `knowledge/projects/learnings/` を横断スキャンし、`knowledge/` への昇格候補を提案
+3. 両レポートを提示し、承認された候補を反映
 
 **使い方**:
 ```
-/kaizen-audit-knowledge [directory]
+/kaizen-audit-knowledge [directory] [--scope=knowledge|learnings|all]
 ```
 
-ディレクトリを指定すると、その配下のみを対象とする（例: `/kaizen-audit-knowledge meta/`）。
-省略時は knowledge/ 全体を対象とする。
+- `directory` を指定すると、その配下のみを knowledge-auditor の対象とする（例: `/kaizen-audit-knowledge meta/`）。省略時は knowledge/ 全体
+- `--scope=knowledge`: learning-auditor をスキップして knowledge-auditor のみ実施
+- `--scope=learnings`: knowledge-auditor をスキップして learning-auditor のみ実施
+- `--scope=all`（デフォルト）: 両方実施
+- `directory` が `projects/learnings/` 配下、または `projects/` の場合、knowledge-auditor の対象は通常通り絞り込むが、learning-auditor は常に `projects/learnings/` 全体を対象とする（部分監査の概念がない）
 
 **言語**: ユーザーの言語に合わせて応答すること
 
@@ -44,6 +47,8 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-knowledge.sh"
 
 ### Step 2: kaizen-knowledge-auditor 呼び出し
 
+`--scope=learnings` 指定時はスキップ。
+
 Agent ツールで `kaizen-knowledge-auditor` を呼び出し、監査レポートを取得する。
 
 プロンプトには以下を含める:
@@ -52,9 +57,46 @@ Agent ツールで `kaizen-knowledge-auditor` を呼び出し、監査レポー�
 - knowledge/ の実体パス: `readlink -f knowledge` の結果
 - Step 1.5 の機械チェック結果（該当範囲）を「【機械チェック結果】」ブロックとして添付。**この結果は確定事実として扱い、鮮度・行数・INDEX乖離の再計算を行わない**旨を明示
 
+### Step 2.5: kaizen-learning-auditor 呼び出し
+
+`--scope=knowledge` 指定時はスキップ。
+
+以下のコマンドで対象ファイルの存在を確認:
+
+```bash
+ls "$(readlink -f knowledge/projects/learnings)"/*.md 2>/dev/null
+```
+
+結果が空の場合、「教訓横断レビュー: 対象ファイルなし（`knowledge/projects/learnings/` が空）」と表示してスキップ。
+
+そうでなければ Agent ツールで `kaizen-learning-auditor` を呼び出し、教訓横断レビューを取得する。
+
+プロンプトには以下を含める:
+- 「`knowledge/projects/learnings/` を横断スキャンし、教訓横断レビューを作成せよ」
+- `knowledge/projects/learnings/` の実体パス: `readlink -f knowledge/projects/learnings` の結果
+- `knowledge/` の実体パス（カバレッジチェック用）: `readlink -f knowledge` の結果
+
+**順次実行（並列ではなく逐次）**: Step 2 → Step 2.5 の順に呼ぶ。両レポートを同一コンテキストで提示する必要があり、learning-auditor は同日中の knowledge 改修を反映した状態で動作させる方が保守的なため。
+
 ### Step 3: 監査レポートの提示
 
-auditor から返却された監査レポートをユーザーに提示する。
+両 auditor から返却されたレポートを **2 セクション** でユーザーに提示する:
+
+```markdown
+## 監査レポート（knowledge/）
+
+[kaizen-knowledge-auditor の返却内容]
+
+---
+
+## 教訓横断レビュー（projects/learnings/）
+
+[kaizen-learning-auditor の返却内容]
+```
+
+スキップした auditor のセクションは表示しない。
+
+**性質の差を明示**: knowledge-auditor の候補は **削減・統合**（既存内容を減らす方向）が中心、learning-auditor の候補は **追加・新規セクション**（knowledge/ に内容を増やす方向）が中心であることを、ユーザー提示時に一言添えること。
 
 ### Step 4: ユーザー承認（必須・スキップ不可）
 
@@ -84,14 +126,17 @@ Skill 発動後、承認された各候補の削減方法に従って knowledge/
 
 ### Step 6: AUDIT_HISTORY.md への記録
 
-auditor の返却に「ログ用サマリー」ブロックが含まれている場合、`knowledge/meta/AUDIT_HISTORY.md` に追記する。
+各 auditor の返却に含まれる「ログ用サマリー」ブロックを `knowledge/meta/AUDIT_HISTORY.md` に追記する。
 
 1. `knowledge/meta/AUDIT_HISTORY.md` が存在しなければ、`framework/templates/{en,ja}/knowledge/meta/AUDIT_HISTORY.md` からコピーして作成（レジストリの言語に合わせる）
-2. ファイル末尾の `**Last updated**:` / `**最終更新**:` 行の直前に、auditor が返したログ用サマリーブロックを追記
+2. ファイル末尾の `**Last updated**:` / `**最終更新**:` 行の直前に、以下の順でブロックを追記:
+   - まず `kaizen-knowledge-auditor` のログサマリーブロック（実行した場合）
+   - 次に `kaizen-learning-auditor` のログサマリーブロック（実行した場合）
+   - 両方実行した場合、**同日付・別エントリ**として 2 ブロック並べる（target が異なるので衝突しない）
 3. 日付行を今日に更新
-4. 個別候補の採用/却下が Step 5 で確定したら、追記したエントリに `- **実施結果**: ...` 行を追加する。各候補を以下のタグで分類する:
-   - `[採用]` / `[Adopted]`: 削減候補を反映した
-   - `[保護]` / `[Protected]`: 削減対象から除外した
+4. 個別候補の採用/却下が Step 5 で確定したら、追記した各エントリに `- **実施結果**: ...` 行を追加する。各候補を以下のタグで分類する:
+   - `[採用]` / `[Adopted]`: 削減候補を反映した / 昇格候補を knowledge/ に追加した
+   - `[保護]` / `[Protected]`: 削減対象から除外した / 昇格を見送った
    - `[補完]` / `[Supplemented]`: 削減ではなく追補で対応した
    - `[スコープ外]` / `[Out-of-scope]`: 今回の監査範囲外として持ち越した
    - `[過剰]` / `[Overreach]`: 候補自体が過剰反映だったため却下した
@@ -105,7 +150,7 @@ auditor の返却に「ログ用サマリー」ブロックが含まれている
 2. git リポジトリかつ未コミットの変更がある場合、自動コミット:
    ```bash
    git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
-   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen audit: trim knowledge files"
+   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen audit: trim knowledge files and reflect cross-project learnings"
    ```
 3. git リポジトリでない場合はスキップ
 4. コミットに失敗した場合、警告を表示して続行

@@ -162,7 +162,13 @@ PROJECT_SUMMARY.md更新後、`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` への�
 3. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
    - `knowledge/projects/details/` ディレクトリが存在しない場合は作成
    - `docs/PROJECT_SUMMARY.md` の全内容で上書き
-4. 同期結果を報告
+4. `docs/LEARNINGS.md` を `knowledge/projects/learnings/{id}.md` にコピー（クロスプロジェクト教訓監査の入力）:
+   - `knowledge/projects/learnings/` ディレクトリが存在しない場合は作成
+   - `docs/LEARNINGS.md` が存在しない場合は静かにスキップ（警告は出さない）
+   - テンプレートのみの初期状態（`### ` 見出しエントリが 0 件）の場合もスキップ
+     - 判定例: `grep -c '^### ' docs/LEARNINGS.md` が `0` ならスキップ
+   - それ以外は全文を上書きコピー（フィルタしない — `→ knowledge/` マーカ判定は auditor 側で実施）
+5. 同期結果を報告
 
 **不在の場合**: 「projects/INDEX.md が見つかりません。スキップします。」と表示してスキップ。
 

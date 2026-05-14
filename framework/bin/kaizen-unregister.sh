@@ -107,10 +107,17 @@ do_show() {
     details_status="exists"
   fi
 
+  local learnings_file="$registry_dir/projects/learnings/${project_id}.md"
+  local learnings_status="missing"
+  if [ -f "$learnings_file" ]; then
+    learnings_status="exists"
+  fi
+
   echo "[kaizen-unregister-show]"
   echo "status=ok"
   echo "index_row=$index_row"
   echo "details_file=$details_status"
+  echo "learnings_file=$learnings_status"
   echo "[/kaizen-unregister-show]"
   return 0
 }
@@ -163,10 +170,19 @@ do_execute() {
     details_removed="yes"
   fi
 
+  # Remove learnings file
+  local learnings_file="$registry_dir/projects/learnings/${project_id}.md"
+  local learnings_removed="no"
+  if [ -f "$learnings_file" ]; then
+    rm "$learnings_file"
+    learnings_removed="yes"
+  fi
+
   echo "[kaizen-unregister-execute]"
   echo "status=ok"
   echo "index_removed=yes"
   echo "details_removed=$details_removed"
+  echo "learnings_removed=$learnings_removed"
   echo "[/kaizen-unregister-execute]"
   return 0
 }

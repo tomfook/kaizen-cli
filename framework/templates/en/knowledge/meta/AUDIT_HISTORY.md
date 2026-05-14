@@ -13,10 +13,13 @@ the `**Last updated**:` line.
 - Add new entries under the `## Log` section as `### YYYY-MM-DD — target`
 - Order entries newest-first
 - Distinguish multiple runs on the same day by target (e.g., `### 2026-04-20 — meta/`, `### 2026-04-20 — projects/`)
+- A single `/kaizen-audit-knowledge` run may append **two entries** with the same date — one from `kaizen-knowledge-auditor` (target = the audited directory) and one from `kaizen-learning-auditor` (target = `projects/learnings/`). Keep both, in dispatch order (knowledge first, learning second)
 
 ### Entry shape
 
-Paste the auditor's "log summary" block verbatim:
+Paste the auditor's "log summary" block verbatim. Two shapes exist depending on which auditor produced it.
+
+**`kaizen-knowledge-auditor` shape** (audits files inside `knowledge/`):
 
 ```markdown
 ### YYYY-MM-DD — target
@@ -29,6 +32,19 @@ Paste the auditor's "log summary" block verbatim:
 - **structural integrity**: [INDEX deviation X, broken links X]
 - **notes**: [if a repeated finding: "Repeat: XXX (prev: YYYY-MM-DD)"; otherwise omit]
 - **outcome**: [Adopted] A / [Protected] B / [Supplemented] C / ...
+```
+
+**`kaizen-learning-auditor` shape** (audits `projects/learnings/`):
+
+```markdown
+### YYYY-MM-DD — projects/learnings/
+
+- **scope**: X files / Y entries
+- **cross-project patterns**: N
+- **promotion candidates**: M (high X, medium Y)
+- **covered**: K (already marked `→ knowledge/`)
+- **notes**: [if a repeated pattern: "Repeat: XXX (prev: YYYY-MM-DD)"; otherwise omit]
+- **outcome**: [Adopted] A / [Protected] B / ...
 ```
 
 ### Outcome tags

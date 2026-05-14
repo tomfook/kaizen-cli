@@ -5,7 +5,8 @@
 **実行内容**:
 1. INDEX.md から該当行を削除
 2. details/<project-id>.md を削除
-3. ユーザーに手動クリーンアップを案内
+3. learnings/<project-id>.md を削除（存在する場合）
+4. ユーザーに手動クリーンアップを案内
 
 **使い方**:
 ```
@@ -67,6 +68,7 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-unregister.sh" show "$(readlink -f kn
 
 - INDEX.md の行: <index_rowの内容>
 - 詳細ファイル: knowledge/projects/details/<project-id>.md (<details_fileの状態>)
+- 教訓ファイル: knowledge/projects/learnings/<project-id>.md (<learnings_fileの状態>)
 
 レジストリから登録解除します。よろしいですか？
 ```

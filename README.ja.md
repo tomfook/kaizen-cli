@@ -35,7 +35,7 @@ Kaizen-CLI は、改善のためのアクションを別に回すツールでは
 |--------|------|
 | **共有ナレッジベース** | `knowledge/` をsymlinkで全プロジェクトに共有（レジストリによる分離も可能）。業界知識・技術知見・失敗からの学びが蓄積される |
 | **実務に埋め込まれたKaizenサイクル** | suggest → execute → reflect が実務を包み込む形で回る。改善のための別プロセスは不要 |
-| **ナレッジの整理** | `/kaizen-audit-knowledge` で定期的に冗長・陳腐化を削減。reflect が蓄積し、audit が整理する |
+| **ナレッジの整理** | `/kaizen-audit-knowledge` で定期的に冗長・陳腐化を削減し、加えて各プロジェクトの `docs/LEARNINGS.md` を横断スキャンして共有 `knowledge/` への昇格候補を提示。reflect が蓄積し、audit が整理する |
 | **プロジェクトコンテキスト** | PROJECT_SUMMARY とレジストリでプロジェクト横断の文脈を保持 |
 
 ## なぜ Kaizen-CLI か？

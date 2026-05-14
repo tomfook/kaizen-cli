@@ -211,6 +211,9 @@ mkdir -p docs
    - `knowledge/projects/details/` ディレクトリが存在しない場合は作成: `mkdir -p "knowledge/projects/details"`
    - Step 8 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
    - コピー先が既に存在する場合は上書き
+5. `knowledge/projects/learnings/` ディレクトリを作成（存在しない場合のみ）: `mkdir -p "knowledge/projects/learnings"`
+   - 登録時点では空。最初の `/kaizen-update-docs` 実行時に `{id}.md` が同期される
+   - eager 作成で `mkdir -p` の race を回避するため、登録時に作っておく
 
 ### 12. 完了確認
 

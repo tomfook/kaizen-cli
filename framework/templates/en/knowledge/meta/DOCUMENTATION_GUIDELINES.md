@@ -248,4 +248,33 @@ Use memory as a low-cost recording mechanism, and promote to documents once valu
 
 ---
 
+## Learning Promotion Marker
+
+When a project-specific lesson in `docs/LEARNINGS.md` is promoted to a cross-project file under `knowledge/`, mark the original entry with a trailing bullet so cross-project audits (`kaizen-learning-auditor` via `/kaizen-audit-knowledge`) skip it as already covered.
+
+**Syntax**:
+
+```markdown
+- **Promoted**: → knowledge/<path>.md § <section>
+```
+
+**Placement**: Last bullet of the entry, after `- **Lesson**:`.
+
+**Example**:
+
+```markdown
+### S3 prefix listing pitfall (2026-05-10)
+
+- **Situation**: Bulk listing of analytics prefixes
+- **Problem**: List API returned partial keys without continuation tokens
+- **Lesson**: Always paginate with `ContinuationToken`
+- **Promoted**: → knowledge/aws/s3.md § Prefix listing semantics
+```
+
+**Why**: The auditor detects promoted entries by this marker and excludes them from promotion-candidate ranking, while still using their keywords for cross-project pattern detection. Without a marker the same lesson keeps surfacing as a new candidate every audit.
+
+**Multiple markers**: An entry may carry more than one `- **Promoted**:` line if it was split across several knowledge files. Each is treated as a covered target.
+
+---
+
 **Last updated**: 2026-02-11

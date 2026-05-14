@@ -12,7 +12,10 @@ Project-specific lessons. Record failures, constraints, and pitfalls discovered 
 - **Situation**: What you were trying to do
 - **Problem**: What went wrong or what constraint was discovered
 - **Lesson**: What to do differently next time
+- **Promoted**: → knowledge/path.md § Section  <!-- optional -->
 ```
+
+If a lesson has been promoted to `knowledge/`, add a trailing `- **Promoted**:` bullet so future cross-project audits (`/kaizen-audit-knowledge`) skip it as already covered.
 
 ## Lessons
 

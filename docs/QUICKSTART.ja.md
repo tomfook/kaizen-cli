@@ -232,7 +232,8 @@ Claude Code が CLAUDE.md と docs/ を分析し、更新を提案します:
 - **knowledge/ のgit管理**: `setup.sh` が `$KAIZEN_KNOWLEDGE_DIR` に git リポジトリを自動初期化します。リモートバックアップには `git -C $KAIZEN_KNOWLEDGE_DIR remote add origin <url> && git -C $KAIZEN_KNOWLEDGE_DIR push -u origin main` でリモートを追加してください
 - **作業が一段落ついたら**: `/kaizen-update-docs` → `/kaizen-reflect-learning` を習慣にすると、ドキュメントが常に最新に保たれ、知識が着実に蓄積されます
 - **プロジェクトのレジストリ登録解除**: `/kaizen-unregister-project <project-id>` でレジストリのエントリを削除できます。symlinkやプロジェクトファイルは削除されません — 必要に応じて手動で削除してください
-- **knowledge/ の品質監査**: `/kaizen-audit-knowledge` で定期的に冗長情報・SSOT違反・陳腐化した内容を検出できます。変更はユーザーの承認後に実行されます
+- **knowledge/ の品質監査**: `/kaizen-audit-knowledge` を定期的に実行してください。2 パスで動作します — 1 つは `knowledge/` 内の冗長情報・SSOT違反・陳腐化を検出、もう 1 つは各プロジェクトの `docs/LEARNINGS.md` を横断スキャンして共有 `knowledge/` への昇格候補を提示。どちらもユーザー承認後に反映されます
+- **昇格済みエントリのマーキング**: `docs/LEARNINGS.md` の教訓を `knowledge/` に昇格させた後は、元のエントリ末尾に `- **昇格先**: → knowledge/<path>.md § <セクション名>` bullet を追加してください。クロスプロジェクト監査がこのマーカーを読み取り、次回以降の候補から除外します（マーカーがないと同じ教訓が監査のたびに再浮上します）
 
 ---
 

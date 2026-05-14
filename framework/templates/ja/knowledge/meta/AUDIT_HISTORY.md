@@ -12,10 +12,13 @@
 - 新しいエントリは `## ログ` セクション配下に `### YYYY-MM-DD — 対象ディレクトリ` として追加する
 - エントリは日付の降順（新しいものが上）で並べる
 - 同日の複数実施は対象ディレクトリで区別する（例: `### 2026-04-20 — meta/`, `### 2026-04-20 — projects/`）
+- 1 回の `/kaizen-audit-knowledge` で **2 エントリ**が同日付で追記されることがある。`kaizen-knowledge-auditor`（対象 = 監査ディレクトリ）と `kaizen-learning-auditor`（対象 = `projects/learnings/`）の両方を、ディスパッチ順（knowledge → learning）で残す
 
 ### エントリの構造
 
-auditor が返す「ログ用サマリー」ブロックをそのまま貼り付ける:
+auditor が返す「ログ用サマリー」ブロックをそのまま貼り付ける。発動元によって 2 つの形がある。
+
+**`kaizen-knowledge-auditor` 形式**（`knowledge/` 内ファイル精査）:
 
 ```markdown
 ### YYYY-MM-DD — 対象ディレクトリ
@@ -28,6 +31,19 @@ auditor が返す「ログ用サマリー」ブロックをそのまま貼り付
 - **構造整合性**: [INDEX乖離X件, 壊れリンクX件]
 - **特記**: [繰り返し指摘があれば「繰り返し: XXX（前回: YYYY-MM-DD）」、なければ省略]
 - **実施結果**: [採用] 候補A / [保護] 候補B / [補完] 候補C / ...
+```
+
+**`kaizen-learning-auditor` 形式**（`projects/learnings/` 横断レビュー）:
+
+```markdown
+### YYYY-MM-DD — projects/learnings/
+
+- **対象**: Xファイル / Yエントリ
+- **クロスプロジェクトパターン**: N件
+- **昇格候補**: M件（高確信X, 中確信Y）
+- **カバー済み**: K件（`→ knowledge/` マーカー付き）
+- **特記**: [繰り返しパターンがあれば「繰り返し: XXX（前回: YYYY-MM-DD）」、なければ省略]
+- **実施結果**: [採用] 候補A / [保護] 候補B / ...
 ```
 
 ### 実施結果のタグ
