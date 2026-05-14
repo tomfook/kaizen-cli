@@ -13,6 +13,7 @@ KAIZEN_UNREGISTER="$KAIZEN_CLI_DIR/framework/bin/kaizen-unregister.sh"
 create_test_registry() {
   local reg_dir="$1"
   mkdir -p "$reg_dir/projects/details"
+  mkdir -p "$reg_dir/projects/learnings"
   cat > "$reg_dir/projects/INDEX.md" << 'HEREDOC'
 # Project Registry
 
@@ -23,6 +24,8 @@ create_test_registry() {
 HEREDOC
   echo "# Project A summary" > "$reg_dir/projects/details/proj-a.md"
   echo "# Project B summary" > "$reg_dir/projects/details/proj-b.md"
+  echo "# Project A learnings" > "$reg_dir/projects/learnings/proj-a.md"
+  echo "# Project B learnings" > "$reg_dir/projects/learnings/proj-b.md"
 }
 
 # --- Test 1: list normal case ---
@@ -133,7 +136,7 @@ test_list_dir_missing() {
 # --- Test 5: show normal case ---
 
 test_show_ok() {
-  local test_name="show: normal case returns row and details_file=exists"
+  local test_name="show: normal case returns row, details_file=exists, learnings_file=exists"
   setup_test_env "$test_name"
   local ok=0
 
@@ -151,6 +154,8 @@ test_show_ok() {
     "index_row should contain proj-a" || ok=1
   assert_output_contains "$output" "details_file=exists" \
     "details_file should be exists" || ok=1
+  assert_output_contains "$output" "learnings_file=exists" \
+    "learnings_file should be exists" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -172,6 +177,29 @@ test_show_no_details() {
     "status should be ok" || ok=1
   assert_output_contains "$output" "details_file=missing" \
     "details_file should be missing" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 6b: show with no learnings file ---
+
+test_show_no_learnings() {
+  local test_name="show: no learnings file returns learnings_file=missing"
+  setup_test_env "$test_name"
+  local ok=0
+
+  create_test_registry "$TEST_KNOWLEDGE_DIR"
+  rm "$TEST_KNOWLEDGE_DIR/projects/learnings/proj-a.md"
+  local output
+  output=$(bash "$KAIZEN_UNREGISTER" show "$TEST_KNOWLEDGE_DIR" "proj-a") || ok=1
+
+  assert_output_contains "$output" "status=ok" \
+    "status should be ok" || ok=1
+  assert_output_contains "$output" "learnings_file=missing" \
+    "learnings_file should be missing" || ok=1
+  assert_output_contains "$output" "details_file=exists" \
+    "details_file should still be exists" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -224,7 +252,7 @@ test_show_no_id() {
 # --- Test 9: execute normal case ---
 
 test_execute_ok() {
-  local test_name="execute: removes INDEX row and details file"
+  local test_name="execute: removes INDEX row, details file, and learnings file"
   setup_test_env "$test_name"
   local ok=0
 
@@ -238,6 +266,8 @@ test_execute_ok() {
     "index_removed should be yes" || ok=1
   assert_output_contains "$output" "details_removed=yes" \
     "details_removed should be yes" || ok=1
+  assert_output_contains "$output" "learnings_removed=yes" \
+    "learnings_removed should be yes" || ok=1
 
   # Verify INDEX.md no longer contains proj-a
   if grep -q "proj-a" "$TEST_KNOWLEDGE_DIR/projects/INDEX.md"; then
@@ -248,6 +278,10 @@ test_execute_ok() {
   # Verify details file is deleted
   assert_file_not_exists "$TEST_KNOWLEDGE_DIR/projects/details/proj-a.md" \
     "details/proj-a.md should be deleted" || ok=1
+
+  # Verify learnings file is deleted
+  assert_file_not_exists "$TEST_KNOWLEDGE_DIR/projects/learnings/proj-a.md" \
+    "learnings/proj-a.md should be deleted" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -269,6 +303,29 @@ test_execute_no_details() {
     "status should be ok" || ok=1
   assert_output_contains "$output" "details_removed=no" \
     "details_removed should be no" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 10b: execute with no learnings file ---
+
+test_execute_no_learnings() {
+  local test_name="execute: no learnings file returns learnings_removed=no"
+  setup_test_env "$test_name"
+  local ok=0
+
+  create_test_registry "$TEST_KNOWLEDGE_DIR"
+  rm "$TEST_KNOWLEDGE_DIR/projects/learnings/proj-a.md"
+  local output
+  output=$(bash "$KAIZEN_UNREGISTER" execute "$TEST_KNOWLEDGE_DIR" "proj-a") || ok=1
+
+  assert_output_contains "$output" "status=ok" \
+    "status should be ok" || ok=1
+  assert_output_contains "$output" "learnings_removed=no" \
+    "learnings_removed should be no" || ok=1
+  assert_output_contains "$output" "details_removed=yes" \
+    "details_removed should still be yes" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -315,6 +372,10 @@ test_execute_preserves_others() {
   # proj-b details file should still exist
   assert_file_exists "$TEST_KNOWLEDGE_DIR/projects/details/proj-b.md" \
     "details/proj-b.md should still exist" || ok=1
+
+  # proj-b learnings file should still exist
+  assert_file_exists "$TEST_KNOWLEDGE_DIR/projects/learnings/proj-b.md" \
+    "learnings/proj-b.md should still exist" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -388,10 +449,12 @@ test_list_no_index
 test_list_dir_missing
 test_show_ok
 test_show_no_details
+test_show_no_learnings
 test_show_not_found
 test_show_no_id
 test_execute_ok
 test_execute_no_details
+test_execute_no_learnings
 test_execute_not_found
 test_execute_preserves_others
 test_execute_preserves_header

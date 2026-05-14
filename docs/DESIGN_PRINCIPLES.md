@@ -185,6 +185,26 @@ The auditor applies six review criteria (defined in `DOCUMENTATION_GUIDELINES.md
 
 The auditor proposes changes; users approve before anything is modified. This human-in-the-loop design prevents automated over-deletion.
 
+### Three-Tier Learning Promotion
+
+**Learnings travel from session, through project, to shared knowledge — each tier has a dedicated agent with non-overlapping responsibilities.**
+
+| Tier | Source | Destination | Agent | Trigger |
+|------|--------|-------------|-------|---------|
+| 1. Session capture | Current session history | `knowledge/` (direct) — generalizable patterns only | `kaizen-learning-reflector` (+ verifier) | `/kaizen-reflect-learning` |
+| 2. Cross-project audit | All projects' `docs/LEARNINGS.md` (synced into `knowledge/projects/learnings/{id}.md`) | `knowledge/` — promotion candidates | `kaizen-learning-auditor` | `/kaizen-audit-knowledge` (second pass) |
+| 3. Knowledge curation | `knowledge/` itself | `knowledge/` (trimmed) — redundancy / SSOT / freshness | `kaizen-knowledge-auditor` | `/kaizen-audit-knowledge` (first pass) |
+
+Tier 1 catches patterns *as they emerge*. Tier 2 catches patterns that **only become visible across projects** (a constraint that bit two unrelated projects on different days is hard to spot from inside any single one). Tier 3 keeps the destination clean so promotions don't bloat it.
+
+The tiers are deliberately separate because they answer different questions:
+
+- **Tier 1** asks "is this session's friction worth generalizing?" — needs the live conversational context
+- **Tier 2** asks "have we now seen the same thing in N projects?" — needs the registry as input
+- **Tier 3** asks "is the destination still maintainable?" — needs the destination as input
+
+To prevent the Tier 2 auditor from re-proposing already-promoted lessons every run, project `docs/LEARNINGS.md` entries adopt an explicit `- **Promoted**: → knowledge/<path>.md § <section>` marker (see `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Learning Promotion Marker). The auditor treats marker-bearing entries as covered, while still using their keywords for cross-project pattern detection — so a recurring lesson stays visible as a pattern even after promotion.
+
 ### Auto Memory Boundary
 
 **Auto memory is a session-level scratch pad — not a knowledge store.**
