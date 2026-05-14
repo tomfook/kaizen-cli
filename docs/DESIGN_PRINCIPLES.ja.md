@@ -185,6 +185,20 @@ CLAUDE.md は200行未満を目安に。300行を超えたら詳細を docs/ に
 
 監査エージェントは変更を提案するのみで、ユーザーの承認なしには何も変更されません。この human-in-the-loop 設計が過剰な削除を防ぎます。
 
+### レジストリ自動管理の不変条件
+
+**`knowledge/projects/` はレジストリデータである。`/kaizen-update-docs` のみが書き込み、人手や他の自動処理は決して編集しない。**
+
+ここには 2 つのサブディレクトリがある: `projects/details/{id}.md`（各プロジェクトの `PROJECT_SUMMARY.md` のコピー）と `projects/learnings/{id}.md`（各プロジェクトの `docs/LEARNINGS.md` のコピー）。どちらも `/kaizen-update-docs` Step 5 が自動同期する。真の情報源（source of truth）はプロジェクト側のファイルであり、レジストリのコピーではない。
+
+ここから 3 つの帰結が導かれる:
+
+1. **auditor は `projects/` を精査対象から外す** — `kaizen-check-knowledge.sh` と `kaizen-knowledge-auditor` は `find` の引数で `*/projects/*` を除外する。除外しないと、レジストリコピーが鮮度警告や削減候補として浮上してしまう（編集すべきは上流のプロジェクト側ファイル）
+2. **reflect-learning はここに書かない** — `kaizen-learning-reflector` Step 5 は出力先候補から `knowledge/projects/` を除外する。これにより Tier 1（セッション → knowledge）が Tier 2（プロジェクト → knowledge）の同期領域に侵入することを防ぐ
+3. **手動編集は失われる** — レジストリコピーを手で編集しても、次回の `/kaizen-update-docs` で上書きされる。これは仕様。プロジェクト側ファイルだけが編集面である
+
+この不変条件があることで、下記の三層昇格モデルが機能する。
+
 ### 教訓昇格の3段階
 
 **教訓はセッション → プロジェクト → 共有 knowledge へと段階的に昇格する。各段階は責務の重ならない専用エージェントを持つ。**

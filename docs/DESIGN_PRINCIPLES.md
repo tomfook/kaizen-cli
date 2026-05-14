@@ -185,6 +185,20 @@ The auditor applies six review criteria (defined in `DOCUMENTATION_GUIDELINES.md
 
 The auditor proposes changes; users approve before anything is modified. This human-in-the-loop design prevents automated over-deletion.
 
+### Registry Auto-Management Invariant
+
+**`knowledge/projects/` is registry data. It is written only by `/kaizen-update-docs`; it is never edited by hand or by other automation.**
+
+Two subdirectories live here: `projects/details/{id}.md` (a copy of each project's `PROJECT_SUMMARY.md`) and `projects/learnings/{id}.md` (a copy of each project's `docs/LEARNINGS.md`). Both are auto-synced by `/kaizen-update-docs` Step 5. The source of truth is the project-side file, not the registry copy.
+
+Three consequences follow:
+
+1. **Auditors skip `projects/`** — both `kaizen-check-knowledge.sh` and `kaizen-knowledge-auditor` exclude `*/projects/*` from their `find` calls. Without this, registry copies would surface as freshness-warning or reduction candidates even though the upstream project file is the editing surface.
+2. **Reflect-learning never writes there** — `kaizen-learning-reflector` Step 5 excludes `knowledge/projects/` from output-destination search, so Tier 1 (session-to-knowledge) cannot stray into Tier 2's (project-to-knowledge) sync territory.
+3. **Manual edits are lost** — if a user hand-edits a registry copy, the next `/kaizen-update-docs` overwrites it. This is by design; project-side files are the only editing surface.
+
+This invariant is what makes the three-tier promotion model below tractable.
+
 ### Three-Tier Learning Promotion
 
 **Learnings travel from session, through project, to shared knowledge — each tier has a dedicated agent with non-overlapping responsibilities.**
