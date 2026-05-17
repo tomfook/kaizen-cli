@@ -397,7 +397,103 @@ test_validate_registry_name_error_message() {
   teardown_test_env
 }
 
-# --- Test 18: verify knowledge_git=no when not a git repo ---
+# --- Test 18: validate-project-id valid IDs ---
+
+test_validate_project_id_valid() {
+  local test_name="validate-project-id: valid IDs accepted"
+  setup_test_env "$test_name"
+  local ok=0
+
+  for id in "my-app" "client-x" "kaizen-cli" "a1-b2" "123"; do
+    local exit_code=0
+    bash "$KAIZEN_INIT" validate-project-id "$id" 2>/dev/null || exit_code=$?
+    if [ "$exit_code" -ne 0 ]; then
+      echo "  FAIL: '$id' should be valid, got exit code $exit_code"
+      ok=1
+    fi
+  done
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 19: validate-project-id invalid IDs ---
+
+test_validate_project_id_invalid() {
+  local test_name="validate-project-id: invalid IDs rejected"
+  setup_test_env "$test_name"
+  local ok=0
+
+  for id in "-leading" "UPPER" "has space" "under_score" ".dot" "日本語"; do
+    local exit_code=0
+    bash "$KAIZEN_INIT" validate-project-id "$id" 2>/dev/null || exit_code=$?
+    if [ "$exit_code" -ne 1 ]; then
+      echo "  FAIL: '$id' should be invalid (exit 1), got exit code $exit_code"
+      ok=1
+    fi
+  done
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 20: validate-project-id generic IDs ---
+# Note: 'work' is a valid *registry* name (Test 14) but a generic *project* ID.
+# The two validators intentionally diverge.
+
+test_validate_project_id_generic() {
+  local test_name="validate-project-id: generic IDs return exit 3"
+  setup_test_env "$test_name"
+  local ok=0
+
+  for id in "tmp" "work" "project" "test" "new" "app" "dev" "sandbox"; do
+    local exit_code=0
+    bash "$KAIZEN_INIT" validate-project-id "$id" 2>/dev/null || exit_code=$?
+    if [ "$exit_code" -ne 3 ]; then
+      echo "  FAIL: '$id' should be generic (exit 3), got exit code $exit_code"
+      ok=1
+    fi
+  done
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 21: validate-project-id no argument ---
+
+test_validate_project_id_no_arg() {
+  local test_name="validate-project-id: no argument returns exit 2"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local exit_code=0
+  bash "$KAIZEN_INIT" validate-project-id 2>/dev/null || exit_code=$?
+  if [ "$exit_code" -ne 2 ]; then
+    echo "  FAIL: exit code should be 2, got $exit_code"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 22: validate-project-id stderr message ---
+
+test_validate_project_id_error_message() {
+  local test_name="validate-project-id: warning message on generic ID"
+  setup_test_env "$test_name"
+  local ok=0
+
+  local output
+  output=$(bash "$KAIZEN_INIT" validate-project-id "tmp" 2>&1) || true
+  assert_output_contains "$output" "too generic" \
+    "stderr should explain the ID is too generic" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 23: verify knowledge_git=no when not a git repo ---
 
 test_verify_knowledge_git_no() {
   local test_name="verify: knowledge_git=no when not a git repo"
@@ -415,7 +511,7 @@ test_verify_knowledge_git_no() {
   teardown_test_env
 }
 
-# --- Test 19: verify knowledge_git=yes when git initialized ---
+# --- Test 24: verify knowledge_git=yes when git initialized ---
 
 test_verify_knowledge_git_yes() {
   local test_name="verify: knowledge_git=yes when git initialized"
@@ -456,6 +552,11 @@ test_validate_registry_name_valid
 test_validate_registry_name_invalid
 test_validate_registry_name_no_arg
 test_validate_registry_name_error_message
+test_validate_project_id_valid
+test_validate_project_id_invalid
+test_validate_project_id_generic
+test_validate_project_id_no_arg
+test_validate_project_id_error_message
 test_verify_knowledge_git_no
 test_verify_knowledge_git_yes
 

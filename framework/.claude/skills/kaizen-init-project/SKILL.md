@@ -94,7 +94,32 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REG
    ```
 3. 拒否された場合、レジストリ選択に戻る
 
-**プロジェクトID**: デフォルトでカレントディレクトリ名を使用する。ユーザーが変更したい場合は上書き可能。ディレクトリ名に英数字・ハイフン以外の文字が含まれる場合は、ユーザーに手動入力を求める。
+**プロジェクトID ガード**: プロジェクトIDは、デフォルトでカレントディレクトリ名（`basename "$PWD"`）を採用し、ユーザーが変更したい場合は上書き可能。レジストリと ID が確定したら、採用する前に以下のガードを実施する（デフォルト値を採用する場合も必ず実施）。
+
+1. **文字種・汎用語チェック**（ヘルパースクリプト）:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-project-id "$PROJECT_ID"
+   ```
+
+   - 終了コード `0` → 有効。手順2の衝突チェックへ進む
+   - 終了コード `1` → 不正な文字。stderr のエラーメッセージをユーザーに表示し、再入力を求めて手順1から再検証
+   - 終了コード `2` → ID未指定（使用法エラー）
+   - 終了コード `3` → 汎用的すぎる名前（`tmp`/`work`/`app` 等）。stderr の警告をユーザーに表示し、以下の2択を提示:
+     1. **この ID で続行** — 警告を承知のうえ採用
+     2. **別名を入力** — 新しい ID を入力させ、手順1から再検証
+
+2. **レジストリ衝突チェック**:
+
+   ```bash
+   test -f "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME/projects/details/$PROJECT_ID.md"
+   ```
+
+   ファイルが存在する場合、同名プロジェクトが既にレジストリに登録されている。ユーザーに以下の2択を提示:
+   1. **上書きして続行** — 既存の概要が Step 11 で上書きされることを承知のうえ採用
+   2. **別の ID を入力** — 新しい ID を入力させ、手順1から再検証（ループ）
+
+両ガードを通過するまで繰り返す。
 
 ### 4. knowledge/ symlinkの作成
 
@@ -210,7 +235,7 @@ mkdir -p docs
 4. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
    - `knowledge/projects/details/` ディレクトリが存在しない場合は作成: `mkdir -p "knowledge/projects/details"`
    - Step 8 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
-   - コピー先が既に存在する場合は上書き
+   - コピー先が既に存在する場合は上書き（衝突は Step 3 のプロジェクトID ガードでユーザー確認済み）
 5. `knowledge/projects/learnings/` ディレクトリを作成（存在しない場合のみ）: `mkdir -p "knowledge/projects/learnings"`
    - 登録時点では空。最初の `/kaizen-update-docs` 実行時に `{id}.md` が同期される
    - eager 作成で `mkdir -p` の race を回避するため、登録時に作っておく

@@ -8,8 +8,10 @@
 #                                   Output includes knowledge_git=yes|no (git status of knowledge dir)
 #   list-registries               — List registry names (one per line)
 #   validate-registry-name <name> — Validate a registry name
+#   validate-project-id <id>      — Validate a project ID (rejects generic words)
 #
-# Exit codes: 0=success, 1=validation/environment error, 2=usage error
+# Exit codes: 0=success, 1=validation/environment error, 2=usage error,
+#             3=valid but generic project ID
 
 set -euo pipefail
 
@@ -127,14 +129,41 @@ do_validate_registry_name() {
   fi
 }
 
+# --- validate-project-id subcommand ---
+
+do_validate_project_id() {
+  local id="${1:-}"
+  local generic="tmp work project test new app dev sandbox"
+
+  if [ -z "$id" ]; then
+    echo "Error: Project ID is required" >&2
+    return 2
+  fi
+
+  if ! echo "$id" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+    echo "Error: Project ID must match ^[a-z0-9][a-z0-9-]*$ (lowercase letters, numbers, hyphens; must start with letter or number)" >&2
+    return 1
+  fi
+
+  for w in $generic; do
+    if [ "$id" = "$w" ]; then
+      echo "Warning: Project ID '$id' is too generic; choose a more descriptive name" >&2
+      return 3
+    fi
+  done
+
+  return 0
+}
+
 # --- Main dispatch ---
 
 case "${1:-}" in
   verify) shift; do_verify "$@" ;;
   list-registries) shift; do_list_registries "$@" ;;
   validate-registry-name) shift; do_validate_registry_name "$@" ;;
+  validate-project-id) shift; do_validate_project_id "$@" ;;
   *)
-    echo "Usage: kaizen-init.sh <verify|list-registries|validate-registry-name>" >&2
+    echo "Usage: kaizen-init.sh <verify|list-registries|validate-registry-name|validate-project-id>" >&2
     exit 2
     ;;
 esac
