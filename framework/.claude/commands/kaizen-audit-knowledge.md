@@ -105,7 +105,7 @@ ls "$(readlink -f knowledge/projects/learnings)"/*.md 2>/dev/null
 ```markdown
 監査レポートの候補について、どのように進めますか？
 
-1. **全承認** — すべての削減候補を反映
+1. **全承認** — すべての提案を反映（knowledge-auditor の削減・統合、learning-auditor の昇格を含む）
 2. **個別選択** — 候補ごとに承認/却下を選択
 3. **キャンセル** — 何もしない
 ```
@@ -122,7 +122,7 @@ ls "$(readlink -f knowledge/projects/learnings)"/*.md 2>/dev/null
 </invoke>
 ```
 
-Skill 発動後、承認された各候補の削減方法に従って knowledge/ ファイルを編集する。
+Skill 発動後、承認された各候補の反映方法（削減・統合・新規セクション追加・既存セクションへの追記）に従って knowledge/ ファイルを編集する。
 
 ### Step 6: AUDIT_HISTORY.md への記録
 

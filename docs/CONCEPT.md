@@ -114,7 +114,7 @@ Reflected knowledge becomes instantly available across all your projects through
 The cycle above captures the **short-term loop** — the rhythm of everyday work. But knowledge has a longer arc. Left to pure accumulation, `knowledge/` eventually drifts: entries overlap, specs go stale, noise drowns out signal. Compound returns require both halves of the lifecycle.
 
 - **Reflect** accumulates. Every session's friction becomes knowledge.
-- **Audit** curates. Periodically, `/kaizen-audit-knowledge` scans for redundancy, SSOT violations, and staleness — and proposes deletions for your approval.
+- **Audit** curates. Periodically, `/kaizen-audit-knowledge` scans `knowledge/` for redundancy, SSOT violations, and staleness, and also surfaces cross-project lessons from `docs/LEARNINGS.md` ready to graduate into shared `knowledge/` — proposing both for your approval.
 
 Audit deliberately sits outside the everyday cycle. It runs on a slower clock — weeks or months, not per-session — because the judgments it requires only come into focus once knowledge has had time to settle.
 
@@ -155,7 +155,7 @@ The decision rules are simple:
 - **If it records a failure, constraint, or pitfall specific to this project** → `docs/LEARNINGS.md`
 - **If it describes the project itself** → `CLAUDE.md` or `docs/`
 
-Lessons have a lifecycle: general patterns **graduate** to `knowledge/` via reflect-learning, stale entries (resolved constraints) are removed, and lessons already embedded in the design are retired. This prevents indefinite accumulation and keeps each entry actionable.
+Lessons have a lifecycle: general patterns **graduate** to `knowledge/` — immediately via reflect-learning when the friction occurs, or later via audit when the same lesson recurs across projects — while stale entries (resolved constraints) are removed and lessons already embedded in the design are retired. This prevents indefinite accumulation and keeps each entry actionable.
 
 This separation is what turns Kaizen-CLI from a per-project tool into a cross-project knowledge platform. Without it, you would either keep all knowledge local (losing the compound effect) or dump everything into a shared space (creating noise that degrades usefulness).
 
