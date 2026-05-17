@@ -19,6 +19,15 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 KAIZEN_CLI_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 
+# Shared slug rule for registry names and project IDs (single source of truth)
+readonly SLUG_PATTERN='^[a-z0-9][a-z0-9-]*$'
+readonly SLUG_RULE="must match $SLUG_PATTERN (lowercase letters, numbers, hyphens; must start with letter or number)"
+
+# is_valid_slug <value> — returns 0 if valid, 1 otherwise
+is_valid_slug() {
+  echo "$1" | grep -qE "$SLUG_PATTERN"
+}
+
 # --- verify subcommand ---
 
 do_verify() {
@@ -121,10 +130,10 @@ do_validate_registry_name() {
     return 2
   fi
 
-  if echo "$name" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
+  if is_valid_slug "$name"; then
     return 0
   else
-    echo "Error: Registry name must match ^[a-z0-9][a-z0-9-]*$ (lowercase letters, numbers, hyphens; must start with letter or number)" >&2
+    echo "Error: Registry name $SLUG_RULE" >&2
     return 1
   fi
 }
@@ -140,8 +149,8 @@ do_validate_project_id() {
     return 2
   fi
 
-  if ! echo "$id" | grep -qE '^[a-z0-9][a-z0-9-]*$'; then
-    echo "Error: Project ID must match ^[a-z0-9][a-z0-9-]*$ (lowercase letters, numbers, hyphens; must start with letter or number)" >&2
+  if ! is_valid_slug "$id"; then
+    echo "Error: Project ID $SLUG_RULE" >&2
     return 1
   fi
 

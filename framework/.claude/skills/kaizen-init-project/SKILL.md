@@ -115,9 +115,17 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REG
    test -f "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME/projects/details/$PROJECT_ID.md"
    ```
 
-   ファイルが存在する場合、同名プロジェクトが既にレジストリに登録されている。ユーザーに以下の2択を提示:
-   1. **上書きして続行** — 既存の概要が Step 11 で上書きされることを承知のうえ採用
-   2. **別の ID を入力** — 新しい ID を入力させ、手順1から再検証（ループ）
+   - **ファイルが存在しない** → 衝突なし。チェック完了。
+   - **ファイルが存在する** → まず初期化済みプロジェクトの再実行かどうかを判定:
+
+     ```bash
+     [ -L knowledge ] && [ "$(readlink knowledge)" = "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME" ]
+     ```
+
+     - **上記が真、かつ `$PROJECT_ID` がデフォルト（`basename "$PWD"`）のまま** → 初期化済みプロジェクトの再実行であり、検出された `details/$PROJECT_ID.md` は自プロジェクト自身。「初期化済みプロジェクトの再実行を検出。`details/$PROJECT_ID.md` は Step 11 で再生成されます」と通知し、プロンプトなしで続行する。
+     - **それ以外**（新規 init、または ID をデフォルトから変更している） → 別プロジェクトのデータを上書きする恐れがある。ユーザーに以下の2択を提示:
+       1. **上書きして続行** — 既存の概要が Step 11 で上書きされることを承知のうえ採用
+       2. **別の ID を入力** — 新しい ID を入力させ、手順1から再検証（ループ）
 
 両ガードを通過するまで繰り返す。
 
