@@ -65,7 +65,7 @@ source ~/.bashrc   # または: source ~/.zshrc
 
 > **いつ `--force` を実行すべき？** `git pull` で kaizen-cli を更新するたびに実行してください。繰り返し実行しても安全です。
 
-> **既存プロジェクトに新コマンドを反映するには？** `git pull` 後、各プロジェクトで `/kaizen-init-project` を再実行してください。べき等設計のため、既存のsymlinkはスキップされ、新しいコマンド/エージェントのみ追加されます。
+> **既存プロジェクトに新コマンドを反映するには？** `git pull` 後、各プロジェクトで `/kaizen-init-project` を再実行してください。べき等設計のため、既存のsymlinkはスキップされ、新しいコマンド/スキル/エージェントのみ追加されます。
 
 > **新しい `knowledge/projects/learnings/` ディレクトリはどうなる？** アップグレード後、各登録プロジェクトで `/kaizen-update-docs` を初回実行した時に自動生成されます。手動操作は不要 — 既存の `docs/LEARNINGS.md` は次回以降の `/kaizen-audit-knowledge` クロスプロジェクトパスへの入力になります。
 
