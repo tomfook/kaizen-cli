@@ -48,11 +48,8 @@ test_force_cross_shell_read() {
   # Pre-create registry so setup doesn't fail
   mkdir -p "$TEST_KNOWLEDGE_DIR/default/meta" "$TEST_KNOWLEDGE_DIR/default/projects"
 
-  # Now run as zsh user with --force (no KAIZEN_KNOWLEDGE_DIR env var set).
-  # env -u clears any inherited KAIZEN_KNOWLEDGE_DIR so the RC-file fallback
-  # path is actually exercised (otherwise a developer's exported value leaks in).
-  env -u KAIZEN_KNOWLEDGE_DIR \
-    HOME="$TEST_HOME" SHELL=/bin/zsh KAIZEN_CLI_DIR="$KAIZEN_CLI_DIR" \
+  # Now run as zsh user with --force (no KAIZEN_KNOWLEDGE_DIR env var set)
+  HOME="$TEST_HOME" SHELL=/bin/zsh KAIZEN_CLI_DIR="$KAIZEN_CLI_DIR" \
     bash "$KAIZEN_CLI_DIR/setup.sh" --force > /dev/null 2>&1 || true
 
   # Env vars should now be in .zshrc

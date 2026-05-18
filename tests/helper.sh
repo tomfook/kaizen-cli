@@ -32,6 +32,9 @@ setup_test_env() {
   TEST_KNOWLEDGE_DIR="$TEST_HOME/kaizen-knowledge"
   TEST_BASHRC="$TEST_HOME/.bashrc"
   touch "$TEST_BASHRC"
+  # Clear inherited KAIZEN_KNOWLEDGE_DIR so tests never pick up the developer's
+  # real environment. Tests that need it pass it explicitly on the command line.
+  unset KAIZEN_KNOWLEDGE_DIR
   export GIT_AUTHOR_NAME="kaizen-test"
   export GIT_AUTHOR_EMAIL="test@kaizen-cli"
   export GIT_COMMITTER_NAME="kaizen-test"
