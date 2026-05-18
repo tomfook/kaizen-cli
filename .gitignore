@@ -2,3 +2,4 @@ docs/internal/
 /knowledge
 /.claude/skills/kaizen-*
 /.claude/commands/kaizen-*
+/.claude/agents/kaizen-*
