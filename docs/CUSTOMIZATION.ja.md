@@ -143,6 +143,18 @@ $KAIZEN_KNOWLEDGE_DIR/default/
 
 ---
 
+## 同梱スキル
+
+Kaizen-CLI は3つのスキルを同梱しており、`/kaizen-init-project` が `.claude/skills/` にシンボリックリンクします。`auto` の2つはユーザーが明示的に呼ばなくても、該当する操作が発生した時点で Claude Code が自動発動します。
+
+| スキル | 発動方法 | 用途 |
+|-------|---------|------|
+| `kaizen-init-project` | `/kaizen-init-project`（手動） | プロジェクト初期化 — [QUICKSTART.ja.md](./QUICKSTART.ja.md) 参照 |
+| `kaizen-editing-knowledge` | auto（`knowledge/`・`.claude/skills/` 編集時） | シンボリックリンク環境での編集ガードレール（参照確認・SSOT） |
+| `kaizen-committing-project` | auto（コミットリクエスト時） | コミット品質チェック — Conventional Commits・機密情報スキャン・symlink 配下のステージ防止・レジストリ同期 |
+
+---
+
 ## スキル・コマンド拡張時の注意点
 
 独自のスキルやコマンドを追加する際、Kaizen-CLI との共存で気をつけること:

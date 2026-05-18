@@ -72,3 +72,11 @@ grep -r "FILENAME.md" knowledge/ .claude/skills/
 
 - **ファイル操作（git、symlink）** → [FILE_OPERATIONS.md](FILE_OPERATIONS.md)
 - **ドキュメント管理ルール** → `knowledge/meta/DOCUMENTATION_GUIDELINES.md`
+
+---
+
+## 関連スキル
+
+| スキル/コマンド | 用途 |
+|---------------|------|
+| `kaizen-committing-project` | プロジェクトコードを git commit する際のガードレール |
