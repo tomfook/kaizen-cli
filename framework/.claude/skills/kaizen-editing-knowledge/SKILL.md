@@ -48,6 +48,23 @@ grep -r "FILENAME.md" knowledge/ .claude/skills/
 
 **禁止**: 転記確認なしの情報削除
 
+### セクション集約・圧縮時の追加チェック
+
+ファイルを残したまま既存セクションを**集約・圧縮**（H2/H3 の統廃合・SSOT 化、内容の圧縮や別セクションへの統合）した場合、移動・削除と同等の参照陳腐化が起きる。**特に他スキルやコマンドが「ファイル名 + 行番号」で参照していると、行番号が無音で陳腐化する**。
+
+- [ ] 集約・圧縮対象のセクション見出し名で参照を検索
+  ```bash
+  grep -rn '<旧見出し名>' knowledge/ .claude/skills/ .claude/commands/ .claude/agents/
+  ```
+- [ ] 行番号付き参照を検索（陳腐化リスク最大）
+  ```bash
+  grep -rnE '<旧ファイル名>.*L[0-9]+' knowledge/ .claude/skills/ .claude/commands/ .claude/agents/
+  ```
+- [ ] 集約対象に含まれていたキーワード（手順名・契約値・規約名等）でも検索
+- [ ] ヒットした参照箇所が新しい場所（集約後のセクション or SSOT）を指すように更新済みか確認
+
+> コミット前の最終ゲートとして [`kaizen-committing-project` § 参照陳腐化スキャン](../kaizen-committing-project/SKILL.md) でも同種の確認を行う。本セクションは編集タイミングでの細粒度チェックとして位置づけ、コミット時の漏れ拾いと併用する。
+
 ---
 
 ## SSOT確認
