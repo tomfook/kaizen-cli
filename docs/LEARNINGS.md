@@ -32,3 +32,11 @@ kaizen-cli リポジトリは自身のコマンドをドッグフーディング
 
 - 新規 skill/command/agent 追加時は `.claude/` 配下に対応 symlink を手動追加する（または `/kaizen-init-project` を再実行）
 - `.claude/` に新しいサブディレクトリ（例: `agents/`）を作る場合、`.gitignore` に `/.claude/<dir>/kaizen-*` を追加する。symlink は machine 固有の絶対パスを含むためコミットしてはならない
+
+---
+
+### Bilingual テンプレ見出しを単一ファイルから §参照する際は英語語幹を全言語で温存する (2026-06-27)
+
+- **状況**: NEXT_STEPS 導入(M7)で ja の DOCUMENTATION_GUIDELINES / NEXT_STEPS テンプレに `§ Design Decisions` 参照を追加した
+- **問題**: ja PROJECT_SUMMARY テンプレの見出しだけ `## 設計判断` と翻訳されており、言語別に分割できない単一コマンドファイル（suggest-next/update-docs）が指す `§ Design Decisions` と文字列一致せず、ja ユーザーで散文§参照が解決しないドリフトが発生（M7で拡大）
+- **教訓**: cross-ref の対象になる per-language テンプレ見出しは全言語で**英語語幹を温存**する（例: `## Design Decisions（設計判断）` / `## Auto Memory（…）の位置づけ`）。単一コマンドファイルは英語が事実上の正準アンカーになるため。audit Check 6 は `.template` 除外でこのドリフトを機械検出できない点に注意。関連: 既存「社内版移植チェックポイント § bilingual 対応」

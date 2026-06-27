@@ -3,9 +3,9 @@ project:
   id: "kaizen-cli"
   name: "Kaizen-CLI"
   status: released          # planning | developing | released | completed | on-hold
-  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing, subagent, verification, unregister, audit, auto-memory, cross-project-learning, promotion-marker]
+  keywords: [claude-code, knowledge, workflow, framework, kaizen, registry, i18n, templates, symlink, idempotent, git-init, project-registry, testing, subagent, verification, unregister, audit, auto-memory, cross-project-learning, promotion-marker, next-steps]
   created: "2026-02-18"
-  updated: "2026-05-18"
+  updated: "2026-06-27"
 ---
 
 # Kaizen-CLI
@@ -16,7 +16,7 @@ Development and distribution of a knowledge-accumulating workflow framework for 
 
 ## Overview
 
-A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → update docs → reflect), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification, scanning nine categories that include accuracy improvements to existing knowledge and filing-back of external research. Projects can be unregistered from the registry via `kaizen-unregister-project`. The audit command (`kaizen-audit-knowledge`) runs in two passes: knowledge-auditor trims redundancy / SSOT violations / stale content inside `knowledge/`, and learning-auditor scans each registered project's `docs/LEARNINGS.md` (synced into `knowledge/projects/learnings/{id}.md`) for cross-project promotion candidates — implementing a three-tier learning promotion model documented in DESIGN_PRINCIPLES. Both passes combine a mechanical check (line count, freshness, INDEX deviation, broken links) with auditor analysis and record results to `knowledge/meta/AUDIT_HISTORY.md` for repeat-finding detection. The update-docs command also inventories Claude Code's auto memory, promoting permanent information to docs/ or knowledge/ and cleaning up stale entries.
+A framework that embeds a knowledge-accumulation loop into everyday Claude Code work. Provides shared knowledge base via symlinks, Kaizen cycle commands (suggest → execute → update docs → reflect), and domain-specific skills/knowledge templates. The reflect-learning command uses a subagent architecture (reflector + verifier) with context separation for bias-free independent verification, scanning nine categories that include accuracy improvements to existing knowledge and filing-back of external research. Projects can be unregistered from the registry via `kaizen-unregister-project`. The audit command (`kaizen-audit-knowledge`) runs in two passes: knowledge-auditor trims redundancy / SSOT violations / stale content inside `knowledge/`, and learning-auditor scans each registered project's `docs/LEARNINGS.md` (synced into `knowledge/projects/learnings/{id}.md`) for cross-project promotion candidates — implementing a three-tier learning promotion model documented in DESIGN_PRINCIPLES. Both passes combine a mechanical check (line count, freshness, INDEX deviation, broken links) with auditor analysis and record results to `knowledge/meta/AUDIT_HISTORY.md` for repeat-finding detection. The update-docs command also inventories Claude Code's auto memory, promoting permanent information to docs/ or knowledge/ and cleaning up stale entries. It additionally maintains an optional `docs/NEXT_STEPS.md` backlog (Open items / Deferred) as the write-owner, which `suggest-next` reads to gate re-proposals.
 
 ## Tech Stack
 
