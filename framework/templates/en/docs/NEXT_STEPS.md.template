@@ -1,0 +1,26 @@
+# {{PROJECT_NAME}} - Next Steps
+
+Upcoming and deferred work for this project.
+
+> **Boundaries** (see `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries):
+> - **This file** — what to do next / what's deferred
+> - **`docs/PROJECT_SUMMARY.md` § Design Decisions** — why a decision was made
+> - **`docs/LEARNINGS.md`** — what went wrong / pitfalls
+>
+> Keep this short. Prune completed/obsolete items via `/kaizen-update-docs`.
+
+## Open items
+
+<!-- Actionable items queued but not yet started. Format:
+- [ ] [short action] — status / context
+-->
+
+(No entries yet)
+
+## Deferred
+
+<!-- Items intentionally postponed. Format:
+- [item] — reason / condition to revisit (YYYY-MM-DD)
+-->
+
+(No entries yet)

@@ -66,6 +66,18 @@
 | **陳腐化** | 制約が解消済み（ライブラリ更新、仕様変更等） | エントリ削除 |
 | **内在化** | 設計・コードに反映済みで記録の意味がなくなった | エントリ削除 |
 
+**NEXT_STEPS の棚卸し**（`docs/NEXT_STEPS.md`。境界定義は `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries）:
+
+本コマンドが NEXT_STEPS の**書込主体**である（`/kaizen-suggest-next` は読み取り専用で、再提案ガード・機熟判定に使うだけ）。以下はすべて**提案**であり、Step 3 で一括表示し Step 4 の承認後に実行する（「実行はユーザー」原則を維持）。
+
+| 操作 | 対象 | アクション |
+|------|------|-----------|
+| **剪定**（ファイル存在時） | `## Open items` で今セッションに完了した項目 / `## Deferred` で先送り理由・条件が解消・陳腐化した項目 | 削除提案 |
+| **追加** | 今セッションで「次にやる」と決めた未着手の実行可能項目 → `## Open items` へ。意図的に先送りした項目 → `## Deferred` へ（理由・条件＋日付付き） | 追加提案 |
+| **新規作成** | ファイルが無く、かつ追加対象がある場合のみ | 2節（`## Open items` / `## Deferred`）スケルトンで作成提案。追加対象が無ければ作らない |
+
+**境界遵守**: 「なぜ決めたか」は `docs/PROJECT_SUMMARY.md § Design Decisions`、「何が失敗したか」は `docs/LEARNINGS.md`。NEXT_STEPS には書かない。短く保つ。
+
 **auto memoryの棚卸し**: memoryディレクトリ内の各ファイルについて、以下の順序で判断する:
 
 **Step A: 永続化判断**（判断基準: `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Auto Memory）
