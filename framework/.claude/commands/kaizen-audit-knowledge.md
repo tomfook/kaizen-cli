@@ -55,7 +55,7 @@ Agent ツールで `kaizen-knowledge-auditor` を呼び出し、監査レポー�
 - 「knowledge/ 配下のファイルを監査し、監査レポートを作成せよ」
 - `$ARGUMENTS` にディレクトリ指定がある場合: 「対象ディレクトリ: `knowledge/$ARGUMENTS`」
 - knowledge/ の実体パス: `readlink -f knowledge` の結果
-- Step 1.5 の機械チェック結果（該当範囲）を「【機械チェック結果】」ブロックとして添付。**この結果は確定事実として扱い、鮮度・行数・INDEX乖離の再計算を行わない**旨を明示
+- Step 1.5 の機械チェック結果（該当範囲）を「【機械チェック結果】」ブロックとして添付。**この結果は確定事実として扱い、鮮度・行数・INDEX乖離・壊れリンク・壊れアンカー/セクション参照の再計算を行わない**旨を明示
 
 ### Step 2.5: kaizen-learning-auditor 呼び出し
 
