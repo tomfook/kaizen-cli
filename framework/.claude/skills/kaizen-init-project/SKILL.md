@@ -230,6 +230,8 @@ mkdir -p docs
 **置換対象**:
 - `{{PROJECT_NAME}}`: Step 3で取得したプロジェクト名
 
+> **NEXT_STEPS.md は scaffold しない**: `docs/NEXT_STEPS.md` は任意・必要時作成のため init では生成しない（空ファイルの量産を避ける）。`$LANG/docs/NEXT_STEPS.md.template` は `/kaizen-update-docs` や手動での新規作成時に参照するスケルトン。詳細は `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries。
+
 ### 11. プロジェクトレジストリへの登録
 
 選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:

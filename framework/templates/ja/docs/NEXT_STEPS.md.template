@@ -1,0 +1,26 @@
+# {{PROJECT_NAME}} - 次のステップ
+
+このプロジェクトのこれからの作業・先送り項目。
+
+> **境界**（`knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries を参照）:
+> - **このファイル** — これからやる / 先送り
+> - **`docs/PROJECT_SUMMARY.md` § 設計判断** — なぜそう決めたか
+> - **`docs/LEARNINGS.md`** — 何が失敗したか / 落とし穴
+>
+> 短く保つこと。完了・不要項目は `/kaizen-update-docs` で剪定する。
+
+## Open items
+
+<!-- 着手予定だが未着手の実行可能項目。形式:
+- [ ] [短いアクション] — 状態 / 文脈
+-->
+
+（まだエントリがありません）
+
+## Deferred
+
+<!-- 意図的に先送りした項目。形式:
+- [項目] — 先送り理由 / 再開条件（YYYY-MM-DD）
+-->
+
+（まだエントリがありません）

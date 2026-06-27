@@ -177,6 +177,18 @@ When editing or adding `knowledge/` files:
 | **200-300 lines** | Consider moving details to docs/ |
 | **Over 300 lines** | Must move details to docs/. CLAUDE.md should contain references only |
 
+### Document Role Boundaries
+
+Project-specific `docs/` files have distinct, non-overlapping roles. Keep each fact in exactly one (SSOT):
+
+| File | Role | Question it answers |
+|------|------|---------------------|
+| `docs/NEXT_STEPS.md` | Upcoming and deferred work | "What should we do next / what did we defer?" |
+| `docs/PROJECT_SUMMARY.md` § Design Decisions | Decision records (ADR-style) | "Why did we decide this?" |
+| `docs/LEARNINGS.md` | Failures, constraints, pitfalls | "What went wrong, and what to avoid?" |
+
+**`docs/NEXT_STEPS.md`** is optional and **created on demand** (not scaffolded at `init`). It has two sections: `## Open items` (actionable, not-yet-done items with status) and `## Deferred` (postponed items with reason/condition and date). Keep it short — prune completed/obsolete items during `/kaizen-update-docs`. An unmaintained NEXT_STEPS is worse than none.
+
 ---
 
 ## Auto Memory (~/.claude/projects/)

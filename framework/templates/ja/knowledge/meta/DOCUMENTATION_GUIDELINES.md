@@ -177,6 +177,18 @@ grep -r "FILENAME.md" knowledge/
 | **200-300行** | 詳細をdocs/に移動することを検討 |
 | **300行超** | 詳細をdocs/に移動必須。CLAUDE.mdは参照のみに |
 
+### Document Role Boundaries
+
+プロジェクト固有の `docs/` ファイルは役割が重ならないよう分担する。各事実は1ファイルにのみ置く（SSOT）:
+
+| ファイル | 役割 | 答える問い |
+|---------|------|-----------|
+| `docs/NEXT_STEPS.md` | これからやる作業・先送り | 「次に何をやるか / 何を先送りしたか」 |
+| `docs/PROJECT_SUMMARY.md` § Design Decisions | 意思決定の記録（ADR的） | 「なぜそう決めたか」 |
+| `docs/LEARNINGS.md` | 失敗・制約・落とし穴 | 「何が失敗したか / 何を避けるか」 |
+
+**`docs/NEXT_STEPS.md`** は任意であり **必要時に作成**する（`init` ではスキャフォールドしない）。2節構成: `## Open items`（着手予定だが未着手の実行可能項目＋状態）と `## Deferred`（先送り項目＋理由・条件・日付）。短く保ち、完了・不要項目は `/kaizen-update-docs` で剪定する。維持されない NEXT_STEPS は無い方がマシ。
+
 ---
 
 ## Auto Memory（~/.claude/projects/）の位置づけ
