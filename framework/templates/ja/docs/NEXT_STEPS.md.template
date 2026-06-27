@@ -4,7 +4,7 @@
 
 > **境界**（`knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries を参照）:
 > - **このファイル** — これからやる / 先送り
-> - **`docs/PROJECT_SUMMARY.md` § 設計判断** — なぜそう決めたか
+> - **`docs/PROJECT_SUMMARY.md` § Design Decisions** — なぜそう決めたか
 > - **`docs/LEARNINGS.md`** — 何が失敗したか / 落とし穴
 >
 > 短く保つこと。完了・不要項目は `/kaizen-update-docs` で剪定する。
