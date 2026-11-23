@@ -61,6 +61,7 @@ Project A                       Project B                      Project C
 - **Registry isolation**: Projects sharing a registry share knowledge. Projects on different registries are completely isolated
 - **Registries are subdirectories**: A registry is simply a subdirectory of `$KAIZEN_KNOWLEDGE_DIR` — no configuration file is needed. Directory existence defines a registry
 - skills/ also uses symlinks (per individual skill, to allow coexistence with user-defined skills)
+- **Link drift is detected, not auto-repaired**: Per-item links do not follow items added, renamed, or removed in the distribution, and Claude Code reports neither a missing command nor a dangling agent link. `kaizen-init.sh check-links` reports missing and dangling links (`/kaizen-suggest-next` and `/kaizen-audit-knowledge` run it first); `sync-links` repairs them when the user runs it. A copy placed under a distributed name is a customization and is left untouched
 - **Registry selection**: `kaizen-init-project` always prompts for registry choice (even if only one exists), allowing users to create new registries without leaving Claude Code
 - **Per-registry language**: Each registry stores its language in `$REGISTRY_DIR/.lang` (`en` or `ja`). Templates under `framework/templates/{en,ja}/` are selected accordingly. Default: `en`
 

@@ -30,7 +30,7 @@ CLAUDE.md と PROJECT_SUMMARY.md だけでなく、以下も更新が必要:
 
 kaizen-cli リポジトリは自身のコマンドをドッグフーディングするため、`.claude/` に `framework/.claude/` への symlink を持つ。`framework/.claude/{skills,commands,agents}/` に新規要素を追加しても、dev リポジトリの `.claude/` 配下の symlink は自動更新されない。古いまま放置すると `/kaizen-reflect-learning` 等のサブエージェント委譲が黙って劣化する（`.claude/agents/` 不在で reflector/verifier が見つからない等）。
 
-- 新規 skill/command/agent 追加時は `.claude/` 配下に対応 symlink を手動追加する（または `/kaizen-init-project` を再実行）
+- 新規 skill/command/agent の追加・改名・削除後は `bash framework/bin/kaizen-init.sh sync-links` を実行する（欠落を張り、宙吊りを外す。手で `ln -s` しない）。未同期は `/kaizen-suggest-next` の冒頭でも検出される（2026-11-23, #62）
 - `.claude/` に新しいサブディレクトリ（例: `agents/`）を作る場合、`.gitignore` に `/.claude/<dir>/kaizen-*` を追加する。symlink は machine 固有の絶対パスを含むためコミットしてはならない
 
 ---
@@ -40,3 +40,11 @@ kaizen-cli リポジトリは自身のコマンドをドッグフーディング
 - **状況**: NEXT_STEPS 導入(M7)で ja の DOCUMENTATION_GUIDELINES / NEXT_STEPS テンプレに `§ Design Decisions` 参照を追加した
 - **問題**: ja PROJECT_SUMMARY テンプレの見出しだけ `## 設計判断` と翻訳されており、言語別に分割できない単一コマンドファイル（suggest-next/update-docs）が指す `§ Design Decisions` と文字列一致せず、ja ユーザーで散文§参照が解決しないドリフトが発生（M7で拡大）
 - **教訓**: cross-ref の対象になる per-language テンプレ見出しは全言語で**英語語幹を温存**する（例: `## Design Decisions（設計判断）` / `## Auto Memory（…）の位置づけ`）。単一コマンドファイルは英語が事実上の正準アンカーになるため。audit Check 6 は `.template` 除外でこのドリフトを機械検出できない点に注意。関連: 既存「社内版移植チェックポイント § bilingual 対応」
+
+---
+
+### スクリプトとテストは macOS の CI でも走る — bash 3.2 と BSD 版コマンドを前提に書く (2026-11-23)
+
+- **状況**: `.github/workflows/test.yml` は `ubuntu-latest` と `macos-latest` の両方で `bash tests/run_all.sh` を実行する。開発端末（Linux・bash 5・gawk）で通っても macOS で落ちうる
+- **制約**: `set -u` 下の空配列の展開（bash 3.2 でエラー → 改行区切りの文字列で持つ）、`grep -P`、gawk 拡張（`gensub`・`\<`）、`readlink -f`、`sed -i` の引数形式を避ける。`wc -l` の出力は先頭に空白が付く
+- **手元での代替検査**: awk を mawk に、awk・grep・sed・find などを busybox 版に差し替えた PATH でテストを流すと、GNU 依存の一部を push 前に拾える（BSD 版そのものの検証にはならない）
