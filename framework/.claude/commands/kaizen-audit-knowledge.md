@@ -45,6 +45,17 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-knowledge.sh"
 - 部分監査（`$ARGUMENTS` あり）: 対象ディレクトリの行のみ抜粋を Step 2 の auditor プロンプトに渡し、対象外の警告は Step 3 の「対象外の警告」セクションに保持
 - 全体監査（`$ARGUMENTS` なし）: 全結果を auditor に渡す
 
+**フレームワークリンクの確認**: 同じ地点で、プロジェクトの `.claude/` のリンクが配布物に追随しているかも確認する（監査は委譲先のエージェント定義が読めて初めて成立する。宙吊りリンクはエラーなしで「発動しないだけ」になる）:
+
+```bash
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" check-links
+```
+
+- 終了コード `0`（`status=clean`）: 何も出力せず次へ（`foreign:` の行は、ユーザーが意図して複製・差し替えた項目なので差分として扱わない）
+- 終了コード `1`（`status=drift`）: `missing:` / `dangling:` の行と `fix=` の行を、Step 3 のレポートの**先頭**に「フレームワークリンクの差分」としてそのまま転記する。自動では同期しない。この結果は auditor には渡さない（knowledge/ の内容とは無関係のため）
+- **`dangling:` に `agents/kaizen-knowledge-auditor.md` または `agents/kaizen-learning-auditor.md` が含まれる場合**: その auditor は呼び出せない。該当する Step をスキップし、`fix=` の同期と新しいセッションでの再実行を案内する
+- 終了コード `3`（`status=error`）: `error` の内容を 1 行で注記して次へ
+
 ### Step 2: kaizen-knowledge-auditor 呼び出し
 
 `--scope=learnings` 指定時はスキップ。
@@ -94,7 +105,7 @@ ls "$(readlink -f knowledge/projects/learnings)"/*.md 2>/dev/null
 [kaizen-learning-auditor の返却内容]
 ```
 
-スキップした auditor のセクションは表示しない。
+スキップした auditor のセクションは表示しない。Step 1.5 でフレームワークリンクの差分を検出した場合は、2 セクションより前に「フレームワークリンクの差分」として転記する。
 
 **性質の差を明示**: knowledge-auditor の候補は **削減・統合**（既存内容を減らす方向）が中心、learning-auditor の候補は **追加・新規セクション**（knowledge/ に内容を増やす方向）が中心であることを、ユーザー提示時に一言添えること。
 

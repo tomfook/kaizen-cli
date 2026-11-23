@@ -13,6 +13,7 @@ This is the Kaizen-CLI open source project — a knowledge-accumulating workflow
 - `docs/internal/` — Development-only documents (.gitignore, not published). Includes PLAN_KAIZEN_CLI_OSS.md
 - `framework/` — Copy-and-use template set (templates/, .claude/commands/, .claude/skills/, .claude/agents/, bin/)
 - `examples/` — Domain-specific examples (data-analysis, web-development)
+- `tests/` — Shell tests and the static lint of distributed files (`bash tests/run_all.sh`; also run by CI on Ubuntu and macOS)
 
 ## Language Policy
 
@@ -31,6 +32,7 @@ Rules that prevent bugs or design violations. For design rationale, see [DESIGN_
 - **Symlink + Glob workaround**: Claude Code's Glob tool cannot follow symlinks. Use Read/Grep instead of Glob for `knowledge/` access.
 - **framework/bin/ for mechanical processing**: Mechanical steps (environment validation, registry listing, etc.) are extracted into shell scripts under `framework/bin/`. Skills call these scripts and parse structured output.
 - **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs.
+- **No positional variables in command/skill bodies**: Claude Code rewrites `$0`, `$1`, … in a command or `SKILL.md` body when it is invoked with arguments. Receive arguments via `$ARGUMENTS` only, and move shell snippets that need positional variables (e.g. awk field references) into `framework/bin/` scripts. Enforced by `tests/lint_framework.sh` (run from `tests/run_all.sh`), together with frontmatter validity, the `kaizen-` prefix, and the 800-line limit.
 
 ## Conventions
 
