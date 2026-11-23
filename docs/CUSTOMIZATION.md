@@ -159,7 +159,7 @@ Kaizen-CLI ships three skills, symlinked into `.claude/skills/` by `/kaizen-init
 
 Things to keep in mind when adding your own skills or commands to coexist with Kaizen-CLI:
 
-- **Do not directly edit Kaizen-CLI files**: The kaizen- prefixed files in `.claude/skills/` and `.claude/commands/` are symlinks. Editing them will modify the originals under `$KAIZEN_CLI_DIR`. If you want to customize, remove the symlink and place a copy instead
+- **Do not directly edit Kaizen-CLI files**: The kaizen- prefixed files in `.claude/skills/` and `.claude/commands/` are symlinks. Editing them will modify the originals under `$KAIZEN_CLI_DIR`. If you want to customize, remove the symlink and place a copy instead. A copy is yours from then on: `kaizen-init.sh sync-links` never overwrites it (it is listed as `foreign`, not as a difference), and it no longer receives updates from `git pull`. To return to the distributed version, delete the copy and run `sync-links`
 - **Avoid the kaizen- prefix**: Use a different prefix for your own skills and commands to prevent name collisions
 - **When referencing knowledge/**: Use project-root-relative paths (e.g., `knowledge/path/to/FILE.md`). Relative paths like `../../../` will break in symlink environments
 - **Do not embed detailed knowledge in skills**: Place it in knowledge/ and use reference links from skills (SSOT)
