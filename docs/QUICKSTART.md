@@ -65,7 +65,15 @@ source ~/.bashrc   # or: source ~/.zshrc
 
 > **When should you run `--force`?** Every time you update kaizen-cli with `git pull`. It is safe to run repeatedly.
 
-> **How do existing projects get new commands?** After `git pull`, re-run `/kaizen-init-project` in each project. It is idempotent — existing symlinks are skipped, and only new commands, skills, and agents are added.
+> **How do existing projects get new commands?** Commands, skills, and agents are linked into each project one by one, so a project does not pick up items added by `git pull` on its own. Sync the links from the project directory:
+>
+> ```bash
+> bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" sync-links
+> ```
+>
+> It is idempotent: it adds links for new items, removes dangling links to items that were renamed or removed, and never touches your own skills, commands, or agents (anything without the `kaizen-` prefix). Start a new Claude Code session afterwards — the list of commands is read at session start. Re-running `/kaizen-init-project` does the same sync as part of its flow.
+>
+> **How do I know a project is out of sync?** `/kaizen-suggest-next` and `/kaizen-audit-knowledge` check the links first and show the missing or dangling items together with the sync command. To check by hand, run `kaizen-init.sh check-links` (exit code `0` = in sync, `1` = differences found).
 
 > **What about the new `knowledge/projects/learnings/` directory?** It is created automatically the first time `/kaizen-update-docs` runs in any registered project after upgrade. No manual action needed — your existing `docs/LEARNINGS.md` files become input for `/kaizen-audit-knowledge`'s cross-project pass on the next run.
 

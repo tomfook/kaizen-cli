@@ -40,9 +40,7 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" verify
 上書き防止のため、以下が既に存在しないか確認:
 
 - `knowledge/` — 既にsymlinkまたはディレクトリが存在する場合はスキップ
-- `.claude/skills/` — 既にsymlinkが存在する場合はスキップ
-- `.claude/commands/kaizen-*.md` — 既にsymlinkが存在する場合はスキップ（個別ファイル単位で判定）
-- `.claude/agents/kaizen-*.md` — 既にsymlinkが存在する場合はスキップ（個別ファイル単位で判定）
+- `.claude/skills/`・`.claude/commands/`・`.claude/agents/` の `kaizen-*` — ここでは判定しない。Step 5 の `sync-links` が項目単位で判定する（既存の正しいリンクはそのまま、欠落は追加、宙吊りは除去、リンクでない実体は触れずに報告）
 - `CLAUDE.md` — 既に存在する場合はユーザーに以下の3択を提示:
   1. **追記** — テンプレートの「Reference Documentation」「Kaizen-CLI Workflow」セクションを既存ファイルの末尾に追記
   2. **上書き** — テンプレートから新規生成（既存内容は失われる）
@@ -122,9 +120,9 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REG
      [ -L knowledge ] && [ "$(readlink knowledge)" = "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME" ]
      ```
 
-     - **上記が真、かつ `$PROJECT_ID` がデフォルト（`basename "$PWD"`）のまま** → 初期化済みプロジェクトの再実行であり、検出された `details/$PROJECT_ID.md` は自プロジェクト自身。「初期化済みプロジェクトの再実行を検出。`details/$PROJECT_ID.md` は Step 11 で再生成されます」と通知し、プロンプトなしで続行する。
+     - **上記が真、かつ `$PROJECT_ID` がデフォルト（`basename "$PWD"`）のまま** → 初期化済みプロジェクトの再実行であり、検出された `details/$PROJECT_ID.md` は自プロジェクト自身。「初期化済みプロジェクトの再実行を検出。`details/$PROJECT_ID.md` は Step 9 で再生成されます」と通知し、プロンプトなしで続行する。
      - **それ以外**（新規 init、または ID をデフォルトから変更している） → 別プロジェクトのデータを上書きする恐れがある。ユーザーに以下の2択を提示:
-       1. **上書きして続行** — 既存の概要が Step 11 で上書きされることを承知のうえ採用
+       1. **上書きして続行** — 既存の概要が Step 9 で上書きされることを承知のうえ採用
        2. **別の ID を入力** — 新しい ID を入力させ、手順1から再検証（ループ）
 
 両ガードを通過するまで繰り返す。
@@ -136,63 +134,30 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" validate-registry-name "$REG
 ln -s "$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME" knowledge
 ```
 
-### 5. skills/ symlinkの作成
+### 5. skills / commands / agents の symlink 同期
 
-個別スキルごとにsymlinkを作成（ユーザー独自スキルとの共存のため）:
-
-```bash
-mkdir -p .claude/skills
-
-# kaizen-init-project はグローバルリンク済みのためスキップ
-for skill_dir in "$KAIZEN_CLI_DIR/framework/.claude/skills"/*/; do
-  skill_name=$(basename "$skill_dir")
-  if [ "$skill_name" = "kaizen-init-project" ]; then
-    continue
-  fi
-  # べき等: 既にsymlinkが存在する場合はスキップ
-  if [ -L ".claude/skills/$skill_name" ]; then
-    continue
-  fi
-  ln -s "$skill_dir" ".claude/skills/$skill_name"
-done
-```
-
-### 6. commands/ symlinkの作成
-
-個別コマンドごとにsymlinkを作成（ユーザー独自コマンドとの共存のため）:
+配布物（スキル・コマンド・エージェント）へのリンクは、ヘルパースクリプトで同期する。リンクの作成ロジックはこのスクリプトだけが持つ（手で `ln -s` しない）:
 
 ```bash
-mkdir -p .claude/commands
-
-for cmd_file in "$KAIZEN_CLI_DIR/framework/.claude/commands"/kaizen-*.md; do
-  cmd_name=$(basename "$cmd_file")
-  # べき等: 既にsymlinkが存在する場合はスキップ
-  if [ -L ".claude/commands/$cmd_name" ]; then
-    continue
-  fi
-  ln -s "$cmd_file" ".claude/commands/$cmd_name"
-done
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" sync-links
 ```
 
-### 7. agents/ symlinkの作成
+- 個別の項目ごとに symlink を作る（ユーザー独自のスキル・コマンド・エージェントと共存するため）。`kaizen-` 接頭辞の無い項目には触れない
+- べき等: 配布側に増えた項目だけを張り、配布側から消えた項目の宙吊りリンクを外す。初期化済みプロジェクトでの再実行は、フレームワーク更新後の再同期として働く
+- `kaizen-init-project` はグローバルリンク済みのため、プロジェクトには張らない
 
-個別エージェントごとにsymlinkを作成（ユーザー独自エージェントとの共存のため）:
+出力の `[kaizen-links]` ブロックを解析:
 
-```bash
-mkdir -p .claude/agents
+| 終了コード | `status` | 対応 |
+|---|---|---|
+| `0` | `synced` | `linked:` / `removed:` の行を Step 10 の完了確認で報告する |
+| `0` | `unchanged` | 変更なし。そのまま続行 |
+| `1` | `error` | `failed:` の行と `error` をユーザーに表示して終了（権限・ファイルシステムの問題） |
+| `3` | `error` | `error` の内容をユーザーに表示して終了（配布側を読めていない） |
 
-for agent_file in "$KAIZEN_CLI_DIR/framework/.claude/agents"/kaizen-*.md; do
-  [ -f "$agent_file" ] || continue
-  agent_name=$(basename "$agent_file")
-  # べき等: 既にsymlinkが存在する場合はスキップ
-  if [ -L ".claude/agents/$agent_name" ]; then
-    continue
-  fi
-  ln -s "$agent_file" ".claude/agents/$agent_name"
-done
-```
+`foreign:` の行がある場合（配布名と同じ場所に、配布物へのリンクでない実体や別の場所へのリンクがある）: スクリプトは触れない。該当項目をユーザーに示し、意図した複製かどうかを確認する。意図しないものなら、ユーザーが削除したあとで `sync-links` を再実行すると配布版に戻る。
 
-### 8. CLAUDE.md の生成
+### 6. CLAUDE.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/CLAUDE.md.template` を読み取り、プレースホルダを置換してCLAUDE.mdを生成。
 
@@ -209,7 +174,7 @@ done
 4. 含まれていないセクションのみ、既存ファイルの末尾に追記
 5. プレースホルダ（`{{PROJECT_DESCRIPTION}}` 等）は追記内容にも適用する
 
-### 9. docs/PROJECT_SUMMARY.md の生成
+### 7. docs/PROJECT_SUMMARY.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/PROJECT_SUMMARY.md.template` を読み取り、プレースホルダを置換。
 
@@ -223,7 +188,7 @@ mkdir -p docs
 - `{{PROJECT_PURPOSE}}`: Step 3で取得した目的
 - `{{DATE}}`: 今日の日付
 
-### 10. docs/LEARNINGS.md の生成
+### 8. docs/LEARNINGS.md の生成
 
 `$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/LEARNINGS.md.template` を読み取り、プレースホルダを置換。
 
@@ -232,7 +197,7 @@ mkdir -p docs
 
 > **NEXT_STEPS.md は scaffold しない**: `docs/NEXT_STEPS.md` は任意・必要時作成のため init では生成しない（空ファイルの量産を避ける）。`$LANG/docs/NEXT_STEPS.md.template` は `/kaizen-update-docs` や手動での新規作成時に参照するスケルトン。詳細は `knowledge/meta/DOCUMENTATION_GUIDELINES.md` § Document Role Boundaries。
 
-### 11. プロジェクトレジストリへの登録
+### 9. プロジェクトレジストリへの登録
 
 選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
 
@@ -244,36 +209,35 @@ mkdir -p docs
      - `| {id} | {name} | planning | | {date} |`
 4. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
    - `knowledge/projects/details/` ディレクトリが存在しない場合は作成: `mkdir -p "knowledge/projects/details"`
-   - Step 8 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
+   - Step 7 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
    - コピー先が既に存在する場合は上書き（衝突は Step 3 のプロジェクトID ガードでユーザー確認済み）
 5. `knowledge/projects/learnings/` ディレクトリを作成（存在しない場合のみ）: `mkdir -p "knowledge/projects/learnings"`
    - 登録時点では空。最初の `/kaizen-update-docs` 実行時に `{id}.md` が同期される
    - eager 作成で `mkdir -p` の race を回避するため、登録時に作っておく
 
-### 12. 完了確認
+### 10. 完了確認
 
 ```bash
 # プロジェクト構造を表示
 ls -la knowledge
-ls -la .claude/skills/
-ls -la .claude/commands/
-ls -la .claude/agents/ 2>/dev/null || true
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" check-links
 ls docs/PROJECT_SUMMARY.md
 ls docs/LEARNINGS.md
 ```
 
+`check-links` が `status=clean`（終了コード `0`）であることを確認する。`foreign:` の行は Step 5 で確認済みの項目で、差分には数えられない。
+
 ユーザーに以下を案内:
 - `knowledge/` が `$KAIZEN_KNOWLEDGE_DIR/$REGISTRY_NAME` へのsymlinkであること
-- `.claude/skills/` にKaizen-CLIスキルへのsymlinkが作成されたこと
-- `.claude/commands/` にKaizen-CLIコマンドへのsymlinkが作成されたこと
-- `.claude/agents/` にKaizen-CLIエージェントへのsymlinkが作成されたこと（エージェント定義がある場合）
+- `.claude/skills/`・`.claude/commands/`・`.claude/agents/` に Kaizen-CLI の配布物への symlink が同期されたこと（Step 5 の `linked:` / `removed:` の項目。`unchanged` なら「変更なし」）
+- 追加されたコマンド・スキル・エージェントは、**新しいセッションから**一覧に反映されること
 - `CLAUDE.md` が生成されたこと
 - `docs/PROJECT_SUMMARY.md` が生成されたこと
 - `docs/LEARNINGS.md` が生成されたこと
 - プロジェクトレジストリに登録されたこと
 - `knowledge/projects/details/{id}.md` にプロジェクト概要のコピーが配置されたこと
 
-### 13. 次のステップの案内
+### 11. 次のステップの案内
 
 1. `docs/PROJECT_SUMMARY.md` の各セクションを埋める
 2. `CLAUDE.md` をカスタマイズ
