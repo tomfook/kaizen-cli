@@ -545,34 +545,37 @@ test_reader_closes_pipe() {
   setup_test_env "$test_name"
   local ok=0
 
-  # If SIGPIPE is ignored in this environment, awk gets a write error instead
-  # of the signal and the case cannot be reproduced.
-  if [ -n "$(trap -p PIPE)" ]; then
-    echo "  (skipped: SIGPIPE is ignored in this environment)"
-    record_result "$test_name" "$ok"
-    teardown_test_env
-    return
-  fi
-
   # Larger than a pipe buffer, so awk is still writing when head exits
   local big="$TEST_HOME/big.md" many="$TEST_HOME/many.md"
   { echo "## Big"; seq 1 200000; echo "## End"; } > "$big"
   seq 1 20000 | sed 's/^/## H/' > "$many"
 
-  local m rc
-  for m in extract list bytes; do
-    set +e
-    case "$m" in
-      extract) bash "$EXTRACT" "$big" "Big" 2>"$TEST_HOME/err" | head -1 > /dev/null; rc=${PIPESTATUS[0]} ;;
-      list)    bash "$EXTRACT" --list "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; rc=${PIPESTATUS[0]} ;;
-      bytes)   bash "$EXTRACT" --bytes "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; rc=${PIPESTATUS[0]} ;;
-    esac
-    set -e
-    if [ "$rc" -ne 0 ] || [ -s "$TEST_HOME/err" ]; then
-      echo "  FAIL: $m piped to head should exit 0 with empty stderr (rc=$rc, stderr=$(head -c 200 "$TEST_HOME/err"))"
-      ok=1
-    fi
+  # Two ways awk learns that the reader is gone: it is killed by SIGPIPE, or
+  # (BSD awk, or SIGPIPE ignored by the caller) its write fails and it exits 2
+  # with a message. "ignored" forces the second way on every platform.
+  local m sig rc
+  for sig in default ignored; do
+    for m in extract list bytes; do
+      rc=$(
+        set +e
+        [ "$sig" = ignored ] && trap '' PIPE
+        case "$m" in
+          extract) bash "$EXTRACT" "$big" "Big" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+          list)    bash "$EXTRACT" --list "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+          bytes)   bash "$EXTRACT" --bytes "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+        esac
+      )
+      if [ "$rc" != 0 ] || [ -s "$TEST_HOME/err" ]; then
+        echo "  FAIL: $m piped to head (SIGPIPE $sig) should exit 0 with empty stderr (rc=$rc, stderr=$(head -c 200 "$TEST_HOME/err"))"
+        ok=1
+      fi
+    done
   done
+
+  # A real awk failure is still exit 3, and stderr of a normal run still arrives
+  run_es "$big" "No Such Heading"
+  [ "$ES_RC" -eq 1 ] || { echo "  FAIL: not-found should stay exit 1, got $ES_RC"; ok=1; }
+  grep -qF "heading not found" "$ES_ERR" || { echo "  FAIL: stderr of awk must be passed through"; ok=1; }
 
   record_result "$test_name" "$ok"
   teardown_test_env

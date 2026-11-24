@@ -130,11 +130,31 @@ if [ ! -r "$FILE" ]; then
 fi
 
 awk_failed() {
-    # 141 = SIGPIPE: the reader (`| head`) closed first. The extraction itself
+    # 141 = the reader (`| head`) closed first. The extraction itself
     # succeeded, so this is not a failure.
     [ "$1" = 141 ] && exit 0
     echo "Error: awk failed (exit code $1): $FILE" >&2
     exit 3
+}
+
+# run_awk <awk arguments...> — runs awk with its stdout on ours and returns its
+# exit code, except that "the reader closed the pipe" is always reported as 141.
+# awk is killed by SIGPIPE (141) on some systems; on others (BSD awk, or any awk
+# when SIGPIPE is ignored) it prints a write error and exits 2, which would be
+# indistinguishable from a real failure. stderr is passed through otherwise.
+run_awk() {
+    local err rc
+    exec 3>&1
+    err=$(LC_ALL=C awk "$@" 2>&1 1>&3)
+    rc=$?
+    exec 3>&-
+    if [ "$rc" -ne 0 ]; then
+        case "$err" in
+            *"write error"*|*"write failure"*|*"Broken pipe"*) return 141 ;;
+        esac
+    fi
+    [ -n "$err" ] && printf '%s\n' "$err" >&2
+    return "$rc"
 }
 
 # Shared by the three modes.
@@ -163,7 +183,7 @@ SHARED_AWK='
 '
 
 if [ "$MODE" = list ]; then
-    LC_ALL=C awk -v BINMODE=3 "$SHARED_AWK"'
+    run_awk -v BINMODE=3 "$SHARED_AWK"'
         { sub(/\r$/, "") }
         { if (fence_update($0)) next }
         !inf && hlevel($0) > 0 { print NR ": " $0 }
@@ -173,7 +193,7 @@ fi
 
 if [ "$MODE" = bytes ]; then
     SIZE=$(wc -c < "$FILE" | tr -d ' ') || awk_failed $?
-    LC_ALL=C awk -v BINMODE=3 -v size="$SIZE" "$SHARED_AWK"'
+    run_awk -v BINMODE=3 -v size="$SIZE" "$SHARED_AWK"'
         BEGIN { n = 0; cur = 0; line[0] = 1; label[0] = "(preamble: before the first heading)" }
         {
             rawlen = length($0); sub(/\r$/, "")
@@ -204,7 +224,8 @@ fi
 # collects the headings and decides the match (exact first, then with backticks
 # removed); the second pass copies the body from the decided line. In one pass,
 # an exact match appearing after a backtick-insensitive one could not be taken.
-H="$NEEDLE" LC_ALL=C awk -v BINMODE=3 -v mode="$MODE" "$SHARED_AWK"'
+export H="$NEEDLE"
+run_awk -v BINMODE=3 -v mode="$MODE" "$SHARED_AWK"'
     function heading_title(line,    t) {
         t = line
         sub(/^#+[ \t]+/, "", t)
