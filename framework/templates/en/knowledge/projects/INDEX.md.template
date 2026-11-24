@@ -1,12 +1,13 @@
 # Project Registry
 
-List of registered projects. Auto-registered by kaizen-init-project, synced by kaizen-update-docs.
+List of registered projects. Registered by kaizen-init-project, synced by kaizen-update-docs.
 
-**Important**: This file is auto-updated by commands. Manual editing is not recommended.
+**Important**: Everything under `projects/` is generated. Do not edit it by hand.
 
-Full project summaries are available in `details/{project-id}.md`, synced by kaizen-update-docs.
-
-Project lessons (synced from each project's `docs/LEARNINGS.md`) are in `learnings/{project-id}.md`, also synced by kaizen-update-docs and used as input by `/kaizen-audit-knowledge`'s cross-project pass.
+- The table below is rebuilt from the frontmatter of `details/*.md` (`kaizen-registry.sh sync-index`). A row edited by hand is overwritten on the next sync. To change a row, edit that project's own `docs/PROJECT_SUMMARY.md` and run `/kaizen-update-docs` there.
+- `details/{project-id}.md` is a copy of each project's `docs/PROJECT_SUMMARY.md`, and `learnings/{project-id}.md` is a copy of its `docs/LEARNINGS.md` (`kaizen-registry.sh register`). The project files are the source. `learnings/` is the input of `/kaizen-audit-knowledge`'s cross-project pass.
+- To remove a project, run `/kaizen-unregister-project`.
+- The text above and below the table is kept as is.
 
 ---
 
