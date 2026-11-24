@@ -540,6 +540,20 @@ test_unreadable_file() {
 
 # --- Test 14: reader closes the pipe first ---
 
+# piped_rc <default|ignored> <extract|list|bytes> <big file> <many-headings file>
+# Prints the script's exit code when its output is piped to `head -1`.
+# A function rather than an inline $(...) block: bash 3.2 cannot parse a
+# `case` inside a command substitution.
+piped_rc() {
+  set +e
+  if [ "$1" = ignored ]; then trap '' PIPE; fi
+  case "$2" in
+    extract) bash "$EXTRACT" "$3" "Big" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+    list)    bash "$EXTRACT" --list "$4" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+    bytes)   bash "$EXTRACT" --bytes "$4" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
+  esac
+}
+
 test_reader_closes_pipe() {
   local test_name="extract: '| head' closing the pipe early is not reported as a failure"
   setup_test_env "$test_name"
@@ -556,15 +570,7 @@ test_reader_closes_pipe() {
   local m sig rc
   for sig in default ignored; do
     for m in extract list bytes; do
-      rc=$(
-        set +e
-        [ "$sig" = ignored ] && trap '' PIPE
-        case "$m" in
-          extract) bash "$EXTRACT" "$big" "Big" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
-          list)    bash "$EXTRACT" --list "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
-          bytes)   bash "$EXTRACT" --bytes "$many" 2>"$TEST_HOME/err" | head -1 > /dev/null; echo "${PIPESTATUS[0]}" ;;
-        esac
-      )
+      rc=$(piped_rc "$sig" "$m" "$big" "$many")
       if [ "$rc" != 0 ] || [ -s "$TEST_HOME/err" ]; then
         echo "  FAIL: $m piped to head (SIGPIPE $sig) should exit 0 with empty stderr (rc=$rc, stderr=$(head -c 200 "$TEST_HOME/err"))"
         ok=1
