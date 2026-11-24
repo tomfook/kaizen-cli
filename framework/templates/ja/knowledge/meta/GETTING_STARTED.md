@@ -29,6 +29,8 @@ project-root/
 - 通常作業中: 読み取り専用（参照のみ）
 - プロジェクト横断で有用な知識を発見した場合: 明示的な意図を持って編集
 - プロジェクト固有情報は絶対に追加しない（まず一般化）
+- `knowledge/projects/` は手で編集しない: 各プロジェクトの `docs/` から生成される（下の「プロジェクトレジストリ」を参照）
+- コミットは、自分が変更したファイルだけを渡して行う: `kaizen-knowledge-commit.sh -m "<メッセージ>" -- knowledge/<ファイル> ...`（Kaizen コマンドは自動でこれを行う）。knowledge のリポジトリで `git add -A` を使わない — 他のプロジェクト・セッションと共有しているため、編集途中の他人の変更まで自分のコミットに入る
 
 ### ファイル配置
 
@@ -38,6 +40,19 @@ project-root/
 | **CLAUDE.md** | プロジェクト固有の重要情報 | 用語、データソース、成果物 |
 | **docs/PROJECT_SUMMARY.md** | プロジェクト概要 | Purpose, Tech Stack, Design Decisions（レジストリ同期対象） |
 | **docs/** | プロジェクト固有の詳細情報 | 計画、仕様書、意思決定ログ |
+
+### プロジェクトレジストリ（`knowledge/projects/`）
+
+`knowledge/projects/` は、各プロジェクトの `docs/` から生成される。この配下は手で編集しない。
+
+| ファイル | 生成元 | 書き込むコマンド |
+|---------|--------|----------------|
+| `projects/details/{id}.md` | プロジェクトの `docs/PROJECT_SUMMARY.md`（コピー） | `/kaizen-update-docs` |
+| `projects/learnings/{id}.md` | プロジェクトの `docs/LEARNINGS.md`（コピー） | `/kaizen-update-docs` |
+| `projects/INDEX.md`（一覧表） | `details/*.md` の frontmatter | `/kaizen-update-docs`、`/kaizen-unregister-project` |
+
+- レジストリに載る内容を変えたいときは、そのプロジェクトの `docs/` を編集し、そのプロジェクトで `/kaizen-update-docs` を実行する。レジストリ側を直しても、次の同期で上書きされる
+- プロジェクトのコピーが最新かどうかは、プロジェクトルートで次を実行して確かめる: `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" status knowledge`
 
 ---
 
@@ -61,7 +76,7 @@ project-root/
 2. `.claude/skills/` symlinks → `$KAIZEN_CLI_DIR/framework/.claude/skills/` を作成
 3. テンプレートから `CLAUDE.md` を生成
 4. テンプレートから `docs/PROJECT_SUMMARY.md` を生成
-5. プロジェクトレジストリ（`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md`）に登録
+5. プロジェクトレジストリに登録（`docs/PROJECT_SUMMARY.md` のコピーを `knowledge/projects/details/` に置き、`knowledge/projects/INDEX.md` に載せる）
 
 ### セットアップ後チェックリスト
 

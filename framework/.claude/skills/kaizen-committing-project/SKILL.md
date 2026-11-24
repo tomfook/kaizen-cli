@@ -32,9 +32,9 @@ description: >-
 | 変更対象 | 扱い |
 |---------|------|
 | プロジェクト内コード（`docs/`、ソース、設定ファイル等） | **このスキル** |
-| `knowledge/`（`$KAIZEN_KNOWLEDGE_DIR` への symlink 配下） | kaizen コマンド（`/kaizen-reflect-learning`、`/kaizen-update-docs` 等）が自動コミット。手動コミットが必要な場合は `git -C "$KAIZEN_KNOWLEDGE_DIR"` を使う（→ `kaizen-editing-knowledge/FILE_OPERATIONS.md`） |
+| `knowledge/`（`$KAIZEN_KNOWLEDGE_DIR` への symlink 配下） | kaizen コマンド（`/kaizen-reflect-learning`、`/kaizen-update-docs` 等）が自動コミット。手動コミットが必要な場合は `kaizen-knowledge-commit.sh` に編集したファイルを渡す（→ `kaizen-editing-knowledge/FILE_OPERATIONS.md` の「knowledge/ のコミット」） |
 
-**判定方法**: ステージ対象が `knowledge/` 配下のみなら、このスキルではなく上記の kaizen コマンドまたは `git -C` を案内する。
+**判定方法**: ステージ対象が `knowledge/` 配下のみなら、このスキルではなく上記の kaizen コマンドまたは `kaizen-knowledge-commit.sh` を案内する。
 
 ---
 
@@ -45,6 +45,17 @@ description: >-
 - [ ] 機密情報（`.env`、認証情報、APIキー等）がステージングに含まれていないか確認
 - [ ] **symlink ガード**: `knowledge/` および `.claude/skills/` `.claude/commands/` `.claude/agents/` 配下のパスを `git add` していないか確認。これらは kaizen 側リポジトリの管理対象であり、symlink 先へステージしようとすると `fatal: ... is beyond a symbolic link` エラーになる
 - [ ] 変更に `docs/PROJECT_SUMMARY.md` `docs/LEARNINGS.md` その他 `docs/` 配下が含まれる場合は、コミット前に `/kaizen-update-docs` を実行してレジストリ（`knowledge/projects/`）を同期させる。`/kaizen-update-docs` の Step 5 で同期、Step 6 で knowledge/ 側を自動コミットするため、先に通しておくこと
+- [ ] **レジストリのずれ確認**: `docs/PROJECT_SUMMARY.md` か `docs/LEARNINGS.md` を含むコミットでは、同期済みかを機械的に確かめる（同期のあとに docs/ を編集し直すと、ミラーは古いまま残る。エラーは出ない）:
+
+  ```bash
+  bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" status knowledge
+  ```
+
+  | 終了コード | `status` | 対応 |
+  |---|---|---|
+  | `0` | `clean` | 同期済み。そのまま進む |
+  | `1` | `drift` | `details=` / `learnings=` が `stale`・`missing`、`index=outdated`、または `uncommitted:` の行がある。`/kaizen-update-docs` を通してからコミットする。`note=` が出ていれば、同期の前に docs/ とミラーを `diff` する（ミラー側にだけある記述は、ミラーへ直接書かれたもので、同期で消える。先に docs/ へ移す） |
+  | `3` | `error` | 判定できない（`docs/PROJECT_SUMMARY.md` が無い・frontmatter に `project.id` が無い等）。`error=` をユーザーに伝える。`knowledge/` の無いプロジェクトでは、この確認自体を省く |
 - [ ] **参照陳腐化スキャン**: ファイルのリネーム・移動・セクションの統合/圧縮を含む場合、参照側ドキュメントの更新漏れがないか **コミット前に必ず** `grep -rn` で横断スキャン:
 
   | トリガー種別 | grep 確認パターン |
@@ -95,7 +106,7 @@ EOF
 | **body なしのコミット** | 変更の背景が不明になる |
 | **`git add -A` / `git add .`** | 機密情報や不要ファイルが混入する。加えて、他セッション・他端末が並行作業中に `git mv` のステージが残っていると、別セッションの `git add -A` で意図せずリネームが巻き込まれる |
 | **`git mv` 直後の宙ぶらりん放置** | 上記と同根。`git mv` を含むステージは速やかに個別 `git add <旧名> <新名>` でステージングして commit すること。並行作業中なら特に放置しない。なお `git add A B C` と複数パスを一括指定する際、移動済み等で**存在しないパスが1つでも混じると `fatal: pathspec ... did not match` で git add 全体が中断し、有効パスも1件もステージされない**。リネームは `git mv` 時点でステージ済みなので、後続 `git add` には**新パスと他の変更ファイルのみを指定し旧パスを含めない** |
-| **symlink 配下（`knowledge/` 等）のステージ** | kaizen 側リポジトリの管理対象。`git -C "$KAIZEN_KNOWLEDGE_DIR"` または kaizen コマンドを使う |
+| **symlink 配下（`knowledge/` 等）のステージ** | kaizen 側リポジトリの管理対象。kaizen コマンドか `kaizen-knowledge-commit.sh`（編集したファイルだけを渡す）を使う。knowledge/ のリポジトリで `git add -A` やパスなしの `git commit` を使わない — 他セッションが編集途中のファイルまで自分のコミットに入る |
 | **type の誤選択** | 変更履歴の分類が崩れる |
 
 ---
