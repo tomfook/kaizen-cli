@@ -25,6 +25,12 @@
 #   max-lines                 Markdown or template longer than 800 lines,
 #                             script (*.sh, *.py) longer than 1500 lines
 #   bin-ref                   referenced framework/bin/ script does not exist
+#   sweeping-commit           inside a code fence of any .md under .claude/:
+#                             `git add -A` / `--all` / `.`, or `git -C <dir> commit`
+#                             without `-- <paths>`. The knowledge repository is shared;
+#                             commit through framework/bin/kaizen-knowledge-commit.sh.
+#                             (Prose that says not to use them is outside a fence, and a
+#                             `#` comment line inside a fence is not a command.)
 #
 # The YAML check is a limited syntax check on purpose (no runtime dependencies):
 # it reads top-level `name` / `description` only and does not parse YAML in full.
@@ -250,6 +256,36 @@ while IFS= read -r hit; do
     err bin-ref "${file#"$ROOT"/}:$lineno" "framework/bin/$script does not exist"
   fi
 done < <(find "$ROOT/.claude" -type f -name '*.md' -exec grep -HnoE 'framework/bin/[A-Za-z0-9._*-]+' {} + | sort -u)
+
+# --- no sweeping git add / pathless commit in a code fence ---
+
+while IFS= read -r file; do
+  while IFS= read -r hit; do
+    [ -n "$hit" ] || continue
+    err sweeping-commit "${file#"$ROOT"/}:${hit%%:*}" "${hit#*:}"
+  done < <(awk '
+    function check(cmd, n) {
+      if (cmd ~ /^[ \t]*#/) return
+      if (cmd !~ /git[ \t]/) return
+      if (cmd ~ /[ \t]add[ \t]+-A/ || cmd ~ /[ \t]add[ \t]+--all/ || cmd ~ /[ \t]add[ \t]+\.[ \t]*$/ || cmd ~ /[ \t]add[ \t]+\.[ \t]/) {
+        printf "%d:git add that stages everything — pass the files to kaizen-knowledge-commit.sh\n", n
+        return
+      }
+      if (cmd ~ /git[ \t]+-C[ \t]/ && cmd ~ /[ \t]commit[ \t]/ && cmd !~ /[ \t]--[ \t]/) {
+        printf "%d:git -C <dir> commit without -- <paths> — use kaizen-knowledge-commit.sh\n", n
+      }
+    }
+    /^[ \t]*(```|~~~)/ { in_fence = !in_fence; buf = ""; next }
+    !in_fence { next }
+    {
+      line = $0
+      if (buf == "") start = NR
+      if (line ~ /\\[ \t]*$/) { sub(/\\[ \t]*$/, " ", line); buf = buf line; next }
+      check(buf line, start)
+      buf = ""
+    }
+  ' "$file")
+done < <(find "$ROOT/.claude" -type f -name '*.md' | sort)
 
 # --- summary ---
 
