@@ -66,7 +66,8 @@ Project A                       Project B                      Project C
 - **Per-registry language**: Each registry stores its language in `$REGISTRY_DIR/.lang` (`en` or `ja`). Templates under `framework/templates/{en,ja}/` are selected accordingly. Default: `en`
 
 **Caveats**:
-- Run `git rm` in the actual directory (`$KAIZEN_KNOWLEDGE_DIR`), not through symlinks
+- Run `git rm` in the actual directory (`git -C knowledge rm <path>`), not through symlinks
+- **Commits name their files**: the knowledge repository is shared by every project and every session, so a commit there must not take along what another session left unfinished. The commands commit through `kaizen-knowledge-commit.sh`, which stages and commits only the paths it is given, lists the other uncommitted changes without touching them, and checks the references in the lines being committed. `git add -A` and a commit without paths are not used in the knowledge repository
 - Do not create backup files inside knowledge/ (it affects all projects in the same registry)
 
 ### Separation of Project-Specific and Cross-Project Knowledge
@@ -188,15 +189,18 @@ The auditor proposes changes; users approve before anything is modified. This hu
 
 ### Registry Auto-Management Invariant
 
-**`knowledge/projects/` is registry data. It is written only by `/kaizen-update-docs`; it is never edited by hand or by other automation.**
+**`knowledge/projects/` is registry data. It is written only by `kaizen-registry.sh` — called from `/kaizen-update-docs`, `/kaizen-init-project`, and `/kaizen-unregister-project`; it is never edited by hand or by other automation.**
 
-Two subdirectories live here: `projects/details/{id}.md` (a copy of each project's `PROJECT_SUMMARY.md`) and `projects/learnings/{id}.md` (a copy of each project's `docs/LEARNINGS.md`). Both are auto-synced by `/kaizen-update-docs` Step 5. The source of truth is the project-side file, not the registry copy.
+Three kinds of files live here: `projects/details/{id}.md` (a copy of each project's `PROJECT_SUMMARY.md`), `projects/learnings/{id}.md` (a copy of each project's `docs/LEARNINGS.md`), and `projects/INDEX.md`, whose table is regenerated from the frontmatter of `details/*.md`. The copies are synced by `/kaizen-update-docs` Step 5 (`register`), and the table is rebuilt right after (`sync-index`). The source of truth is the project-side file, not the registry copy, and never the table.
 
-Three consequences follow:
+The table is generated rather than edited because it is the one file that every project writes to. Rows edited by hand drift from the details files without anyone noticing, and two sessions that each add a row leave a table that has to be merged by hand. A table rebuilt in a fixed order from the files gives the same result no matter which session runs last. A registry that was maintained by hand loses nothing in the switch: a row whose project has no details file is carried over as it is and reported.
+
+Four consequences follow:
 
 1. **Auditors skip `projects/`** — both `kaizen-check-knowledge.sh` and `kaizen-knowledge-auditor` exclude `*/projects/*` from their `find` calls. Without this, registry copies would surface as freshness-warning or reduction candidates even though the upstream project file is the editing surface.
 2. **Reflect-learning never writes there** — `kaizen-learning-reflector` Step 5 excludes `knowledge/projects/` from output-destination search, so Tier 1 (session-to-knowledge) cannot stray into Tier 2's (project-to-knowledge) sync territory.
-3. **Manual edits are lost** — if a user hand-edits a registry copy, the next `/kaizen-update-docs` overwrites it. This is by design; project-side files are the only editing surface.
+3. **Manual edits are lost** — if a user hand-edits a registry copy or a row of the table, the next `/kaizen-update-docs` overwrites it. This is by design; project-side files are the only editing surface.
+4. **Drift is checked, not assumed away** — a copy goes stale when the project file is edited after the sync, and nothing fails when it does. `kaizen-registry.sh status` compares the project's files with its copies, tells whether the table is current, and lists copies that were never committed; the commit skill runs it before a commit that touches `docs/PROJECT_SUMMARY.md` or `docs/LEARNINGS.md`.
 
 This invariant is what makes the three-tier promotion model below tractable.
 

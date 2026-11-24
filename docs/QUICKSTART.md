@@ -77,6 +77,16 @@ source ~/.bashrc   # or: source ~/.zshrc
 
 > **What about the new `knowledge/projects/learnings/` directory?** It is created automatically the first time `/kaizen-update-docs` runs in any registered project after upgrade. No manual action needed — your existing `docs/LEARNINGS.md` files become input for `/kaizen-audit-knowledge`'s cross-project pass on the next run.
 
+> **What happens to the table in `knowledge/projects/INDEX.md`?** It is now generated from the frontmatter of `knowledge/projects/details/*.md` (the copies of each project's `docs/PROJECT_SUMMARY.md`) instead of being edited row by row. The first `/kaizen-update-docs` after the upgrade rebuilds it: rows are ordered by creation date, a row whose project has no details file is kept as it is and reported, and the text around the table is left alone. From then on, change a row by editing that project's `docs/PROJECT_SUMMARY.md` and running `/kaizen-update-docs` there — an edit made in the table is overwritten.
+
+> **Hand edits in `knowledge/` are no longer committed for you.** The commands now commit only the files they changed themselves; they used to commit everything that was uncommitted in the knowledge repository, including edits another session had not finished. If you edit a knowledge file by hand, commit it yourself:
+>
+> ```bash
+> bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" -m "kaizen: <what changed>" -- knowledge/<path/to/file.md>
+> ```
+>
+> It commits the listed files and nothing else, and stops if a line you added points at a heading or file that does not exist.
+
 ---
 
 ## Step 2: Initialize Your Project

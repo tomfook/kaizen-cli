@@ -151,7 +151,7 @@ Kaizen-CLI ships three skills, symlinked into `.claude/skills/` by `/kaizen-init
 |-------|-----------|---------|
 | `kaizen-init-project` | `/kaizen-init-project` (manual) | Project initialization — see [QUICKSTART.md](./QUICKSTART.md) |
 | `kaizen-editing-knowledge` | auto (when editing `knowledge/` or `.claude/skills/`) | Guardrails for editing in a symlinked environment (reference checks, SSOT) |
-| `kaizen-committing-project` | auto (on commit requests) | Commit quality checks — Conventional Commits, secret scanning, symlink-safe staging, registry sync |
+| `kaizen-committing-project` | auto (on commit requests) | Commit quality checks — Conventional Commits, secret scanning, symlink-safe staging, registry sync and drift check |
 
 ---
 

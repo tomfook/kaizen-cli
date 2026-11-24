@@ -151,7 +151,7 @@ Kaizen-CLI は3つのスキルを同梱しており、`/kaizen-init-project` が
 |-------|---------|------|
 | `kaizen-init-project` | `/kaizen-init-project`（手動） | プロジェクト初期化 — [QUICKSTART.ja.md](./QUICKSTART.ja.md) 参照 |
 | `kaizen-editing-knowledge` | auto（`knowledge/`・`.claude/skills/` 編集時） | シンボリックリンク環境での編集ガードレール（参照確認・SSOT） |
-| `kaizen-committing-project` | auto（コミットリクエスト時） | コミット品質チェック — Conventional Commits・機密情報スキャン・symlink 配下のステージ防止・レジストリ同期 |
+| `kaizen-committing-project` | auto（コミットリクエスト時） | コミット品質チェック — Conventional Commits・機密情報スキャン・symlink 配下のステージ防止・レジストリの同期とずれの確認 |
 
 ---
 

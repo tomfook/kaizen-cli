@@ -77,6 +77,16 @@ source ~/.bashrc   # または: source ~/.zshrc
 
 > **新しい `knowledge/projects/learnings/` ディレクトリはどうなる？** アップグレード後、各登録プロジェクトで `/kaizen-update-docs` を初回実行した時に自動生成されます。手動操作は不要 — 既存の `docs/LEARNINGS.md` は次回以降の `/kaizen-audit-knowledge` クロスプロジェクトパスへの入力になります。
 
+> **`knowledge/projects/INDEX.md` の一覧表はどうなる？** 行ごとに編集する方式をやめ、`knowledge/projects/details/*.md`（各プロジェクトの `docs/PROJECT_SUMMARY.md` のコピー）の frontmatter から生成する方式になりました。アップグレード後に最初に実行した `/kaizen-update-docs` が、表を作り直します。行は作成日の順に並びます。details ファイルの無いプロジェクトの行は、そのまま残してその旨を報告します。表の前後の文章には触れません。以後、行を変えたいときは、そのプロジェクトの `docs/PROJECT_SUMMARY.md` を編集し、そのプロジェクトで `/kaizen-update-docs` を実行してください。表を直接直しても上書きされます。
+
+> **`knowledge/` を手で編集した分は、自動ではコミットされなくなりました。** 各コマンドは、自分が変更したファイルだけをコミットします。以前は knowledge のリポジトリにある未コミットの変更をすべてコミットしていたため、他のセッションが編集途中の変更まで入っていました。knowledge のファイルを手で編集したときは、自分でコミットしてください:
+>
+> ```bash
+> bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" -m "kaizen: <変更内容>" -- knowledge/<path/to/file.md>
+> ```
+>
+> 指定したファイルだけをコミットします。追加した行が、存在しない見出しやファイルを指している場合は、コミットせずに止まります。
+
 ---
 
 ## Step 2: プロジェクトの初期化
