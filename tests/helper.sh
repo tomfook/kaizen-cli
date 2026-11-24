@@ -86,7 +86,7 @@ assert_output_contains() {
   local output="$1"
   local pattern="$2"
   local msg="${3:-Output should contain '$pattern'}"
-  if grep -qF "$pattern" <<<"$output"; then
+  if grep -qF -- "$pattern" <<<"$output"; then
     return 0
   else
     echo "  FAIL: $msg"
@@ -98,7 +98,7 @@ assert_output_not_contains() {
   local output="$1"
   local pattern="$2"
   local msg="${3:-Output should not contain '$pattern'}"
-  if grep -qF "$pattern" <<<"$output"; then
+  if grep -qF -- "$pattern" <<<"$output"; then
     echo "  FAIL: $msg"
     return 1
   else

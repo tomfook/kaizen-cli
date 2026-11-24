@@ -31,13 +31,13 @@ Rules that prevent bugs or design violations. For design rationale, see [DESIGN_
 - **Knowledge-only accumulation**: `reflect-learning` writes only to `knowledge/` files. Skills are static and not modified by the reflect process.
 - **Symlink + Glob workaround**: Claude Code's Glob tool cannot follow symlinks. Use Read/Grep instead of Glob for `knowledge/` access.
 - **framework/bin/ for mechanical processing**: Mechanical steps (environment validation, registry listing, etc.) are extracted into shell scripts under `framework/bin/`. Skills call these scripts and parse structured output.
-- **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs.
-- **No positional variables in command/skill bodies**: Claude Code rewrites `$0`, `$1`, … in a command or `SKILL.md` body when it is invoked with arguments. Receive arguments via `$ARGUMENTS` only, and move shell snippets that need positional variables (e.g. awk field references) into `framework/bin/` scripts. Enforced by `tests/lint_framework.sh` (run from `tests/run_all.sh`), together with frontmatter validity, the `kaizen-` prefix, and the 800-line limit.
+- **No runtime dependencies**: Pure Claude Code skills/commands/knowledge files — no npm, pip, or binary installs. python3 is an optional dependency (standard library only): a script that needs it lives in `framework/bin/`, and its callers print a note and skip the step when python3 is absent.
+- **No positional variables in command/skill bodies**: Claude Code rewrites `$0`, `$1`, … in a command or `SKILL.md` body when it is invoked with arguments. Receive arguments via `$ARGUMENTS` only, and move shell snippets that need positional variables (e.g. awk field references) into `framework/bin/` scripts. Enforced by `tests/lint_framework.sh` (run from `tests/run_all.sh`), together with frontmatter validity, the `kaizen-` prefix, and the file-size limits.
 
 ## Conventions
 
 - Commit messages: Conventional Commits format
-- File size: Keep individual files under 800 lines
+- File size: Keep Markdown that Claude reads (knowledge, skills, commands, agents, templates, docs) under 800 lines — it is loaded into context in full. Scripts and tests are executed, not read whole: 1,500 lines is a soft ceiling that flags accretion, not a reason to split a single-file tool.
 - SSOT: Each piece of information lives in exactly one place
 
 ## Reference Documentation

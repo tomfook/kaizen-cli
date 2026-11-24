@@ -159,7 +159,7 @@ Kaizen-CLI は3つのスキルを同梱しており、`/kaizen-init-project` が
 
 独自のスキルやコマンドを追加する際、Kaizen-CLI との共存で気をつけること:
 
-- **Kaizen-CLI のファイルを直接編集しない**: `.claude/skills/` と `.claude/commands/` の kaizen- ファイルはシンボリックリンク。編集すると `$KAIZEN_CLI_DIR` 配下の配布元を汚染する。カスタマイズしたい場合はシンボリックリンクを解除してコピーを配置する
+- **Kaizen-CLI のファイルを直接編集しない**: `.claude/skills/` と `.claude/commands/` の kaizen- ファイルはシンボリックリンク。編集すると `$KAIZEN_CLI_DIR` 配下の配布元を汚染する。カスタマイズしたい場合はシンボリックリンクを解除してコピーを配置する。コピーは以後ユーザーのものになる: `kaizen-init.sh sync-links` は上書きせず（差分ではなく `foreign` として一覧に出るだけ）、`git pull` による更新も届かなくなる。配布版に戻すには、コピーを削除して `sync-links` を実行する
 - **kaizen- プレフィックスを避ける**: 独自のスキル・コマンドには別のプレフィックスを使い、名前衝突を防ぐ
 - **knowledge/ を参照する場合**: プロジェクトルート相対パス（`knowledge/path/to/FILE.md`）を使う。`../../../` のような相対パスはシンボリックリンク環境で壊れる
 - **詳細知識はスキル内に書かない**: knowledge/ に置き、スキルからは参照リンクで誘導する（SSOT）

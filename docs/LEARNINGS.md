@@ -23,6 +23,8 @@ CLAUDE.md と PROJECT_SUMMARY.md だけでなく、以下も更新が必要:
 - **置換**: prefix (`usj-` → `kaizen-`)、`context/` → `knowledge/`、環境変数 (`USJ_DSCI_COMMON_DIR` → `KAIZEN_KNOWLEDGE_DIR`)、skill参照、`git` コマンドの前提
 - **レジストリ構造差分の補完**: 社内版は `ai-projects/<種別>/` で各プロジェクト固有ファイルが中央集約されているが、OSS版のレジストリは `projects/details/` のみ（PROJECT_SUMMARY コピー）で他の集約ツリーは持たない。中央集約を前提とする機能を移植する際は、対応する集約ツリー（例: `projects/learnings/`）を新設し、`kaizen-update-docs` の Step 5 に sync サブステップを追加するパターンで補完する
 - **bilingual 対応**: 社内版は JA 単一だが OSS版はテンプレート/ドキュメントが EN/JA 両対応のため、grep パターンや出力は両言語を考慮する（例: `**最終更新**:` と `**Last updated**:` を両方検出する）
+- **規約は社内版での適用対象を確かめてから移す** (2026-11-24): 「1 ファイル 800 行」は社内版では知識ファイル向けの目安で、スクリプトには掛かっていなかった。公開版の `CLAUDE.md` の文言を広く読んで lint と tracking issue に載せ、参照チェッカの移植で分割を迫られてから改定した（Markdown 800 行／スクリプト 1,500 行目安）
+- **抽出・照合系の道具は、公開版の実物に当ててから受理書式を決める** (2026-11-24): 社内版の抽出規則のままでは、公開版の昇格先マーカー（バッククォートなしの `→` 形）とアンカー付きリンクを 1 件も拾えなかった。自リポジトリの `docs/` とテンプレートに `kaizen-check-refs.py --project . --list` を当て、SKIP に出る形を見てから規則を決める
 
 ---
 

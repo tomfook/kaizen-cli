@@ -3,3 +3,4 @@ docs/internal/
 /.claude/skills/kaizen-*
 /.claude/commands/kaizen-*
 /.claude/agents/kaizen-*
+__pycache__/
