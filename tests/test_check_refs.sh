@@ -663,6 +663,108 @@ test_distributed_templates_clean() {
   teardown_test_env
 }
 
+# --- Test 17: --corpus --staged (pre-commit gate of the knowledge repository) ---
+
+test_corpus_staged_gate() {
+  local test_name="check-refs --corpus --staged: added lines only, missing link targets, path filter, projects/ left out"
+  setup_project "$test_name"
+  local ok=0
+
+  printf '# Src\n\n- old broken line: `aws/S3.md § Old Broken`\n' > "$K/meta/SRC.md"
+  printf '# Other\n' > "$K/aws/OTHER.md"
+  git -C "$P" -c init.defaultBranch=main init -q
+  git -C "$P" add -A
+  git -C "$P" commit -q -m init
+
+  run_refs --corpus "$K" --staged
+  assert_rc 0 || ok=1
+  has "nothing was checked — no staged .md in scope (staged .md 0 / checked 0)" || ok=1
+
+  # Sound additions: every form the gate reads
+  cat >> "$K/meta/SRC.md" <<'EOF'
+- link with an anchor: [a](../aws/S3.md#prefix-listing-semantics)
+- link without an anchor: [b](../aws/S3.md)
+- anchor into this file: [c](#src)
+- section reference: `aws/S3.md § 設定方法`
+- project path, cannot be judged here: `docs/PROJECT_SUMMARY.md § Not Checked`
+> quoted line is not a reference: `aws/S3.md § Quoted Gone`
+- into a registry copy; its headings are not ours to judge: [d](../projects/details/S3.md#whatever)
+- a URL is not a file: [e](https://example.com/x.md)
+- outside the knowledge tree, not ours to judge: [m](../../outside/NOPE.md)
+EOF
+  git -C "$P" add -A
+  run_refs --corpus "$K" --staged
+  assert_rc 0 || ok=1
+  has "(lines added or changed in \`git diff --cached\`; staged .md 1 / checked 1)" || ok=1
+  has "total: checked 1 file(s) / OK 4 / MISS 0" || ok=1
+  hasnt "Old Broken" "a line that was not touched is not judged" || ok=1
+  git -C "$P" commit -q -m sound
+
+  # Broken additions, in two files; a registry mirror with a broken line too
+  cat >> "$K/meta/SRC.md" <<'EOF'
+- missing file behind an anchor: [f](./GONE.md#x)
+- missing file: [g](../aws/GONE.md)
+- missing heading: [h](../aws/S3.md#no-such-heading)
+- missing heading in this file: [i](#no-such-heading)
+- missing section: `aws/S3.md § New Broken`
+- missing registry copy (inside the tree, so a broken link): [l](../projects/details/NOPE.md)
+EOF
+  printf -- '- [j](./GONE_TOO.md)\n' >> "$K/aws/OTHER.md"
+  printf -- '- [k](./MIRROR_GONE.md) `aws/S3.md § Mirror Broken`\n' >> "$K/projects/details/S3.md"
+  run_refs --corpus "$K" --staged
+  assert_rc 0 "unstaged edits are not part of the gate" || ok=1
+  git -C "$P" add -A
+  run_refs --corpus "$K" --staged
+  assert_rc 1 || ok=1
+  has "staged .md 3 / checked 2 / out of scope 1" "the registry mirror is out of scope" || ok=1
+  has 'MISS meta/SRC.md:13  `./GONE.md#x` (link target not found)' || ok=1
+  has 'MISS meta/SRC.md:14  `../aws/GONE.md` (link target not found)' || ok=1
+  has 'MISS meta/SRC.md:15  `../aws/S3.md#no-such-heading` (no matching heading)' || ok=1
+  has 'MISS meta/SRC.md:16  `#no-such-heading` (no matching heading)' || ok=1
+  has 'MISS meta/SRC.md:17  `aws/S3.md § New Broken` (no matching heading)' || ok=1
+  has 'MISS meta/SRC.md:18  `../projects/details/NOPE.md` (link target not found)' || ok=1
+  has 'MISS aws/OTHER.md:2  `./GONE_TOO.md` (link target not found)' || ok=1
+  hasnt "Mirror" "projects/ is never judged" || ok=1
+  hasnt "Old Broken" || ok=1
+  has "total: checked 2 file(s) / OK 0 / MISS 7" || ok=1
+
+  # With paths, only those files are judged (another session's staged file is not)
+  run_refs --corpus "$K" --staged "$K/aws/OTHER.md"
+  assert_rc 1 || ok=1
+  has "staged .md 3 / checked 1 / out of scope 2" || ok=1
+  has "total: checked 1 file(s) / OK 0 / MISS 1" || ok=1
+  hasnt "SRC.md" || ok=1
+  run_refs --corpus "$K" --staged aws/S3.md "$K/aws/REMOVED.md"
+  assert_rc 0 "a path that is not staged, or no longer exists, only narrows the scope" || ok=1
+  has "nothing was checked" || ok=1
+
+  # The report mode is unchanged by the gate: it still leaves missing files to the link check
+  run_refs --corpus "$K"
+  assert_rc 0 || ok=1
+  hasnt "GONE.md" "report mode does not report missing link targets" || ok=1
+  has "S3.md#no-such-heading" || ok=1
+
+  # Unreadable staged file: incomplete, not clean
+  git -C "$P" commit -q -m broken
+  printf '# Bad \377 bytes\n' > "$K/aws/BAD.md"
+  git -C "$P" add -A
+  run_refs --corpus "$K" --staged
+  assert_rc 2 || ok=1
+  has "UNREAD aws/BAD.md" || ok=1
+  has "==== result: incomplete" || ok=1
+
+  # Not a git repository
+  mkdir -p "$TEST_HOME/nogit/meta"
+  printf '# D\n' > "$TEST_HOME/nogit/meta/D.md"
+  REFS_RC=0
+  REFS_OUT=$(GIT_CEILING_DIRECTORIES="$TEST_HOME" python3 "$CHECK_REFS" --corpus "$TEST_HOME/nogit" --staged 2>&1) || REFS_RC=$?
+  assert_rc 3 || ok=1
+  has "--staged needs a git repository" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== kaizen-check-refs.py tests ==="
@@ -684,5 +786,6 @@ test_project_stub_and_unread
 test_project_framework_paths
 test_real_repository_docs
 test_distributed_templates_clean
+test_corpus_staged_gate
 
 print_results
