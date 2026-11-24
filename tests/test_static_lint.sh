@@ -320,14 +320,26 @@ mut_skill_no_skillmd() {
   echo "# notes" > "$FX/.claude/skills/kaizen-empty/NOTES.md"
 }
 
+# Markdown (read into context in full): 800 lines. Scripts: 1500 lines.
 mut_max_lines() {
-  local i
-  for i in $(seq 1 801); do echo "line $i"; done > "$FX/bin/kaizen-long.sh"
+  seq 1 801 | sed 's/^/line /' > "$FX/.claude/skills/kaizen-alpha/LONG.md"
 }
 
 mut_exactly_max_lines() {
-  local i
-  for i in $(seq 1 800); do echo "line $i"; done > "$FX/bin/kaizen-long.sh"
+  seq 1 800 | sed 's/^/line /' > "$FX/.claude/skills/kaizen-alpha/LONG.md"
+}
+
+mut_max_lines_template() {
+  mkdir -p "$FX/templates"
+  seq 1 801 | sed 's/^/line /' > "$FX/templates/LONG.md.template"
+}
+
+mut_max_script_lines() {
+  seq 1 1501 | sed 's/^/# line /' > "$FX/bin/kaizen-long.sh"
+}
+
+mut_exactly_max_script_lines() {
+  seq 1 1500 | sed 's/^/# line /' > "$FX/bin/kaizen-long.py"
 }
 
 mut_bin_ref_missing() {
@@ -434,10 +446,16 @@ run_case "prefix: agent without kaizen-" \
   mut_prefix_agent expect_only prefix "agents/reviewer.md"
 run_case "skill-no-skillmd: skill directory without SKILL.md" \
   mut_skill_no_skillmd expect_only skill-no-skillmd "skills/kaizen-empty"
-run_case "max-lines: 801-line file" \
-  mut_max_lines expect_only max-lines "bin/kaizen-long.sh"
-run_case "max-lines: exactly 800 lines is allowed" \
+run_case "max-lines: 801-line Markdown file" \
+  mut_max_lines expect_only max-lines "skills/kaizen-alpha/LONG.md"
+run_case "max-lines: exactly 800 lines of Markdown is allowed" \
   mut_exactly_max_lines expect_clean
+run_case "max-lines: 801-line template counts as Markdown" \
+  mut_max_lines_template expect_only max-lines "templates/LONG.md.template"
+run_case "max-lines: 1501-line script" \
+  mut_max_script_lines expect_only max-lines "bin/kaizen-long.sh"
+run_case "max-lines: a script up to 1500 lines is allowed" \
+  mut_exactly_max_script_lines expect_clean
 run_case "bin-ref: referenced script does not exist" \
   mut_bin_ref_missing expect_only bin-ref "agents/kaizen-agent.md:"
 run_case "bin-ref: sentence-final dot is not part of the name" \

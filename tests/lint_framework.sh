@@ -22,7 +22,8 @@
 #                             (allowed: "\$1" escape, $ARGUMENTS)
 #   skill-no-skillmd          skill directory without SKILL.md
 #   prefix                    skill / command / agent without the kaizen- prefix
-#   max-lines                 file longer than 800 lines
+#   max-lines                 Markdown or template longer than 800 lines,
+#                             script (*.sh, *.py) longer than 1500 lines
 #   bin-ref                   referenced framework/bin/ script does not exist
 #
 # The YAML check is a limited syntax check on purpose (no runtime dependencies):
@@ -36,7 +37,11 @@
 
 set -uo pipefail
 
+# Markdown is read into the model's context in full, so its size is a hard
+# limit. A script is executed, not read whole: its limit only flags accretion,
+# and splitting a single-file tool to satisfy a number costs more than it buys.
 readonly MAX_LINES=800
+readonly MAX_SCRIPT_LINES=1500
 
 if [ "$#" -gt 1 ]; then
   echo "Usage: lint_framework.sh [framework_dir]" >&2
@@ -219,8 +224,12 @@ N_FILES=0
 while IFS= read -r file; do
   N_FILES=$((N_FILES + 1))
   lines="$(wc -l < "$file")"
-  if [ "$lines" -gt "$MAX_LINES" ]; then
-    err max-lines "${file#"$ROOT"/}" "$((lines)) lines (limit $MAX_LINES) — split the file"
+  case "$file" in
+    *.sh|*.py) limit="$MAX_SCRIPT_LINES" ;;
+    *)         limit="$MAX_LINES" ;;
+  esac
+  if [ "$lines" -gt "$limit" ]; then
+    err max-lines "${file#"$ROOT"/}" "$((lines)) lines (limit $limit) — split the file"
   fi
 done < <(find "$ROOT" -type f | sort)
 
