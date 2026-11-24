@@ -128,12 +128,47 @@ Each topic's detailed explanation should exist in only one place. Other files sh
 > Details: [Filename § Section](./filename.md#anchor)
 ```
 
-**From skill files (.claude/skills/) to knowledge/**:
+**From skill files (.claude/skills/) or a project's docs/ to knowledge/**:
 ```markdown
-> Details: `knowledge/path/to/FILE.md` § Section Name
+> Details: `knowledge/path/to/FILE.md § Section Name`
 ```
 
+Put the path, the `§`, and the heading inside **one pair of backticks**. If only the path is in backticks and the `§` and the heading are outside, nothing marks where the heading ends, and the reference cannot be checked.
+
 **Rationale**: Relative paths (`../../../`) may break in symlink environments. Use project-root-relative paths.
+
+### Checkable References
+
+A reference to a section can be correct when written and still break **without any error** when the target heading is renamed or merged. References written in the two formats above, and promotion markers (see "Learning Promotion Marker"), are checked by `kaizen-check-refs.py` down to the existence of the heading. Anything else is not checked.
+
+**How to write them**:
+
+- **Write the path**: start from `knowledge/...` or `docs/...`. A bare file name cannot be resolved when several files share it
+- **Write the whole heading**: do not drop a parenthesized suffix. A prefix of a heading does not match. A reference without a file name ("the same § X", "§ X above") is not checked
+- **When the heading contains inline code, drop only the inner backticks**: inline code cannot be nested, so the reference would end at the inner backtick. Keep every word
+- **`§` can point only at a heading or at a list label of the form `- **Label**:`**: bold text at the start of a plain line cannot be a target. Point at the enclosing heading instead
+- **Keep counts, dates, and version numbers out of a heading that is referenced**: every reference to it breaks each time the value changes. Put the changing value in the text right below the heading
+- **Do not quote a broken reference, or a heading's former name, in reference format**: the quoted string is detected as a new broken reference. Record the correction in plain quotation marks ("File name § Heading")
+- **Do not continue the sentence after a promotion marker**: a reference that starts with `→` is matched up to the end of the line
+
+**How to check**:
+
+```bash
+# Check every reference in the project's docs/ and CLAUDE.md
+python3 "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-refs.py" --project .
+
+# Before a commit: only the lines added or changed by `git add` (existing broken references do not interfere)
+python3 "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-refs.py" --project . --staged
+
+# List what was extracted, including the § lines that were not (SKIP)
+python3 "$KAIZEN_CLI_DIR/framework/bin/kaizen-check-refs.py" --project . --list
+```
+
+- References inside `knowledge/` are checked by the mechanical check of `/kaizen-audit-knowledge`, with the same extractor
+- Read the number of scanned files on the last line, `total: scanned N file(s) / ...`. **A run that scanned nothing and a run that found nothing broken are different results**
+- `MISS` means the target file or heading does not exist. `NUM` is a number-only reference (the `§ 3` form): rewrite it with the whole heading. `OK~` differs from the heading only in spaces or symbols
+- The check confirms **only that the heading exists**. Whether the referring sentence agrees with what the section says is for you to confirm by reading the section
+- Requires python3 (standard library only). Without it, skip the check
 
 ---
 
@@ -289,4 +324,4 @@ When a project-specific lesson in `docs/LEARNINGS.md` is promoted to a cross-pro
 
 ---
 
-**Last updated**: 2026-02-11
+**Last updated**: 2026-11-24
