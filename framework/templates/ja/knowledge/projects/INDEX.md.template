@@ -1,12 +1,13 @@
 # プロジェクトレジストリ
 
-登録済みプロジェクトの一覧。kaizen-init-project で自動登録、kaizen-update-docs で同期。
+登録済みプロジェクトの一覧。kaizen-init-project で登録、kaizen-update-docs で同期。
 
-**重要**: このファイルはコマンドにより自動更新されます。手動編集は推奨しません。
+**重要**: `projects/` 配下はすべて生成物です。手で編集しないでください。
 
-各プロジェクトの概要全文は `details/{project-id}.md` にあり、kaizen-update-docs で同期されます。
-
-各プロジェクトの教訓（`docs/LEARNINGS.md` から同期）は `learnings/{project-id}.md` にあり、これも kaizen-update-docs で同期され、`/kaizen-audit-knowledge` のクロスプロジェクトパスの入力として使われます。
+- 下の表は、`details/*.md` の frontmatter から作り直されます（`kaizen-registry.sh sync-index`）。手で直した行は、次の同期で上書きされます。行を変えたいときは、そのプロジェクトの `docs/PROJECT_SUMMARY.md` を編集し、そのプロジェクトで `/kaizen-update-docs` を実行します。
+- `details/{project-id}.md` は各プロジェクトの `docs/PROJECT_SUMMARY.md` のコピー、`learnings/{project-id}.md` は `docs/LEARNINGS.md` のコピーです（`kaizen-registry.sh register`）。正本はプロジェクト側のファイルです。`learnings/` は `/kaizen-audit-knowledge` のクロスプロジェクトパスの入力として使われます。
+- プロジェクトを外すときは `/kaizen-unregister-project` を使います。
+- 表の前後の文章は、そのまま保持されます。
 
 ---
 

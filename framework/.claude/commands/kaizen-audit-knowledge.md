@@ -154,17 +154,25 @@ Skill 発動後、承認された各候補の反映方法（削減・統合・�
 
 ### Step 7: knowledge/ の自動コミット
 
-1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
+1. **今回の監査で編集・作成・削除した knowledge/ 配下のファイル**（Step 5 で反映したファイルと、Step 6 の `knowledge/meta/AUDIT_HISTORY.md`）を列挙し、それだけをコミットする:
    ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" \
+     -m "kaizen audit: trim knowledge files and reflect cross-project learnings" \
+     -- knowledge/meta/AUDIT_HISTORY.md knowledge/<編集したファイル> knowledge/<削除したファイル>
    ```
-2. git リポジトリかつ未コミットの変更がある場合、自動コミット:
-   ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
-   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen audit: trim knowledge files and reflect cross-project learnings"
-   ```
-3. git リポジトリでない場合はスキップ
-4. コミットに失敗した場合、警告を表示して続行
+   ファイルだけを渡す（ディレクトリは拒否される）。削除・移動したファイルは、消えた側のパスも渡す。`git add -A` やパスを付けない `git commit` は使わない — 他セッションが編集途中のファイルまで自分のコミットに入る。
+2. 出力の `[kaizen-knowledge-commit]` ブロックの `status` で分岐:
+
+   | 終了コード | `status` | 対応 |
+   |---|---|---|
+   | `0` | `committed` | `message:` の件名と `committed:` のファイルが意図どおりか確認して報告 |
+   | `0` | `nothing` / `skipped` | 変更なし、または git リポジトリでない。そのまま続行 |
+   | `1` | `blocked` | 今回コミットする行に壊れた参照がある（コミットはされていない）。ブロックの後ろの `MISS` 行を直し、同じコマンドを再実行する |
+   | `2` | `error` | git の失敗。`git:` / `failed:` の内容を警告として表示して続行 |
+   | `3` | `error` | パス・引数の誤り。`error=` を読んで直し、再実行する |
+3. `other:` の行（今回のコミットに含めなかった他の未コミット変更）があれば、**触らず**、あることをユーザーに伝える。`gate=` が `passed` 以外なら、その値を報告に含める
+
+> 詳細: `.claude/skills/kaizen-editing-knowledge/FILE_OPERATIONS.md § knowledge/ のコミット`
 
 ---
 

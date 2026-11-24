@@ -16,6 +16,17 @@ Usage:
       exit code.
       Exit: 0 = scanned / 2 = incomplete (unreadable file) / 3 = bad arguments
 
+  kaizen-check-refs.py --corpus <knowledge_dir> --staged [<path>...]
+      Pre-commit gate for the knowledge repository (kaizen-knowledge-commit.sh).
+      Judges only the lines added or changed in `git diff --cached`, in the
+      staged *.md under <knowledge_dir> (projects/ excluded; with paths, only
+      those files — relative paths start at <knowledge_dir>). Same checks as
+      the report mode, plus what the report mode leaves to its caller: a link
+      to a missing file, with or without an anchor, and [text](#anchor).
+      Result lines: MISS, UNREAD; the last line carries the totals.
+      Exit: 0 = no MISS / 1 = MISS / 2 = incomplete / 3 = nothing was judged
+            (bad arguments, git unavailable)
+
   kaizen-check-refs.py --project <root> [--knowledge <dir>] [--exclude <name>]...
                        [--list] [--staged] [<path>...]
       Checks a project's docs/**/*.md and CLAUDE.md (or the given paths;
@@ -83,6 +94,7 @@ LIST_BULLET = re.compile(r'^\s*[-*+]\s+\*\*([^*]+?)\*\*\s*[:.]')
 # Relative link with an anchor. URLs (`:`) and absolute paths are not ours to check.
 ANCHOR_LINK = re.compile(r'\]\((?!/)([^)\s#:]+\.md)#([^)\s]+)\)')
 BARE_ANCHOR = re.compile(r'\]\(#([^)]*)\)')
+PLAIN_LINK = re.compile(r'\]\((?!/)([^)\s#:]+\.md)\)')
 PATH_PART = r'((?:\.\.?/)*(?:[A-Za-z0-9_.-]+/)*)([A-Za-z_][A-Za-z0-9_-]*\.md)'
 # The path must start right after the backtick: a placeholder example such as
 # `→ knowledge/XXX.md § ...` has an arrow in between and is not a reference.
@@ -218,10 +230,11 @@ def extract(text, arrows):
       refs    (lineno, prefix, filename, section_text, is_arrow)
       links   (lineno, link_path, anchor)        [text](path.md#anchor)
       anchors (lineno, anchor)                   [text](#anchor)
+      plain   (lineno, link_path)                [text](path.md)
       skipped (lineno, line)                     § outside a fence, nothing extracted
       fenced  (lineno, line)                     § inside a fence
     """
-    out = {'refs': [], 'links': [], 'anchors': [], 'skipped': [], 'fenced': []}
+    out = {'refs': [], 'links': [], 'anchors': [], 'plain': [], 'skipped': [], 'fenced': []}
     for n, line, fenced in iter_lines(text):
         if fenced:
             if '§' in line:
@@ -234,6 +247,8 @@ def extract(text, arrows):
             found += 1   # `[X.md § Section](./X.md#anchor)`: the anchor carries the check
         for anchor in BARE_ANCHOR.findall(clean):
             out['anchors'].append((n, anchor))
+        for link_path in PLAIN_LINK.findall(clean):
+            out['plain'].append((n, link_path))
         for prefix, filename, section in TEXT_REF.findall(line):
             out['refs'].append((n, prefix, filename, section, False))
             found += 1
@@ -273,17 +288,16 @@ def fail(msg):
 # ---------------------------------------------------------------------------
 # --corpus
 # ---------------------------------------------------------------------------
-def run_corpus(knowledge_dir, scan_dirs):
-    kd = Path(knowledge_dir).resolve()
-    if not kd.is_dir():
-        return fail("knowledge directory does not exist: %s" % knowledge_dir)
-    scans = [Path(p).resolve() for p in scan_dirs] or [kd]
-    for s in scans:
-        if not s.is_dir():
-            return fail("scan directory does not exist: %s" % s)
-        if s != kd and kd not in s.parents:
-            return fail("scan directory is outside the knowledge directory: %s" % s)
+def corpus_scan(kd, sources, lines_of=None):
+    """Check the references in `sources` against the knowledge tree `kd`.
+    Returns (findings, unread, ok). A finding is (kind, src, lineno, shown,
+    why) with kind 'link' or 'ref'.
 
+    With lines_of ({src: line numbers}) only those lines are judged, and the
+    cases the report mode leaves to the link check of its caller are findings
+    too: a link to a missing file, with or without an anchor, and a
+    [text](#anchor) into the file itself."""
+    gate = lines_of is not None
     # Targets are indexed over the whole tree even when only a subdirectory is
     # scanned: a reference from the subdirectory to a sibling one is not broken.
     indexed = [p.resolve() for p in md_files(kd, kd)]
@@ -325,22 +339,43 @@ def run_corpus(knowledge_dir, scan_dirs):
         # points at a project or the framework and cannot be judged from here.
         return [], ('missing' if written.split('/')[0] in top_dirs else 'skip')
 
-    sources = sorted({p.resolve() for s in scans for p in md_files(s, kd)})
-    broken_link, broken_text = [], []
+    findings = []
+    ok = 0
     for src in sources:
         text, why = read_text(src)
         if text is None:
             unread[src] = why
             continue
         found = extract(text, arrows=False)
-        for _, link_path, anchor in found['links']:
-            tgt = (src.parent / link_path).resolve()
+        allowed = lines_of.get(src, set()) if gate else None
+        links = list(found['links'])
+        if gate:
+            links += [(n, link_path, None) for n, link_path in found['plain']]
+            links += [(n, '', anchor) for n, anchor in found['anchors'] if anchor]
+        for lineno, link_path, anchor in links:
+            if gate and lineno not in allowed:
+                continue
+            tgt = (src.parent / link_path).resolve() if link_path else src
+            shown = "`%s%s`" % (link_path, '' if anchor is None else '#' + anchor)
             if tgt not in indexed_set:
-                continue  # missing file (reported by the link check) or an excluded path such as projects/
+                # A missing file is reported by the link check of the report's
+                # caller; other paths (projects/, outside the tree) are not ours.
+                if gate and (tgt == kd or kd in tgt.parents) and not tgt.is_file():
+                    findings.append(('link', src, lineno, shown, 'link target not found'))
+                continue
+            if anchor is None:
+                ok += 1
+                continue
             t = target(tgt)
-            if t is not None and not t.has_anchor(anchor):
-                broken_link.append("- %s: `%s#%s` (no matching heading)" % (rel(src), link_path, anchor))
+            if t is None:
+                continue
+            if t.has_anchor(anchor):
+                ok += 1
+            else:
+                findings.append(('link', src, lineno, shown, 'no matching heading'))
         for lineno, prefix, filename, section, _ in found['refs']:
+            if gate and lineno not in allowed:
+                continue
             if QUOTE_LINE.match(text.split('\n')[lineno - 1]):
                 continue
             last, _, variants = section_variants(section)
@@ -349,15 +384,42 @@ def run_corpus(knowledge_dir, scan_dirs):
             if verdict == 'skip':
                 continue
             if not cands:
-                broken_text.append("- %s: %s (referenced file not found)" % (rel(src), shown))
+                findings.append(('ref', src, lineno, shown, 'referenced file not found'))
                 continue
             if len(cands) > 1:
                 names = ', '.join(rel(c) for c in cands)
-                broken_text.append("- %s: %s (multiple files named %s: %s)" % (rel(src), shown, filename, names))
+                findings.append(('ref', src, lineno, shown, 'multiple files named %s: %s' % (filename, names)))
                 continue
             t = target(cands[0])
-            if t is not None and not any(normalize(v) in t.norm for v in variants):
-                broken_text.append("- %s: %s (no matching heading)" % (rel(src), shown))
+            if t is None:
+                continue
+            if any(normalize(v) in t.norm for v in variants):
+                ok += 1
+            else:
+                findings.append(('ref', src, lineno, shown, 'no matching heading'))
+    return findings, unread, ok
+
+
+def run_corpus(knowledge_dir, scan_dirs):
+    kd = Path(knowledge_dir).resolve()
+    if not kd.is_dir():
+        return fail("knowledge directory does not exist: %s" % knowledge_dir)
+    scans = [Path(p).resolve() for p in scan_dirs] or [kd]
+    for s in scans:
+        if not s.is_dir():
+            return fail("scan directory does not exist: %s" % s)
+        if s != kd and kd not in s.parents:
+            return fail("scan directory is outside the knowledge directory: %s" % s)
+
+    def rel(p):
+        return p.relative_to(kd).as_posix()
+
+    sources = sorted({p.resolve() for s in scans for p in md_files(s, kd)})
+    findings, unread, _ = corpus_scan(kd, sources)
+    broken_link = ["- %s: %s (%s)" % (rel(src), shown, why)
+                   for kind, src, _, shown, why in findings if kind == 'link']
+    broken_text = ["- %s: %s (%s)" % (rel(src), shown, why)
+                   for kind, src, _, shown, why in findings if kind == 'ref']
 
     if broken_link:
         print("**Markdown links ([text](path#anchor)):**")
@@ -380,6 +442,63 @@ def run_corpus(knowledge_dir, scan_dirs):
             print("- %s (%s)" % (rel(p), unread[p]))
         return 2
     return 0
+
+
+def run_corpus_gate(knowledge_dir, paths):
+    """--corpus --staged: judge what is about to be committed to the knowledge
+    repository, not the existing backlog."""
+    kd = Path(knowledge_dir).resolve()
+    if not kd.is_dir():
+        return fail("knowledge directory does not exist: %s" % knowledge_dir)
+    top, added, names, unparsed = staged_added_lines(kd)
+    if top is None:
+        return fail("--staged needs a git repository and the git command")
+    wanted = None
+    if paths:
+        wanted = {(Path(p) if Path(p).is_absolute() else kd / p).resolve() for p in paths}
+    in_tree = {p.resolve() for p in md_files(kd, kd)}
+    staged = [(top / n).resolve() for n in names]
+    in_scope = [p for p in staged if p in in_tree and (wanted is None or p in wanted)]
+
+    def rel(p):
+        return p.relative_to(kd).as_posix()
+
+    lines_of, staged_missing = {}, []
+    for p in in_scope:
+        key = p.relative_to(top).as_posix()
+        if key in added:
+            lines_of[p] = added[key]
+        elif unparsed:
+            # The file header could not be parsed, so its added lines are lost.
+            staged_missing.append(p)
+    note = "staged .md %d / checked %d" % (len(staged), len(lines_of))
+    if len(staged) > len(in_scope):
+        note += " / out of scope %d" % (len(staged) - len(in_scope))
+    if not lines_of and not staged_missing:
+        print("--staged: nothing was checked — no staged .md in scope (%s)" % note)
+        return 0
+
+    findings, unread, ok = corpus_scan(kd, sorted(lines_of), lines_of)
+    print("### Reference gate (lines added or changed in `git diff --cached`; %s)" % note)
+    print()
+    body = ["MISS %s:%d  %s (%s)" % (rel(src), lineno, shown, why) for _, src, lineno, shown, why in findings]
+    body += ["UNREAD %s  (staged file was not matched to its diff; its added lines were not checked)" % rel(p)
+             for p in staged_missing]
+    body += ["UNREAD %s  (cannot read the file: %s; references in or into it were not checked)" % (rel(p), unread[p])
+             for p in sorted(unread)]
+    for line in body:
+        print(line)
+    if body:
+        print()
+    incomplete = bool(unread or staged_missing)
+    print("total: checked %d file(s) / OK %d / MISS %d%s"
+          % (len(lines_of), ok, len(findings),
+             " / UNREAD %d" % (len(unread) + len(staged_missing)) if incomplete else ""))
+    if incomplete:
+        print()
+        print("==== result: incomplete (see the UNREAD lines; the MISS count is a lower bound)")
+        return 2
+    return 1 if findings else 0
 
 
 # ---------------------------------------------------------------------------
@@ -728,6 +847,8 @@ def main(argv):
     if mode == '--corpus':
         if not rest:
             return usage("--corpus needs <knowledge_dir>")
+        if '--staged' in rest[1:]:
+            return run_corpus_gate(rest[0], [a for a in rest[1:] if a != '--staged'])
         return run_corpus(rest[0], rest[1:])
     if mode != '--project':
         return usage("unknown mode: %s" % mode)

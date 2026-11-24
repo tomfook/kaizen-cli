@@ -29,6 +29,8 @@ project-root/
 - During normal work: Read-only (reference only)
 - When you discover cross-project insights: Edit with explicit intent
 - Never add project-specific information (generalize first)
+- Never edit `knowledge/projects/` by hand: it is generated from each project's `docs/` (see "Project Registry" below)
+- Commit only the files you changed: `kaizen-knowledge-commit.sh -m "<message>" -- knowledge/<file> ...` (the Kaizen commands do this for you). Do not run `git add -A` in the knowledge repository — it is shared with other projects and sessions, and their unfinished edits would go into your commit
 
 ### File Placement
 
@@ -38,6 +40,19 @@ project-root/
 | **CLAUDE.md** | Project-specific essentials | Terminology, data sources, deliverables |
 | **docs/PROJECT_SUMMARY.md** | Project overview | Purpose, Tech Stack, Design Decisions (synced to registry) |
 | **docs/** | Project-specific details | Plans, specifications, decision logs |
+
+### Project Registry (`knowledge/projects/`)
+
+`knowledge/projects/` is generated from each project's own `docs/`. Nothing in it is edited by hand.
+
+| File | Generated from | Written by |
+|------|----------------|------------|
+| `projects/details/{id}.md` | The project's `docs/PROJECT_SUMMARY.md` (a copy) | `/kaizen-update-docs` |
+| `projects/learnings/{id}.md` | The project's `docs/LEARNINGS.md` (a copy) | `/kaizen-update-docs` |
+| `projects/INDEX.md` (the table) | The frontmatter of `details/*.md` | `/kaizen-update-docs`, `/kaizen-unregister-project` |
+
+- To change what the registry says about a project, edit that project's `docs/` and run `/kaizen-update-docs` there. An edit made in the registry is overwritten by the next sync
+- To check whether a project's copies are current, run this from the project root: `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" status knowledge`
 
 ---
 
@@ -61,7 +76,7 @@ This will:
 2. Create `.claude/skills/` symlinks → `$KAIZEN_CLI_DIR/framework/.claude/skills/`
 3. Generate `CLAUDE.md` from template
 4. Generate `docs/PROJECT_SUMMARY.md` from template
-5. Register the project in the registry (`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md`)
+5. Register the project in the registry (a copy of `docs/PROJECT_SUMMARY.md` under `knowledge/projects/details/`, listed in `knowledge/projects/INDEX.md`)
 
 ### Post-Setup Checklist
 

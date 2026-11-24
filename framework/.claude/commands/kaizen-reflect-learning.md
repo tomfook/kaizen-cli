@@ -268,17 +268,25 @@ knowledge/ へ昇格後の知見が誤りと判明した場合、以下の手順
 
 knowledge/ への反映完了後、以下を実行する:
 
-1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
+1. **今回この反映で編集・作成・削除した knowledge/ 配下のファイル**を列挙し、それだけをコミットする:
    ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" \
+     -m "kaizen reflect: <知見の要約（1行、英語）>" \
+     -- knowledge/<編集したファイル> knowledge/<編集したファイル>
    ```
-2. git リポジトリの場合、未コミットの変更があれば自動コミット:
-   ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
-   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen reflect: <知見の要約（1行、英語）>"
-   ```
-3. git リポジトリでない場合はスキップ（警告不要）
-4. コミットに失敗した場合、警告を表示して続行（knowledge/ の変更自体は保持）
+   ファイルだけを渡す（ディレクトリは拒否される）。`git add -A` やパスを付けない `git commit` は使わない — knowledge/ は全プロジェクト・全セッションの共有物で、他セッションが編集途中のファイルまで自分のコミットに入る。
+2. 出力の `[kaizen-knowledge-commit]` ブロックの `status` で分岐:
+
+   | 終了コード | `status` | 対応 |
+   |---|---|---|
+   | `0` | `committed` | `message:` の件名と `committed:` のファイルが意図どおりか確認して報告 |
+   | `0` | `nothing` / `skipped` | 変更なし、または git リポジトリでない。そのまま続行（警告不要） |
+   | `1` | `blocked` | 今回コミットする行に壊れた参照がある（コミットはされていない）。ブロックの後ろの `MISS` 行を直し、同じコマンドを再実行する |
+   | `2` | `error` | git の失敗。`git:` / `failed:` の内容を警告として表示して続行（knowledge/ の変更自体は保持されている） |
+   | `3` | `error` | パス・引数の誤り。`error=` を読んで直し、再実行する |
+3. `other:` の行（今回のコミットに含めなかった他の未コミット変更）があれば、**触らず**、あることをユーザーに伝える。`gate=` が `passed` 以外なら、その値を報告に含める
+
+> 詳細: `.claude/skills/kaizen-editing-knowledge/FILE_OPERATIONS.md § knowledge/ のコミット`
 
 ---
 

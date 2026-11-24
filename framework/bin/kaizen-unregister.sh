@@ -8,6 +8,11 @@
 #   show <registry_dir> <project-id>   — Show deletion targets for a project
 #   execute <registry_dir> <project-id> — Remove project from registry
 #
+# execute removes the mirrors (details/<id>.md, learnings/<id>.md) and lets
+# kaizen-registry.sh regenerate projects/INDEX.md. This script never edits the
+# table itself: INDEX.md has one writer. The regeneration is tried with
+# --dry-run first, so nothing is removed when the table cannot be rebuilt.
+#
 # Exit codes: 0=success, 1=validation/not-found error, 2=usage error
 
 set -euo pipefail
@@ -15,6 +20,14 @@ set -euo pipefail
 # Auto-detect KAIZEN_CLI_DIR from script location (bin/ -> framework/ -> repo root)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 KAIZEN_CLI_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+REGISTRY_SH="$SCRIPT_DIR/kaizen-registry.sh"
+
+# registry_error <output of kaizen-registry.sh> — the error= text, or a fallback.
+registry_error() {
+  local msg
+  msg="$(printf '%s\n' "$1" | sed -n 's/^error=//p' | head -n 1)"
+  echo "${msg:-kaizen-registry.sh sync-index failed}"
+}
 
 # --- list subcommand ---
 
@@ -93,14 +106,6 @@ do_show() {
   local index_row=""
   index_row=$(grep "^| *${project_id} *|" "$index_file" || true)
 
-  if [ -z "$index_row" ]; then
-    echo "[kaizen-unregister-show]"
-    echo "status=error"
-    echo "error=Project '${project_id}' is not registered"
-    echo "[/kaizen-unregister-show]"
-    return 1
-  fi
-
   local details_file="$registry_dir/projects/details/${project_id}.md"
   local details_status="missing"
   if [ -f "$details_file" ]; then
@@ -111,6 +116,15 @@ do_show() {
   local learnings_status="missing"
   if [ -f "$learnings_file" ]; then
     learnings_status="exists"
+  fi
+
+  # Registered = a row in the table, or a mirror left behind without a row.
+  if [ -z "$index_row" ] && [ "$details_status" = "missing" ] && [ "$learnings_status" = "missing" ]; then
+    echo "[kaizen-unregister-show]"
+    echo "status=error"
+    echo "error=Project '${project_id}' is not registered"
+    echo "[/kaizen-unregister-show]"
+    return 1
   fi
 
   echo "[kaizen-unregister-show]"
@@ -150,8 +164,15 @@ do_execute() {
     return 1
   fi
 
-  # Check project exists
-  if ! grep -q "^| *${project_id} *|" "$index_file"; then
+  local details_file="$registry_dir/projects/details/${project_id}.md"
+  local learnings_file="$registry_dir/projects/learnings/${project_id}.md"
+
+  # Registered = a row in the table, or a mirror left behind without a row.
+  local had_row="no"
+  if grep -q "^| *${project_id} *|" "$index_file"; then
+    had_row="yes"
+  fi
+  if [ "$had_row" = "no" ] && [ ! -f "$details_file" ] && [ ! -f "$learnings_file" ]; then
     echo "[kaizen-unregister-execute]"
     echo "status=error"
     echo "error=Project '${project_id}' is not registered"
@@ -159,30 +180,49 @@ do_execute() {
     return 1
   fi
 
-  # Remove row from INDEX.md
-  sed "/^| *${project_id} *|/d" "$index_file" > "$index_file.tmp" && mv "$index_file.tmp" "$index_file"
+  # Can the table be regenerated? Find out before anything is removed.
+  local sync_out
+  if ! sync_out="$(bash "$REGISTRY_SH" sync-index "$registry_dir" --drop "$project_id" --dry-run 2>&1)"; then
+    echo "[kaizen-unregister-execute]"
+    echo "status=error"
+    echo "error=$(registry_error "$sync_out") (nothing was removed)"
+    echo "[/kaizen-unregister-execute]"
+    return 1
+  fi
 
-  # Remove details file
-  local details_file="$registry_dir/projects/details/${project_id}.md"
+  # Remove the mirrors
   local details_removed="no"
   if [ -f "$details_file" ]; then
     rm "$details_file"
     details_removed="yes"
   fi
-
-  # Remove learnings file
-  local learnings_file="$registry_dir/projects/learnings/${project_id}.md"
   local learnings_removed="no"
   if [ -f "$learnings_file" ]; then
     rm "$learnings_file"
     learnings_removed="yes"
   fi
 
+  # Regenerate the table without the project
+  if ! sync_out="$(bash "$REGISTRY_SH" sync-index "$registry_dir" --drop "$project_id" 2>&1)"; then
+    echo "[kaizen-unregister-execute]"
+    echo "status=error"
+    echo "error=$(registry_error "$sync_out") (the mirrors were removed; run kaizen-registry.sh sync-index again)"
+    echo "details_removed=$details_removed"
+    echo "learnings_removed=$learnings_removed"
+    echo "[/kaizen-unregister-execute]"
+    return 1
+  fi
+  local index_removed="no"
+  if [ "$had_row" = "yes" ] && ! grep -q "^| *${project_id} *|" "$index_file"; then
+    index_removed="yes"
+  fi
+
   echo "[kaizen-unregister-execute]"
   echo "status=ok"
-  echo "index_removed=yes"
+  echo "index_removed=$index_removed"
   echo "details_removed=$details_removed"
   echo "learnings_removed=$learnings_removed"
+  printf '%s\n' "$sync_out" | grep '^warning: ' || true
   echo "[/kaizen-unregister-execute]"
   return 0
 }

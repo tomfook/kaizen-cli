@@ -49,4 +49,7 @@ kaizen-cli リポジトリは自身のコマンドをドッグフーディング
 
 - **状況**: `.github/workflows/test.yml` は `ubuntu-latest` と `macos-latest` の両方で `bash tests/run_all.sh` を実行する。開発端末（Linux・bash 5・gawk）で通っても macOS で落ちうる
 - **制約**: `set -u` 下の空配列の展開（bash 3.2 でエラー → 改行区切りの文字列で持つ）、`grep -P`、gawk 拡張（`gensub`・`\<`）、`readlink -f`、`sed -i` の引数形式を避ける。`wc -l` の出力は先頭に空白が付く
+- **CI で実際に落ちた 2 件** (2026-11-24): (1) BSD awk は、読み手がパイプを閉じる（`… | head -1`）と SIGPIPE で終わらず、書き込みエラーを出して終了コード 2 を返す。awk の非ゼロ終了をそのまま失敗扱いにしない (2) bash 3.2 は `$( … )` の中に書いた `case` 文を解釈できない（構文エラー）。関数に出して、`$( )` の中は関数呼び出しだけにする
+- **awk の正規表現**: グループ内の `$`（`(x|$)` の形）は処理系で扱いが分かれうるので使わない。`a ~ /…x/ || a ~ /…$/` のように条件を 2 つに分ける
 - **手元での代替検査**: awk を mawk に、awk・grep・sed・find などを busybox 版に差し替えた PATH でテストを流すと、GNU 依存の一部を push 前に拾える（BSD 版そのものの検証にはならない）
+- **bash 3.2 の手元検査** (2026-11-24): Docker の `bash:3.2` イメージで全テストを回せる（`docker run --rm -v "$PWD":"$PWD":ro -w "$PWD" bash:3.2 sh -c 'apk add --no-cache git python3 >/dev/null; bash tests/run_all.sh'`。リポジトリは同じ絶対パスにマウントする＝`.claude/` の symlink が絶対パスのため）。ツール類は busybox なので BSD 版の検証にはならない。`framework/bin/test-kaizen-check-knowledge.sh` の「python3 が無いときの縮退」は、このコンテナでは変更前のコードでも落ちる（環境起因。今回の合否には数えない）

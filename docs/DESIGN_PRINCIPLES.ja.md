@@ -66,7 +66,8 @@ $KAIZEN_KNOWLEDGE_DIR/             ← ユーザーの知識が蓄積される�
 - **レジストリ別言語**: 各レジストリは `$REGISTRY_DIR/.lang`（`en` or `ja`）で言語を保持する。`framework/templates/{en,ja}/` のテンプレートが対応言語で選択される。デフォルト: `en`
 
 **注意点**:
-- `git rm` は実体ディレクトリ（`$KAIZEN_KNOWLEDGE_DIR`）で実行する
+- `git rm` は実体ディレクトリで実行する（`git -C knowledge rm <path>`）。symlink 越しには実行できない
+- **コミットはファイルを名指しする**: knowledge のリポジトリは全プロジェクト・全セッションの共有物なので、そこでのコミットが、他セッションの編集途中の変更を巻き込んではならない。各コマンドは `kaizen-knowledge-commit.sh` 経由でコミットする。このスクリプトは、渡されたパスだけをステージしてコミットし、それ以外の未コミット変更は一覧表示するだけで触らず、コミットする行の参照を照合する。knowledge のリポジトリでは `git add -A` とパスなしのコミットを使わない
 - バックアップファイルを knowledge/ 内に作成しない（同じレジストリ内の全プロジェクトに影響）
 
 ### プロジェクト固有情報と横断知識の分離
@@ -188,15 +189,18 @@ CLAUDE.md は200行未満を目安に。300行を超えたら詳細を docs/ に
 
 ### レジストリ自動管理の不変条件
 
-**`knowledge/projects/` はレジストリデータである。`/kaizen-update-docs` のみが書き込み、人手や他の自動処理は決して編集しない。**
+**`knowledge/projects/` はレジストリデータである。書き込むのは `kaizen-registry.sh` だけで（`/kaizen-update-docs`・`/kaizen-init-project`・`/kaizen-unregister-project` から呼ばれる）、人手や他の自動処理は決して編集しない。**
 
-ここには 2 つのサブディレクトリがある: `projects/details/{id}.md`（各プロジェクトの `PROJECT_SUMMARY.md` のコピー）と `projects/learnings/{id}.md`（各プロジェクトの `docs/LEARNINGS.md` のコピー）。どちらも `/kaizen-update-docs` Step 5 が自動同期する。真の情報源（source of truth）はプロジェクト側のファイルであり、レジストリのコピーではない。
+ここには 3 種類のファイルがある: `projects/details/{id}.md`（各プロジェクトの `PROJECT_SUMMARY.md` のコピー）、`projects/learnings/{id}.md`（各プロジェクトの `docs/LEARNINGS.md` のコピー）、そして `projects/INDEX.md`。INDEX の一覧表は、`details/*.md` の frontmatter から作り直される。コピーは `/kaizen-update-docs` Step 5 が同期し（`register`）、その直後に表を作り直す（`sync-index`）。真の情報源（source of truth）はプロジェクト側のファイルであり、レジストリのコピーでも、一覧表でもない。
 
-ここから 3 つの帰結が導かれる:
+一覧表を編集せず生成するのは、これが全プロジェクトから書き込まれる唯一のファイルだからである。手で直した行は、誰にも気づかれないまま details とずれていく。2 つのセッションがそれぞれ行を足すと、表は手でマージするしかなくなる。ファイルから決まった順序で作り直す表なら、どのセッションが最後に実行しても同じ結果になる。手で保守してきたレジストリも、切り替えで情報を失わない: details ファイルの無いプロジェクトの行は、そのまま引き継がれ、その旨が報告される。
+
+ここから 4 つの帰結が導かれる:
 
 1. **auditor は `projects/` を精査対象から外す** — `kaizen-check-knowledge.sh` と `kaizen-knowledge-auditor` は `find` の引数で `*/projects/*` を除外する。除外しないと、レジストリコピーが鮮度警告や削減候補として浮上してしまう（編集すべきは上流のプロジェクト側ファイル）
 2. **reflect-learning はここに書かない** — `kaizen-learning-reflector` Step 5 は出力先候補から `knowledge/projects/` を除外する。これにより Tier 1（セッション → knowledge）が Tier 2（プロジェクト → knowledge）の同期領域に侵入することを防ぐ
-3. **手動編集は失われる** — レジストリコピーを手で編集しても、次回の `/kaizen-update-docs` で上書きされる。これは仕様。プロジェクト側ファイルだけが編集面である
+3. **手動編集は失われる** — レジストリコピーや一覧表の行を手で編集しても、次回の `/kaizen-update-docs` で上書きされる。これは仕様。プロジェクト側ファイルだけが編集面である
+4. **ずれは仮定せず確かめる** — 同期のあとにプロジェクト側のファイルを編集すると、コピーは古くなる。そのときエラーは出ない。`kaizen-registry.sh status` は、プロジェクトのファイルとコピーを突き合わせ、一覧表が最新かどうかと、未コミットのコピーを報告する。コミット用スキルは、`docs/PROJECT_SUMMARY.md` か `docs/LEARNINGS.md` を含むコミットの前にこれを実行する
 
 この不変条件があることで、下記の三層昇格モデルが機能する。
 

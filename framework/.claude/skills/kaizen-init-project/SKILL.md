@@ -3,7 +3,7 @@ name: kaizen-init-project
 description: >-
   Initial setup for a Kaizen-CLI project.
   Creates knowledge/, skills/, commands/, and agents/ symlinks, generates CLAUDE.md and PROJECT_SUMMARY.md,
-  and registers the project in the registry (INDEX.md row + details/ copy).
+  and registers the project in the registry (details/ mirror + regenerated INDEX.md).
   Usage: "/kaizen-init-project"
 disable-model-invocation: true
 ---
@@ -199,21 +199,43 @@ mkdir -p docs
 
 ### 9. プロジェクトレジストリへの登録
 
-選択されたレジストリ内の `projects/INDEX.md` にプロジェクトを登録（symlink経由で `knowledge/projects/INDEX.md` としてアクセス可能）:
+レジストリ（`knowledge/projects/`）への登録は、ヘルパースクリプトで行う。`INDEX.md` の行もミラーも手で書かない（どちらも `docs/PROJECT_SUMMARY.md` から作られる派生物で、手で書いた内容は次の同期で上書きされる）。
 
-1. `knowledge/projects/` ディレクトリが存在しない場合は作成
-2. `knowledge/projects/INDEX.md` が存在しない場合は `$KAIZEN_CLI_DIR/framework/templates/$LANG/knowledge/projects/INDEX.md.template` から生成
-3. べき等: INDEX.md 内にプロジェクトIDが既に存在するか確認する（テーブル行の先頭カラムを検索）
-   - 既に存在する場合 → 登録をスキップし、ユーザーに「プロジェクト '{id}' は既にレジストリに登録されています」と通知
-   - 存在しない場合 → INDEX.mdの一覧テーブルに行を追加:
-     - `| {id} | {name} | planning | | {date} |`
-4. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
-   - `knowledge/projects/details/` ディレクトリが存在しない場合は作成: `mkdir -p "knowledge/projects/details"`
-   - Step 7 で `docs/PROJECT_SUMMARY.md` が生成されていない場合（スキップされた場合）はスキップ
-   - コピー先が既に存在する場合は上書き（衝突は Step 3 のプロジェクトID ガードでユーザー確認済み）
-5. `knowledge/projects/learnings/` ディレクトリを作成（存在しない場合のみ）: `mkdir -p "knowledge/projects/learnings"`
-   - 登録時点では空。最初の `/kaizen-update-docs` 実行時に `{id}.md` が同期される
-   - eager 作成で `mkdir -p` の race を回避するため、登録時に作っておく
+1. ミラーの作成（`details/{id}.md`。`details/`・`learnings/` ディレクトリもここで作られる）:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" register knowledge --expect-id "$PROJECT_ID"
+   ```
+
+   プロジェクト ID は `docs/PROJECT_SUMMARY.md` の frontmatter（`project.id`）から読まれる。`--expect-id` は、それが Step 3 の ID と一致することの確認。`[kaizen-registry-register]` ブロックを解析:
+
+   | `status` | 対応 |
+   |---|---|
+   | `ok` | `details=`（`created` / `updated` / `unchanged`）を Step 10 で報告する。`learnings=not-synced` は登録時点では正常（`docs/LEARNINGS.md` にエントリができたあとの `/kaizen-update-docs` で同期される） |
+   | `skipped` | frontmatter に `registry: false` がある。登録しない（手順 2・3 もスキップ） |
+   | `error`: `id mismatch` | Step 7 をスキップした既存の `docs/PROJECT_SUMMARY.md` の `project.id` が、Step 3 の ID と違う。どちらを採るかユーザーに確認し、frontmatter を直すか Step 3 の ID を改めて、再実行する（何も書き込まれていない） |
+   | `error`: frontmatter が無い | 既存の `docs/PROJECT_SUMMARY.md` に `project:` の frontmatter が無い。テンプレート（`$KAIZEN_CLI_DIR/framework/templates/$LANG/docs/PROJECT_SUMMARY.md.template`）の frontmatter を先頭に足す案をユーザーに示し、承認後に再実行する |
+   | `error`: その他 | `error=` の内容をユーザーに表示する |
+
+2. INDEX の再生成:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" sync-index knowledge
+   ```
+
+   `details/*.md` の frontmatter から `projects/INDEX.md` の一覧表を作り直す（`INDEX.md` が無ければテンプレートから作る）。べき等: 新規登録なら `added=1`、初期化済みプロジェクトの再実行なら `index=unchanged` か `updated=1` になる。`warning:`・`kept:` の行があれば、そのままユーザーに伝える。
+
+3. knowledge/ のコミット（今回作ったファイルだけ）:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" \
+     -m "kaizen init: register $PROJECT_ID" \
+     -- knowledge/projects/INDEX.md "knowledge/projects/details/$PROJECT_ID.md"
+   ```
+
+   - Step 3 で新しいレジストリを作った場合は、展開したファイル（`knowledge/.lang`・`knowledge/meta/INDEX.md`・`knowledge/meta/GETTING_STARTED.md`・`knowledge/meta/DOCUMENTATION_GUIDELINES.md`）も同じコマンドのパスに足す
+   - `git add -A` やパスを付けない `git commit` は使わない（knowledge/ は全プロジェクト・全セッションの共有物で、他セッションが編集途中のファイルまで自分のコミットに入る）
+   - `status=committed` / `nothing` / `skipped`（git リポジトリでない）はそのまま続行。`status=error` は内容を警告として表示して続行する（詳細: `.claude/skills/kaizen-editing-knowledge/FILE_OPERATIONS.md § knowledge/ のコミット`）
 
 ### 10. 完了確認
 
@@ -234,8 +256,9 @@ ls docs/LEARNINGS.md
 - `CLAUDE.md` が生成されたこと
 - `docs/PROJECT_SUMMARY.md` が生成されたこと
 - `docs/LEARNINGS.md` が生成されたこと
-- プロジェクトレジストリに登録されたこと
-- `knowledge/projects/details/{id}.md` にプロジェクト概要のコピーが配置されたこと
+- プロジェクトレジストリに登録されたこと（Step 9 の `details=` と `added=` / `index=` の値）
+- `knowledge/projects/details/{id}.md` にプロジェクト概要のコピーが配置されたこと。正本は `docs/PROJECT_SUMMARY.md` で、レジストリ側は `/kaizen-update-docs` が同期する（手で編集しない）
+- Step 9 のコミット結果（`status=committed` ならコミット済み。git リポジトリでなければその旨）
 
 ### 11. 次のステップの案内
 
@@ -254,3 +277,4 @@ ls docs/LEARNINGS.md
 | テンプレートファイルの直接編集 | 全ユーザーに影響 |
 | `$KAIZEN_CLI_DIR` 配下のファイル変更 | 配布元リポジトリを汚染 |
 | `$KAIZEN_KNOWLEDGE_DIR` の構造変更 | 他プロジェクトに影響（レジストリ登録・新規レジストリ作成を除く） |
+| `knowledge/projects/` 配下の手編集 | `INDEX.md`・`details/`・`learnings/` は派生物。`kaizen-registry.sh` だけが書く |

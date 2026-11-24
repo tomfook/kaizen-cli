@@ -190,43 +190,73 @@
 
 ### Step 5: プロジェクトレジストリ同期
 
-PROJECT_SUMMARY.md更新後、`$KAIZEN_KNOWLEDGE_DIR/projects/INDEX.md` への同期を行う。
+`docs/PROJECT_SUMMARY.md` と `docs/LEARNINGS.md` を、レジストリ（`knowledge/projects/`）へ同期する。
 
-**前提条件**: `knowledge/projects/INDEX.md` が存在すること。不在の場合はスキップ。
+レジストリは**派生物**で、正本はプロジェクト側の `docs/` にある。`knowledge/projects/` 配下（`INDEX.md`・`details/`・`learnings/`）は手で編集せず、必ず下のスクリプトで更新する（手で直した内容は次の同期で上書きされる）。
 
-**注意**: `knowledge/` はシンボリンクであり、Glob ツールはシンボリンク先を辿れない。Read ツールで直接読み取ること（ファイルが存在しなければ Read がエラーを返す）。
+**前提条件**: プロジェクトルートに `knowledge/` があること。無ければ「knowledge/ が見つかりません。レジストリ同期をスキップします。」と表示して、Step 5 と Step 6 をスキップする。
 
-1. PROJECT_SUMMARY.mdのYAMLフロントマターから `id`, `name`, `status`, `keywords`, `updated` を抽出
-2. `knowledge/projects/INDEX.md` の一覧テーブルの該当行を更新
-   - 該当IDが存在しない場合は行を追加
-3. `docs/PROJECT_SUMMARY.md` を `knowledge/projects/details/{id}.md` にコピー:
-   - `knowledge/projects/details/` ディレクトリが存在しない場合は作成
-   - `docs/PROJECT_SUMMARY.md` の全内容で上書き
-4. `docs/LEARNINGS.md` を `knowledge/projects/learnings/{id}.md` にコピー（クロスプロジェクト教訓監査の入力）:
-   - `knowledge/projects/learnings/` ディレクトリが存在しない場合は作成
-   - `docs/LEARNINGS.md` が存在しない場合は静かにスキップ（警告は出さない）
-   - テンプレートのみの初期状態（`### ` 見出しエントリが 0 件）の場合もスキップ
-     - 判定例: `grep -c '^### ' docs/LEARNINGS.md` が `0` ならスキップ
-   - それ以外は全文を上書きコピー（フィルタしない — `→ knowledge/` マーカ判定は auditor 側で実施）
-5. 同期結果を報告
+**注意**: `knowledge/` はシンボリンクであり、Glob ツールはシンボリンク先を辿れない。レジストリの中身（`knowledge/projects/INDEX.md` など）を確かめるときは、Read ツールでパスを直接指定する。
 
-**不在の場合**: 「projects/INDEX.md が見つかりません。スキップします。」と表示してスキップ。
+1. ミラーの同期（`details/{id}.md` と `learnings/{id}.md`）:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" register knowledge
+   ```
+
+   プロジェクト ID は `docs/PROJECT_SUMMARY.md` の frontmatter（`project.id`）から読まれる。引数では渡さない（別名のミラーを作る取り違えが起きない）。`[kaizen-registry-register]` ブロックの `status` で分岐:
+
+   | `status` | 対応 |
+   |---|---|
+   | `ok` | `details=` と `learnings=` の値（`created` / `updated` / `unchanged` / `not-synced` / `kept`）を報告に含める。`learnings=not-synced` のときは `learnings_reason=` も添える（同期されなかった回を無音にしない） |
+   | `skipped` | frontmatter に `registry: false` がある。同期しない。手順 2 と Step 6 もスキップする |
+   | `error`（終了コード `1`） | `error=` を表示し、Step 5 と Step 6 を中断する（何も書き込まれていない）。`source_lost=` の行があれば、`docs/PROJECT_SUMMARY.md` が失われてミラーだけが残っている。ミラーから復元する案をユーザーに示す |
+
+   `docs/LEARNINGS.md` は、エントリ（`### ` 見出し）が 1 件以上できた回から同期される。一度同期したあとは毎回全文を写す（ミラーに古いエントリを残さない）。フィルタはしない — `→ knowledge/` マーカーの判定は auditor 側で行う。
+
+2. INDEX の再生成:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-registry.sh" sync-index knowledge
+   ```
+
+   `details/*.md` の frontmatter から一覧表を作り直す（表の前後の文章は保持される。`INDEX.md` が無ければテンプレートから作る）。`[kaizen-registry-sync-index]` ブロックの `index=`（`updated` / `unchanged` / `created`）と、`added` / `updated` / `removed` の件数を報告に含める。`status=error` なら `error=` を表示する（`INDEX.md` は変更されていない）。
+
+3. 出力に次の行があれば、そのままユーザーに伝える:
+
+   | 行 | 意味 |
+   |---|---|
+   | `warning:` | 同じ id を持つ details が複数ある／ファイル名と id が食い違う／frontmatter が読めない／details の無い learnings、など。自分のプロジェクトに関するものは、この場で直す案を示す |
+   | `kept:` | details が無い（または frontmatter が読めない）ため、手書きの行をそのまま残したプロジェクト。情報は落としていない |
+   | `uncommitted:` | 未コミットのミラー。**自分のプロジェクト以外**のものは、他セッションが作業中の可能性がある。その内容も今回の表に反映されている。触らず、あることを伝える |
 
 ### Step 6: knowledge/ の自動コミット
 
-Step 5 で `knowledge/projects/` 配下のファイルを更新した場合、変更を git にコミットする。
+Step 5 を実行した場合、**自分のプロジェクトのミラーと INDEX だけ**をコミットする（`<project-id>` は Step 5 の `project_id=` の値）:
 
-1. `$KAIZEN_KNOWLEDGE_DIR` が git リポジトリかどうか確認:
-   ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" rev-parse --is-inside-work-tree
-   ```
-2. git リポジトリかつ未コミットの変更がある場合、自動コミット:
-   ```bash
-   git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
-   git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m "kaizen sync: update project registry for <project-id>"
-   ```
-3. git リポジトリでない場合、または Step 5 をスキップした場合はスキップ
-4. コミットに失敗した場合、警告を表示して続行
+```bash
+bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-knowledge-commit.sh" \
+  -m "kaizen sync: update project registry for <project-id>" \
+  -- knowledge/projects/INDEX.md \
+     knowledge/projects/details/<project-id>.md \
+     knowledge/projects/learnings/<project-id>.md
+```
+
+- `learnings/<project-id>.md` が無い回も、3 つとも渡してよい（無いパスは `skipped:` に出るだけで、残りはコミットされる）
+- `git add -A` やパスを付けない `git commit` は使わない — knowledge/ は全プロジェクト・全セッションの共有物で、他セッションが編集途中のファイルまで自分のコミットに入る
+
+出力の `[kaizen-knowledge-commit]` ブロックの `status` で分岐:
+
+| 終了コード | `status` | 対応 |
+|---|---|---|
+| `0` | `committed` | `message:` の件名と `committed:` のファイルが意図どおりか確認して報告 |
+| `0` | `nothing` / `skipped` | 変更なし、または git リポジトリでない。そのまま続行 |
+| `2` | `error` | git の失敗。`git:` / `failed:` の内容を警告として表示して続行（knowledge/ の変更自体は保持されている） |
+| `3` | `error` | パス・引数の誤り。`error=` を読んで直し、再実行する |
+
+`other:` の行（今回のコミットに含めなかった他の未コミット変更）があれば、**触らず**、あることをユーザーに伝える。
+
+> 詳細: `.claude/skills/kaizen-editing-knowledge/FILE_OPERATIONS.md § knowledge/ のコミット`
 
 ---
 
@@ -278,10 +308,16 @@ project:
   status: planning           # 必須: planning | developing | released | completed | on-hold
   keywords:                  # 推奨: 検索用キーワード
     - キーワード1
-  created: "YYYY-MM-DD"      # 任意: 作成日
+  created: "YYYY-MM-DD"      # 任意: 作成日（レジストリ一覧の並び順に使う。無いと末尾に並ぶ）
   updated: "YYYY-MM-DD"      # 任意: 更新日
 ---
 ```
+
+レジストリの一覧表（`knowledge/projects/INDEX.md`）は、この frontmatter から機械的に作られる（Step 5）。読み取るのは `project:` 直下の `id`・`name`・`status`・`keywords`・`created`・`updated`・`registry` だけで、YAML 全般を解釈するわけではない。次の形を守る:
+
+- 値は 1 行に書く（`>-` や `|` のブロックスカラーは使わない）
+- `keywords` は `[a, b]` か、`- a` を並べたリストで書く
+- レジストリに載せたくないプロジェクトは、`project:` の下に `registry: false` を足す（同期もされない）
 
 ### 更新時のチェックリスト
 

@@ -438,6 +438,124 @@ test_no_subcommand() {
   teardown_test_env
 }
 
+# --- Helper: a registry whose details files carry frontmatter (what register writes) ---
+
+write_details() {
+  # write_details <file> <id> <name> <created> <updated>
+  mkdir -p "$(dirname "$1")"
+  cat > "$1" <<EOF
+---
+project:
+  id: "$2"
+  name: "$3"
+  status: developing
+  keywords: [kw]
+  created: "$4"
+  updated: "$5"
+---
+
+# $3
+EOF
+}
+
+# --- Test 16: execute regenerates the table from the remaining details ---
+
+test_execute_regenerates_index() {
+  local test_name="execute: INDEX.md is regenerated from the remaining details files"
+  setup_test_env "$test_name"
+  local ok=0
+
+  create_test_registry "$TEST_KNOWLEDGE_DIR"
+  # proj-b's details file is newer than its hand-written row; proj-c has no row yet.
+  write_details "$TEST_KNOWLEDGE_DIR/projects/details/proj-b.md" proj-b "Project B Renamed" 2026-02-01 2026-03-03
+  write_details "$TEST_KNOWLEDGE_DIR/projects/details/proj-c.md" proj-c "Project C" 2026-01-15 2026-03-04
+  echo "Text after the table." >> "$TEST_KNOWLEDGE_DIR/projects/INDEX.md"
+
+  local output
+  output=$(bash "$KAIZEN_UNREGISTER" execute "$TEST_KNOWLEDGE_DIR" "proj-a") || ok=1
+  assert_output_contains "$output" "status=ok" || ok=1
+  assert_output_contains "$output" "index_removed=yes" || ok=1
+
+  local table expected
+  table="$(grep '^|' "$TEST_KNOWLEDGE_DIR/projects/INDEX.md")"
+  expected="| ID | Project Name | Status | Keywords | Updated |
+|----|--------------|--------|----------|---------|
+| proj-c | Project C | developing | kw | 2026-03-04 |
+| proj-b | Project B Renamed | developing | kw | 2026-03-03 |"
+  if [ "$table" != "$expected" ]; then
+    echo "  FAIL: the table should be rebuilt from details/ (ordered by created), without proj-a"
+    echo "$table" | sed 's/^/    | /'
+    ok=1
+  fi
+  assert_file_contains "$TEST_KNOWLEDGE_DIR/projects/INDEX.md" "Text after the table." \
+    "text after the table is kept" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 17: a mirror without a row can be shown and removed ---
+
+test_mirror_without_row() {
+  local test_name="show/execute: a project that has mirrors but no INDEX row"
+  setup_test_env "$test_name"
+  local ok=0
+
+  create_test_registry "$TEST_KNOWLEDGE_DIR"
+  echo "# Left behind" > "$TEST_KNOWLEDGE_DIR/projects/details/orphan.md"
+  echo "### lesson" > "$TEST_KNOWLEDGE_DIR/projects/learnings/orphan.md"
+
+  local output
+  output=$(bash "$KAIZEN_UNREGISTER" show "$TEST_KNOWLEDGE_DIR" "orphan") || ok=1
+  assert_output_contains "$output" "status=ok" || ok=1
+  assert_output_contains "$output" "details_file=exists" || ok=1
+
+  output=$(bash "$KAIZEN_UNREGISTER" execute "$TEST_KNOWLEDGE_DIR" "orphan") || ok=1
+  assert_output_contains "$output" "status=ok" || ok=1
+  assert_output_contains "$output" "index_removed=no" "there was no row to remove" || ok=1
+  assert_output_contains "$output" "details_removed=yes" || ok=1
+  assert_output_contains "$output" "learnings_removed=yes" || ok=1
+  assert_file_not_exists "$TEST_KNOWLEDGE_DIR/projects/details/orphan.md" || ok=1
+  assert_file_contains "$TEST_KNOWLEDGE_DIR/projects/INDEX.md" "proj-a" "the other rows stay" || ok=1
+  assert_file_contains "$TEST_KNOWLEDGE_DIR/projects/INDEX.md" "proj-b" "the other rows stay" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 18: nothing is removed when the table cannot be rebuilt ---
+
+test_execute_unreadable_table() {
+  local test_name="execute: a table that cannot be rebuilt is an error before anything is removed"
+  setup_test_env "$test_name"
+  local ok=0
+
+  create_test_registry "$TEST_KNOWLEDGE_DIR"
+  # The header row is gone; the data rows are still there.
+  grep -v '^| ID ' "$TEST_KNOWLEDGE_DIR/projects/INDEX.md" > "$TEST_KNOWLEDGE_DIR/projects/INDEX.tmp"
+  mv "$TEST_KNOWLEDGE_DIR/projects/INDEX.tmp" "$TEST_KNOWLEDGE_DIR/projects/INDEX.md"
+  cp "$TEST_KNOWLEDGE_DIR/projects/INDEX.md" "$TEST_HOME/index.before"
+
+  local output exit_code=0
+  output=$(bash "$KAIZEN_UNREGISTER" execute "$TEST_KNOWLEDGE_DIR" "proj-a" 2>&1) || exit_code=$?
+  if [ "$exit_code" -ne 1 ]; then
+    echo "  FAIL: exit code should be 1, got $exit_code"
+    ok=1
+  fi
+  assert_output_contains "$output" "status=error" || ok=1
+  assert_output_contains "$output" "table header not found" || ok=1
+  assert_output_contains "$output" "nothing was removed" || ok=1
+  assert_file_exists "$TEST_KNOWLEDGE_DIR/projects/details/proj-a.md" "the details mirror is still there" || ok=1
+  assert_file_exists "$TEST_KNOWLEDGE_DIR/projects/learnings/proj-a.md" "the learnings mirror is still there" || ok=1
+  if ! cmp -s "$TEST_HOME/index.before" "$TEST_KNOWLEDGE_DIR/projects/INDEX.md"; then
+    echo "  FAIL: INDEX.md should be unchanged"
+    ok=1
+  fi
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run all tests ---
 
 echo "=== kaizen-unregister.sh tests ==="
@@ -460,5 +578,8 @@ test_execute_preserves_others
 test_execute_preserves_header
 test_invalid_subcommand
 test_no_subcommand
+test_execute_regenerates_index
+test_mirror_without_row
+test_execute_unreadable_table
 
 print_results
