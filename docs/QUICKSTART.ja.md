@@ -75,6 +75,8 @@ source ~/.bashrc   # または: source ~/.zshrc
 >
 > **プロジェクトのリンクが古いことに気づくには？** `/kaizen-suggest-next` と `/kaizen-audit-knowledge` が最初にリンクを確認し、欠落・宙吊りの項目と同期コマンドを表示します。手動で確認する場合は `kaizen-init.sh check-links` を実行してください（終了コード `0` = 同期済み、`1` = 差分あり）。
 
+> **更新後に `/kaizen-reflect-learning` が見つからない。** 単一のコマンドファイルから、スキルディレクトリへ移りました。2 つのサブエージェントが、メインのフローを読まずに判定基準だけを読めるようにするためです。移行前にリンクしたプロジェクトには旧ファイルへのリンクが残っていて、その先はもうありません。各プロジェクトで上の `sync-links` を実行し、新しいセッションを開始してください。古いリンクを外し、新しいリンクを追加します。実行の仕方は変わりません（`/kaizen-reflect-learning`）。コマンドを自分のコピーに差し替えていた場合（`.claude/commands/kaizen-reflect-learning.md` がリンクでなくファイル）、`sync-links` はそのコピーを残しますが、実行されるのはコピーではなくなります。Claude Code は、同名のコマンドよりスキルを優先するためです。変更した内容はスキルディレクトリ（`.claude/skills/kaizen-reflect-learning/`）のコピーへ移し、古いファイルは削除してください。
+
 > **新しい `knowledge/projects/learnings/` ディレクトリはどうなる？** アップグレード後、各登録プロジェクトで `/kaizen-update-docs` を初回実行した時に自動生成されます。手動操作は不要 — 既存の `docs/LEARNINGS.md` は次回以降の `/kaizen-audit-knowledge` クロスプロジェクトパスへの入力になります。
 
 > **`knowledge/projects/INDEX.md` の一覧表はどうなる？** 行ごとに編集する方式をやめ、`knowledge/projects/details/*.md`（各プロジェクトの `docs/PROJECT_SUMMARY.md` のコピー）の frontmatter から生成する方式になりました。アップグレード後に最初に実行した `/kaizen-update-docs` が、表を作り直します。行は作成日の順に並びます。details ファイルの無いプロジェクトの行は、そのまま残してその旨を報告します。表の前後の文章には触れません。以後、行を変えたいときは、そのプロジェクトの `docs/PROJECT_SUMMARY.md` を編集し、そのプロジェクトで `/kaizen-update-docs` を実行してください。表を直接直しても上書きされます。
