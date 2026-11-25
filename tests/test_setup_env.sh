@@ -90,9 +90,11 @@ test_symlink_warnings() {
   assert_file_contains "$KAIZEN_CLI_DIR/framework/.claude/commands/kaizen-suggest-next.md" \
     "Glob ツールはシンボリンク先を辿れない" \
     "kaizen-suggest-next.md should contain symlink warning" || ok=1
-  assert_file_contains "$KAIZEN_CLI_DIR/framework/.claude/commands/kaizen-reflect-learning.md" \
+  # reflect-learning is a skill directory; its search rules live in CRITERIA.md,
+  # the file the reflector and the verifier read.
+  assert_file_contains "$KAIZEN_CLI_DIR/framework/.claude/skills/kaizen-reflect-learning/CRITERIA.md" \
     "Glob ツールはシンボリンク先を辿れない" \
-    "kaizen-reflect-learning.md should contain symlink warning" || ok=1
+    "kaizen-reflect-learning/CRITERIA.md should contain symlink warning" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
