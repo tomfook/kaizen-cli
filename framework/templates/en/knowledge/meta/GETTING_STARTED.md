@@ -119,6 +119,11 @@ Accumulated knowledge improves the quality of subsequent suggestions, accelerati
 |---------|---------|-------------|
 | `/kaizen-suggest-next` | Suggest next steps | After task completion |
 | `/kaizen-update-docs` | Update project documents and sync to registry | After work, or when documentation needs updating |
+
+### Skills (Used Within Projects — run as `/name`)
+
+| Skill | Purpose | When to Use |
+|-------|---------|-------------|
 | `/kaizen-reflect-learning` | Record learnings to knowledge files | At session end |
 
 ---
