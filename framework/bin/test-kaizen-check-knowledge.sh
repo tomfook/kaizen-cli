@@ -118,8 +118,10 @@ for b in $needed; do
     ln -s "$bp" "$DEGRADE_BIN/$b"
 done
 if [ "$degrade_ready" -eq 1 ]; then
-    # Invoke via the shebang (/bin/bash) so PATH need not contain bash itself.
-    DEG_OUT="$(PATH="$DEGRADE_BIN" KAIZEN_KNOWLEDGE_DIR="$FIX" "$CHECK_SCRIPT" 2>&1 || true)"
+    # Resolve bash before narrowing PATH and start the script with it: the
+    # shebang (/bin/bash) does not exist everywhere, and PATH need not contain bash.
+    DEG_BASH="$(command -v bash)"
+    DEG_OUT="$(PATH="$DEGRADE_BIN" KAIZEN_KNOWLEDGE_DIR="$FIX" "$DEG_BASH" "$CHECK_SCRIPT" 2>&1 || true)"
     assert_contains "python3 not found" "$DEG_OUT" "graceful degradation when python3 absent"
 else
     echo "SKIP: could not build a python3-less PATH — degradation test skipped"

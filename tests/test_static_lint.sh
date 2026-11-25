@@ -290,6 +290,54 @@ Costs \$1.00 per run. See also $ARGUMENTS, $HOME and ${CLAUDE_SKILL_DIR}.
 EOF
 }
 
+# --- Sweeping-commit mutations ---
+
+mut_sweep_add_all() {
+  cat >> "$FX/.claude/commands/kaizen-cmd.md" <<'EOF'
+
+```bash
+git -C "$KAIZEN_KNOWLEDGE_DIR" add -A
+```
+EOF
+}
+
+mut_sweep_add_dot_supporting_file() {
+  # Supporting files of a skill are read by the model too.
+  cat > "$FX/.claude/skills/kaizen-alpha/GUIDE.md" <<'EOF'
+# Guide
+
+```bash
+cd knowledge && git add .
+```
+EOF
+}
+
+mut_sweep_bare_commit() {
+  cat >> "$FX/.claude/commands/kaizen-cmd.md" <<'EOF'
+
+```bash
+git -C "$KAIZEN_KNOWLEDGE_DIR" commit \
+  -m "kaizen: everything in the index"
+```
+EOF
+}
+
+mut_sweep_allowed() {
+  cat >> "$FX/.claude/commands/kaizen-cmd.md" <<'EOF'
+
+Do not use `git add -A` or `git -C "$KAIZEN_KNOWLEDGE_DIR" commit -m x` here.
+
+```bash
+# NG: git add -A
+git -C knowledge rm some-topic/OLD.md
+git -C knowledge commit -m "kaizen: named" -- some-topic/OLD.md
+git add src/app.py
+git commit -m "feat: project commit"
+echo "add -A is only text here"
+```
+EOF
+}
+
 # --- Distribution-convention mutations ---
 
 mut_prefix_skill() {
@@ -437,6 +485,15 @@ run_case "positional-var: doubled backslash does not escape" \
   mut_positional_double_backslash expect_only positional-var "commands/kaizen-cmd.md:"
 run_case "positional-var: \\\$1 escape, \$ARGUMENTS and \${VAR} are allowed" \
   mut_positional_escaped expect_clean
+
+run_case "sweeping-commit: git add -A in a code fence" \
+  mut_sweep_add_all expect_only sweeping-commit "commands/kaizen-cmd.md:"
+run_case "sweeping-commit: git add . in a skill's supporting file" \
+  mut_sweep_add_dot_supporting_file expect_only sweeping-commit "skills/kaizen-alpha/GUIDE.md:4"
+run_case "sweeping-commit: git -C commit without paths, across a continued line" \
+  mut_sweep_bare_commit expect_only sweeping-commit "commands/kaizen-cmd.md:"
+run_case "sweeping-commit: prose, comments, named paths and project commits are allowed" \
+  mut_sweep_allowed expect_clean
 
 run_case "prefix: skill without kaizen-" \
   mut_prefix_skill expect_only prefix "skills/my-skill"

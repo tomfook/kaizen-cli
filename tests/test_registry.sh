@@ -435,13 +435,13 @@ EOF
   has "removed_ids=legacy" || ok=1
   has "kept_without_details=1" || ok=1
   if grep -q '^| legacy ' "$R/projects/INDEX.md"; then echo "  FAIL: --drop should remove the row"; ok=1; fi
-  assert_file_contains "$R/projects/INDEX.md" "^| plain " "the other carried row stays" || ok=1
+  assert_file_matches "$R/projects/INDEX.md" "^| plain " "the other carried row stays" || ok=1
 
   # --drop cannot remove a project whose details file is still there
   run_reg sync-index "$R" --drop in-sync
   assert_rc 0 || ok=1
   has "warning: --drop in-sync ignored: details/in-sync.md still declares that id" || ok=1
-  assert_file_contains "$R/projects/INDEX.md" "^| in-sync " || ok=1
+  assert_file_matches "$R/projects/INDEX.md" "^| in-sync " || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env

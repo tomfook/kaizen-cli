@@ -84,7 +84,8 @@ test_force_removes_legacy_commands() {
   printf '%s\n' "$TEST_KNOWLEDGE_DIR" "" "" | \
     HOME="$TEST_HOME" SHELL=/bin/bash bash "$KAIZEN_CLI_DIR/setup.sh" > /dev/null 2>&1 || true
 
-  # Simulate legacy global commands
+  # Simulate legacy global commands. The second one has since become a skill
+  # directory, so a legacy link to it dangles — it must be removed all the same.
   mkdir -p "$TEST_HOME/.claude/commands"
   ln -s "$KAIZEN_CLI_DIR/framework/.claude/commands/kaizen-suggest-next.md" \
     "$TEST_HOME/.claude/commands/kaizen-suggest-next.md"

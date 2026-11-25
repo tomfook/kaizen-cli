@@ -87,7 +87,8 @@ kaizen-cli/
 │   │   └── ja/              # Japanese templates
 │   └── .claude/
 │       ├── commands/        # Workflow slash commands
-│       └── skills/          # Auto-invoked skill definitions
+│       ├── skills/          # Skills (auto-invoked guardrails, multi-file workflows)
+│       └── agents/          # Subagents the workflows delegate to
 │
 └── examples/                # Domain-specific examples
     ├── data-analysis/       # Data analysis workflow

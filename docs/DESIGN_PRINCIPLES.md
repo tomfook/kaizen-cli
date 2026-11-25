@@ -39,6 +39,7 @@ This separation ensures:
   - `$KAIZEN_KNOWLEDGE_DIR`: User's shared knowledge directory. Referenced at runtime via symlinks from each project
 - `setup.sh --force` only updates env vars and symlinks — never overwrites knowledge files, preserving accumulated user data
 - `kaizen-init-project` is installed as a global skill (`~/.claude/skills/`) by setup.sh, because it must be available before any project is initialized. All other kaizen commands are project-local, created by `kaizen-init-project`
+- A workflow step is a single file under `commands/` until it needs a second file that only some readers should read; then it becomes a directory under `skills/` (`/kaizen-reflect-learning` is one: `SKILL.md` for the main agent, `CRITERIA.md` for its subagents). Either way it is run as `/kaizen-<name>`
 
 ### Cross-Project Sharing via Symlinks
 
@@ -104,22 +105,29 @@ When an LLM verifies its own judgment in the same context, confirmation bias pre
 The solution is **context separation**: delegate verification to a separate subagent that receives only facts and verdicts, not the original reasoning process.
 
 ```
-[Reflector Agent]              [Verifier Agent]
-  Analyzes session               Receives ONLY:
-  Applies criteria               - Facts (what happened)
-  Produces proposals             - Verdicts (pass/fail, no reasons)
-  Returns reasoning              Does NOT receive:
-         │                       - Reflector's reasoning
-         │                       - Rejection rationales
-         ▼
-  Main agent strips
-  reasoning before
-  passing to verifier
+[Main agent]  writes the fact payload from the conversation
+      │        (subagents cannot see the conversation)
+      │
+      ├── payload, verbatim ──────────────────────┐
+      ▼                                           ▼
+[Reflector Agent]                          [Verifier Agent]
+  Reads CRITERIA.md                          Reads CRITERIA.md
+  Applies the criteria                       Receives ONLY:
+  Returns proposals,                         - The payload, as the main
+  verdicts, and reasons                        agent wrote it
+      │                                      - Verdicts (pass/fail, no reasons)
+      ▼                                      Does NOT receive:
+[Main agent]  keeps the reasons,             - Reflector's reasoning
+  passes the verdicts on ─────────────────▶  - Rejection rationales
+                                             - A summary of the facts
+                                               in the reflector's words
 ```
 
 - **reflect-learning** uses this pattern: `kaizen-learning-reflector` (analysis) + `kaizen-learning-verifier` (independent re-judgment)
 - The verifier runs on a different model (`model: sonnet`) to provide model diversity for Opus users while keeping costs lower
 - The main agent is responsible for **information separation** — stripping the reflector's reasoning before passing to the verifier
+- **The facts do not pass through the reflector.** Both subagents get the payload the main agent wrote. If the verifier were given the reflector's summary instead, a fact the reflector dropped would be invisible to the verifier too, and the two would share the same blind spot. A fact found after the reflector was started is appended to the payload; the original text is not rewritten
+- **The subagents read the criteria, not the flow.** The skill is two files: `SKILL.md` holds the main agent's steps and its table for routing a disputed finding, and `CRITERIA.md` holds what the judgment is made on (the generalization test, the extraction categories, where and how to write). Both subagents read `CRITERIA.md` only. A verifier that reads how the main agent will route a disagreement tends to judge toward that routing, which is not an independent verdict
 - When reflector and verifier disagree, both views are presented to the user for final judgment
 
 ---

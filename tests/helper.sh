@@ -5,7 +5,8 @@
 #
 # Provides:
 #   - setup_test_env / teardown_test_env
-#   - assert_file_exists / assert_file_contains / assert_file_not_exists
+#   - assert_file_exists / assert_file_not_exists
+#   - assert_file_contains (fixed string) / assert_file_matches (regex)
 #   - assert_output_contains / assert_output_not_contains
 #   - record_result / print_results
 #   - SCRIPT_DIR, KAIZEN_CLI_DIR, PASS, FAIL, ERRORS
@@ -59,11 +60,29 @@ assert_file_exists() {
   fi
 }
 
+# assert_file_contains <file> <fixed string> [message]
+# Fixed-string match: the strings checked are mostly Markdown and paths, where
+# `*`, `.`, `[` are literal. Read as a regular expression, `**bold**` matches
+# text without the emphasis, and the assertion passes when it should not.
 assert_file_contains() {
   local file="$1"
   local pattern="$2"
   local msg="${3:-File $file should contain '$pattern'}"
-  if grep -q "$pattern" "$file" 2>/dev/null; then
+  if grep -qF -- "$pattern" "$file" 2>/dev/null; then
+    return 0
+  else
+    echo "  FAIL: $msg"
+    return 1
+  fi
+}
+
+# assert_file_matches <file> <basic regular expression> [message]
+# For the cases that need an anchor or a wildcard (e.g. "^name:").
+assert_file_matches() {
+  local file="$1"
+  local pattern="$2"
+  local msg="${3:-File $file should match '$pattern'}"
+  if grep -q -- "$pattern" "$file" 2>/dev/null; then
     return 0
   else
     echo "  FAIL: $msg"
