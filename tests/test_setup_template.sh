@@ -196,16 +196,16 @@ test_agent_frontmatter() {
   for agent_file in "$agents_dir"/kaizen-*.md; do
     local basename
     basename=$(basename "$agent_file")
-    assert_file_contains "$agent_file" "^name:" \
+    assert_file_matches "$agent_file" "^name:" \
       "$basename should have name field" || ok=1
-    assert_file_contains "$agent_file" "^description:" \
+    assert_file_matches "$agent_file" "^description:" \
       "$basename should have description field" || ok=1
-    assert_file_contains "$agent_file" "^tools:" \
+    assert_file_matches "$agent_file" "^tools:" \
       "$basename should have tools field" || ok=1
   done
 
   # Verifier should specify model: sonnet
-  assert_file_contains "$agents_dir/kaizen-learning-verifier.md" "^model: sonnet" \
+  assert_file_matches "$agents_dir/kaizen-learning-verifier.md" "^model: sonnet" \
     "verifier should specify model: sonnet" || ok=1
 
   record_result "$test_name" "$ok"

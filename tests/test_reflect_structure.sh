@@ -26,23 +26,6 @@ CRITERIA_PATH=".claude/skills/kaizen-reflect-learning/CRITERIA.md"
 
 # --- Helpers ---
 
-# assert_file_has <file> <fixed string> [message]
-# The shared assert_file_contains matches a regular expression; the strings
-# checked here carry Markdown emphasis (`**`), which a regex reads as repetition
-# and matches too loosely.
-assert_file_has() {
-  local file="$1" pattern="$2"
-  local msg="${3:-$(basename "$file") should contain '$pattern'}"
-  if [ ! -f "$file" ]; then
-    echo "  FAIL: file does not exist: $file"
-    return 1
-  fi
-  if ! grep -qF -- "$pattern" "$file"; then
-    echo "  FAIL: $msg"
-    return 1
-  fi
-}
-
 # assert_file_lacks <file> <fixed string> [message]
 assert_file_lacks() {
   local file="$1" pattern="$2"
@@ -113,13 +96,13 @@ test_agents_read_criteria_only() {
   local ok=0 agent paths
 
   for agent in "$REFLECTOR" "$VERIFIER"; do
-    assert_file_has "$agent" "$CRITERIA_PATH" \
+    assert_file_contains "$agent" "$CRITERIA_PATH" \
       "$(basename "$agent") should name the criteria file" || ok=1
     assert_file_lacks "$agent" ".claude/commands/kaizen-reflect-learning" || ok=1
     assert_file_lacks "$agent" "コマンドファイル" || ok=1
-    assert_file_has "$agent" '`SKILL.md` は読まない' \
+    assert_file_contains "$agent" '`SKILL.md` は読まない' \
       "$(basename "$agent") should say that the main flow is not read" || ok=1
-    assert_file_has "$agent" "CRITERIA.md を読めない場合は判定しない" \
+    assert_file_contains "$agent" "CRITERIA.md を読めない場合は判定しない" \
       "$(basename "$agent") should stop when the criteria cannot be read" || ok=1
 
     # The only file of the skill directory that an agent names by path is CRITERIA.md.
@@ -143,14 +126,14 @@ test_reflector_payload() {
   local ok=0
 
   assert_file_lacks "$REFLECTOR" "会話履歴のスキャン" || ok=1
-  assert_file_has "$REFLECTOR" "### 2. 事実ペイロードのスキャン" || ok=1
-  assert_file_has "$REFLECTOR" "ペイロード欠落の検知" || ok=1
-  assert_file_has "$REFLECTOR" "ペイロードの欠落項目:" \
+  assert_file_contains "$REFLECTOR" "### 2. 事実ペイロードのスキャン" || ok=1
+  assert_file_contains "$REFLECTOR" "ペイロード欠落の検知" || ok=1
+  assert_file_contains "$REFLECTOR" "ペイロードの欠落項目:" \
     "the hand-over should have a slot for missing payload items" || ok=1
   # The old return format carried a "facts" section that the main agent relayed.
   assert_file_lacks "$REFLECTOR" "### 事実情報" || ok=1
   assert_file_lacks "$REFLECTOR" "kaizen-learning-verifier入力用" || ok=1
-  assert_file_has "$REFLECTOR" "ペイロードの再要約は返さない" || ok=1
+  assert_file_contains "$REFLECTOR" "ペイロードの再要約は返さない" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -163,16 +146,16 @@ test_verifier_input() {
   setup_test_env "$test_name"
   local ok=0
 
-  assert_file_has "$VERIFIER" "**事実ペイロードの原文**" || ok=1
-  assert_file_has "$VERIFIER" "reflector による再要約ではない" || ok=1
+  assert_file_contains "$VERIFIER" "**事実ペイロードの原文**" || ok=1
+  assert_file_contains "$VERIFIER" "reflector による再要約ではない" || ok=1
   assert_file_lacks "$VERIFIER" "reflectorが収集したもの" || ok=1
   assert_file_lacks "$VERIFIER" "から抽出）" \
     "the verifier should read the criteria itself, not receive an excerpt" || ok=1
 
   # The flow must hand over the same thing the verifier expects.
-  assert_file_has "$SKILL_MD" "事実ペイロードの**原文**" || ok=1
-  assert_file_has "$SKILL_MD" "spawn 後に判明した事実" || ok=1
-  assert_file_has "$VERIFIER" "spawn 後に判明した事実" || ok=1
+  assert_file_contains "$SKILL_MD" "事実ペイロードの**原文**" || ok=1
+  assert_file_contains "$SKILL_MD" "spawn 後に判明した事実" || ok=1
+  assert_file_contains "$VERIFIER" "spawn 後に判明した事実" || ok=1
   # ... and must not go back to relaying the reflector's wording.
   assert_file_lacks "$SKILL_MD" "「事実情報」セクション" || ok=1
 
@@ -197,13 +180,13 @@ test_criteria_flow_split() {
   assert_file_lacks "$CRITERIA_MD" "代替先推奨マトリクス" || ok=1
   assert_file_lacks "$CRITERIA_MD" "### Step" || ok=1
   assert_file_lacks "$CRITERIA_MD" "kaizen-knowledge-commit.sh" || ok=1
-  assert_file_has "$SKILL_MD" "#### 代替先推奨マトリクス" || ok=1
-  assert_file_has "$SKILL_MD" "### Step 9:" || ok=1
+  assert_file_contains "$SKILL_MD" "#### 代替先推奨マトリクス" || ok=1
+  assert_file_contains "$SKILL_MD" "### Step 9:" || ok=1
 
   # The payload spec is the contract between the three files.
-  assert_file_has "$SKILL_MD" "#### 必須ペイロード（5項目）" || ok=1
-  assert_file_has "$REFLECTOR" "必須5項目" || ok=1
-  assert_file_has "$VERIFIER" "必須5項目" || ok=1
+  assert_file_contains "$SKILL_MD" "#### 必須ペイロード（5項目）" || ok=1
+  assert_file_contains "$REFLECTOR" "必須5項目" || ok=1
+  assert_file_contains "$VERIFIER" "必須5項目" || ok=1
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -293,7 +276,7 @@ test_migration_from_command() {
     ok=1
   fi
   # The path the agents read must resolve from inside the project.
-  assert_file_has "$project/$CRITERIA_PATH" "## 一般化テスト" \
+  assert_file_contains "$project/$CRITERIA_PATH" "## 一般化テスト" \
     "CRITERIA.md should be readable through the project link" || ok=1
   assert_file_exists "$project/.claude/skills/kaizen-reflect-learning/SKILL.md" || ok=1
 
