@@ -237,7 +237,8 @@ walk() {
   fi
 }
 
-# is_text <file> — no NUL byte. (`grep -I` is not available everywhere.)
+# is_text <file> — no NUL byte. (`grep -I` does not do this everywhere: BusyBox
+# 1.35 accepts the option and still reports a file that contains NUL.)
 is_text() {
   local all text
   all=$(wc -c < "$1" 2>/dev/null) || return 1

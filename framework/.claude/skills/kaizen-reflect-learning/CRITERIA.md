@@ -123,6 +123,7 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <識別語> [<�
 
 - 走査するのは、`knowledge/` の実体（`projects/` を除く）と、配布物の skills / commands / agents。照合は固定文字列で行う（正規表現ではない）
 - 識別語は、コマンド名・API 名・エラー文言・概念名から 2〜3 個選ぶ。**装飾記号や助詞をまたがない最短の語**にする
+- `-` で始まる語（`--commit`、`-exec` など）は、`--` の後ろに置く: `… kaizen-search-knowledge.sh -- "--commit" "gh run"`。`--` が無いとオプションとして読まれ、`status=error`（終了コード 3）で検索されない
 - ヒットしたファイルは Read ツールで読む（knowledge/ はシンボリックリンクであり、Glob ツールはシンボリンク先を辿れない）
 
 出力の読み方:
