@@ -69,6 +69,7 @@ Project A                       Project B                      Project C
 **Caveats**:
 - Run `git rm` in the actual directory (`git -C knowledge rm <path>`), not through symlinks
 - **Commits name their files**: the knowledge repository is shared by every project and every session, so a commit there must not take along what another session left unfinished. The commands commit through `kaizen-knowledge-commit.sh`, which stages and commits only the paths it is given, lists the other uncommitted changes without touching them, and checks the references in the lines being committed. `git add -A` and a commit without paths are not used in the knowledge repository
+- **One way to ask "is it already written?"**: a search of `knowledge/` returns nothing when it does not follow the symlink, when it looks at `knowledge/` alone, and when the search itself fails. All three look the same as "not written", and the learning is then added a second time. Every step that asks the question (reflect, update-docs, suggest-next, the learning audit) calls `kaizen-search-knowledge.sh`. It walks the real paths of the knowledge directory (without the registry mirror `projects/`) and of the framework's skills, commands, and agents, names what it could not scan, and exits non-zero when the search did not run. Zero hits is still not proof of absence; the other causes are listed in the reflect criteria (`CRITERIA.md`)
 - Do not create backup files inside knowledge/ (it affects all projects in the same registry)
 
 ### Separation of Project-Specific and Cross-Project Knowledge

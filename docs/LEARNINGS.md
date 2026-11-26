@@ -57,6 +57,7 @@ kaizen-cli リポジトリは自身のコマンドをドッグフーディング
 - **制約**: `set -u` 下の空配列の展開（bash 3.2 でエラー → 改行区切りの文字列で持つ）、`grep -P`、gawk 拡張（`gensub`・`\<`）、`readlink -f`、`sed -i` の引数形式を避ける。`wc -l` の出力は先頭に空白が付く
 - **CI で実際に落ちた 2 件** (2026-11-24): (1) BSD awk は、読み手がパイプを閉じる（`… | head -1`）と SIGPIPE で終わらず、書き込みエラーを出して終了コード 2 を返す。awk の非ゼロ終了をそのまま失敗扱いにしない (2) bash 3.2 は `$( … )` の中に書いた `case` 文を解釈できない（構文エラー）。関数に出して、`$( )` の中は関数呼び出しだけにする
 - **awk の正規表現**: グループ内の `$`（`(x|$)` の形）は処理系で扱いが分かれうるので使わない。`a ~ /…x/ || a ~ /…$/` のように条件を 2 つに分ける
+- **grep とロケール** (2026-11-27): (1) `grep -I` / `-a` は busybox に無い。バイナリの除外は NUL バイトの有無で自分で判定する（`tr -d '\000' < f | wc -c` とファイルサイズの比較） (2) `grep -r` が symlink を辿るかは実装で違う。再帰は `find … -exec grep … {} +` で書く (3) 文字数での切り詰めは、awk の `substr`・`cut -c`・bash の `${s:0:N}` のどれも、ロケールと実装で文字単位かバイト単位かが変わる。`LC_ALL=C` でバイトとして切り、切れ目が UTF-8 の継続バイト（128〜191）なら位置を戻す（実装: `framework/bin/kaizen-search-knowledge.sh` の `clip`）
 - **手元での代替検査**: awk を mawk に、awk・grep・sed・find などを busybox 版に差し替えた PATH でテストを流すと、GNU 依存の一部を push 前に拾える（BSD 版そのものの検証にはならない）
 - **bash 3.2 の手元検査** (2026-11-24): Docker の `bash:3.2` イメージで全テストを回せる（`docker run --rm -v "$PWD":"$PWD":ro -w "$PWD" bash:3.2 sh -c 'apk add --no-cache git python3 >/dev/null; bash tests/run_all.sh'`。リポジトリは同じ絶対パスにマウントする＝`.claude/` の symlink が絶対パスのため）。ツール類は busybox なので BSD 版の検証にはならない。このコンテナには `/bin/bash` が無い（bash は `/usr/local/bin/bash`）。PATH を絞って子スクリプトを起動するテストは、シバンに頼らず、先に `command -v bash` で解決した bash で起動する
 
