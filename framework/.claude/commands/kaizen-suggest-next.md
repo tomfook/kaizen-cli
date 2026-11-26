@@ -70,19 +70,21 @@ bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-init.sh" check-links
 
 ### Step 2.5: 既存規約との整合性チェック（必須）
 
-新規ルール / 規約 / 運用パターンを提案する候補が出た場合、提案前に必ず関連スキル / knowledge / 既決事項を grep して整合させる。
+新規ルール / 規約 / 運用パターンを提案する候補が出た場合、提案前に必ず関連スキル / knowledge / 既決事項を検索して整合させる。
 
-**スコープ**: 本チェックは **codify-track（Step 3.1 A. 発展的なアクション）限定**。投機的アイデア（3.1 B）は却下前提で永続化しないため grep 免除し、ユーザーが昇格させた時点で初めて本チェックに乗せる。
+**スコープ**: 本チェックは **codify-track（Step 3.1 A. 発展的なアクション）限定**。投機的アイデア（3.1 B）は却下前提で永続化しないため検索を免除し、ユーザーが昇格させた時点で初めて本チェックに乗せる。
 
 #### 手順
 
 1. 提案候補のトピックからキーワード抽出（例:「INDEX の逆引き登録」→ `["INDEX", "逆引き"]`）
 2. 関連スキル / knowledge / 既決事項を検索:
    ```bash
-   grep -rln "<keyword>" .claude/skills/ docs/ 2>/dev/null
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" --also docs --also .claude/skills <keyword> [<keyword>...]
    ```
-   `knowledge/` はシンボリンクのため bash の `grep -r` は黙って取りこぼす。**Grep ツール**で `knowledge/` を別途検索すること。
-3. hit したファイルの該当節を読み、既存規約・過去の判断を確認
+   - 1 回で、`knowledge/` の実体（`projects/` を除く）、配布物の skills / commands / agents、プロジェクトの `docs/`、プロジェクト独自のスキル（`.claude/skills/` 配下のうち、リンクではない実ファイル）を走査する。自分で `grep -r` を組まない（`knowledge/` は symlink で、エラーなしに 0 件を返すことがある）
+   - **0 件は「既存規約なし」を意味しない**。表記を変えた語でも試す（0 件になる原因の一覧: `.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`）
+   - `status=partial`（終了コード 1）は、走査できなかった場所がある。`not-scanned:` の行が、このプロジェクトに元から無いもの（`knowledge/` など）だけなら続行する。`status=error` は検索が実行されていないので、0 件と読まない
+3. `[H]` のヒット行に付く節（`§`）を読み、既存規約・過去の判断を確認
 4. 結果に応じた処理:
 
    | 結果 | 処理 |

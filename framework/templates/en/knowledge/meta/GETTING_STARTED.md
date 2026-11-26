@@ -29,6 +29,7 @@ project-root/
 - During normal work: Read-only (reference only)
 - When you discover cross-project insights: Edit with explicit intent
 - Never add project-specific information (generalize first)
+- Before adding something, check that it is not already written: from the project root, `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <term> [<term>...]` (it walks the real knowledge directory and the framework's skills, commands, and agents; `grep -r knowledge/` can return nothing without following the symlink). Zero hits does not mean "not written" — try other wordings too
 - Never edit `knowledge/projects/` by hand: it is generated from each project's `docs/` (see "Project Registry" below)
 - Commit only the files you changed: `kaizen-knowledge-commit.sh -m "<message>" -- knowledge/<file> ...` (the Kaizen commands do this for you). Do not run `git add -A` in the knowledge repository — it is shared with other projects and sessions, and their unfinished edits would go into your commit
 

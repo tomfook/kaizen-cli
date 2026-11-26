@@ -29,6 +29,7 @@ project-root/
 - 通常作業中: 読み取り専用（参照のみ）
 - プロジェクト横断で有用な知識を発見した場合: 明示的な意図を持って編集
 - プロジェクト固有情報は絶対に追加しない（まず一般化）
+- 追記する前に、既に書かれていないかを確かめる: プロジェクトルートで `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <語> [<語>...]`（knowledge の実体と、配布物の skills / commands / agents を走査する。`grep -r knowledge/` は、symlink の先を辿らずに 0 件を返すことがある）。0 件でも「書かれていない」とは限らない — 表記を変えた語でも試す
 - `knowledge/projects/` は手で編集しない: 各プロジェクトの `docs/` から生成される（下の「プロジェクトレジストリ」を参照）
 - コミットは、自分が変更したファイルだけを渡して行う: `kaizen-knowledge-commit.sh -m "<メッセージ>" -- knowledge/<ファイル> ...`（Kaizen コマンドは自動でこれを行う）。knowledge のリポジトリで `git add -A` を使わない — 他のプロジェクト・セッションと共有しているため、編集途中の他人の変更まで自分のコミットに入る
 
