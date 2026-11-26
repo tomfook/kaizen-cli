@@ -69,8 +69,8 @@ knowledge/ はシンボリックリンクのため、ファイルアクセスに
 カバー済みでない各エントリについて:
 
 1. エントリから特徴的なキーワードを 2-3 個抽出
-2. `grep -rn "<キーワード>" "$(readlink -f knowledge)" --exclude-dir=projects` で検索（`projects/` 配下は自己参照になるため除外）
-3. ヒットした場合、該当セクションを読んで内容がカバーされているか判定
+2. `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <キーワード>...` で検索（knowledge/ の実体を走査する。`projects/` 配下は自己参照になるため走査されない。配布物の skills / commands / agents のヒットも出る）
+3. ヒットした場合、`[H]` の行に付く節（`§`）を読んで内容がカバーされているか判定。**0 件は「未カバー」を意味しない** — 表記を変えた語でも試す（0 件になる原因の一覧: `.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`）。`status=partial` / `status=error` の出力は判定の根拠にしない
 4. 分類:
    - **カバー済み**: knowledge/ に同等の知見が存在
    - **部分カバー**: 関連セクションはあるがこの具体例は未記載

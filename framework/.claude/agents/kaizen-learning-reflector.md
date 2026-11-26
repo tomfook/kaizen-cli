@@ -76,10 +76,10 @@ kaizen-reflect-learning の判定基準 CRITERIA.md を読み、「抽出カテ�
 通過した知見について、`.claude/skills/kaizen-reflect-learning/CRITERIA.md § ファイル反映のルール` に従い反映先を決める:
 
 1. 既存のknowledge/ファイルへの追記を優先。新規ファイル作成は最後の手段
-2. knowledge/ はシンボリックリンクの場合がある。Grep ツールで検索し、Read ツールで内容を確認すること（Glob は不可。`.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`）
+2. 既存記述の有無は `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <識別語>...` で確認する（knowledge/ の実体と配布物の skills / commands / agents を 1 回で走査し、ヒット行の所在節と未コミット変更も返す）。識別語は、装飾記号をまたがない最短の語を 2〜3 個。**0 件は不在を意味しない** — 出力の読み方と、0 件になる原因の一覧は `.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`。ヒットしたファイルは Read ツールで該当節を読む（Glob は不可）
 3. 候補ファイルを読み、追記すべきセクションを特定
 4. **既存ドキュメントに記載済みの場合**: 条件3（失敗発生）で通過した知見が既に別ファイルに記載されている場合、「記載済みだから不要」と判断してはならない。「記載済みなのに失敗した＝ドキュメントの配置・粒度が不十分」と判断し、より発見しやすい場所への追加や既存記載の改善を提案すること
-5. **除外**: `knowledge/projects/` 配下は出力先候補にしない（registry 自動同期領域。`projects/details/` は PROJECT_SUMMARY コピー、`projects/learnings/` は LEARNINGS コピーで kaizen-update-docs が管理する）。Grep 結果に該当ヒットがあっても出力先候補から外し、他の knowledge/ 領域から探す
+5. **除外**: `knowledge/projects/` 配下は出力先候補にしない（registry 自動同期領域。`projects/details/` は PROJECT_SUMMARY コピー、`projects/learnings/` は LEARNINGS コピーで kaizen-update-docs が管理する）。上の検索スクリプトはここを走査しない。Grep ツール等でここにヒットしても出力先候補から外し、他の knowledge/ 領域から探す
 
 ### 6. 結果を返却フォーマットで出力
 

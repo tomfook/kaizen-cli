@@ -102,7 +102,7 @@ grep -r "FILENAME.md" knowledge/ .claude/skills/
 サブエージェント（Explore等）や Bash 出力を後段の判断材料（記録・コミット・昇格・分類）に使う場合:
 
 - [ ] 要約だけでなく**本文を自分で Read** してから使ったか？（要約のみだと報告書に明記された情報を見落とす）
-- [ ] サブエージェントの**否定的事実報告**（「knowledge/ に記載が無い」「該当ファイルは存在しない」等）を根拠に記録・コミット・昇格する前に、自分で `grep -rn` / Read して**実体確認**したか？ 否定報告は肯定報告以上に誤りやすい。特に `grep -r knowledge/` は symlink を黙って取りこぼすため `grep -rn "<kw>" "$(readlink -f knowledge)/"` で再確認する（実例: サブエージェントの「未記載」報告を信じたが実在し、誤った昇格をコミットした）。
+- [ ] サブエージェントの**否定的事実報告**（「knowledge/ に記載が無い」「該当ファイルは存在しない」等）を根拠に記録・コミット・昇格する前に、自分で `grep -rn` / Read して**実体確認**したか？ 否定報告は肯定報告以上に誤りやすい。特に `grep -r knowledge/` は symlink を黙って取りこぼすため `bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <kw>...` で再確認する（knowledge/ の実体と、配布物の skills / commands / agents を走査する。0 件になる原因の一覧: `.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`。実例: サブエージェントの「未記載」報告を信じたが実在し、誤った昇格をコミットした）。
 
 ---
 

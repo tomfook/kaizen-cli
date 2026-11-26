@@ -45,7 +45,15 @@
 **新規教訓追加前の knowledge/ 重複チェック（必須）**: 「教訓を `docs/LEARNINGS.md` に追加する」候補が出た場合、追加前に必ず横断 `knowledge/` 既存記述との重複を確認する。外部サービス/ツール仕様起因の制約は `knowledge/` に網羅済みのことが多く、未チェックで docs/ に追加すると後日の棚卸しで削除する後追い作業が発生する。
 
 1. 追加予定の教訓から検索キーワードを2-3個抽出（サービス名・エラー文言・API名・構文要素 等）
-2. `grep -rn "<keyword>" "$(readlink -f knowledge)/"` で重複検出（knowledge/ は symlink のため実体パスで検索）
+2. 次のコマンドで既存記述を探す（knowledge/ の実体と、配布物の skills / commands / agents を走査する。`knowledge/projects/` は対象外）:
+
+   ```bash
+   bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-search-knowledge.sh" <keyword> [<keyword>...]
+   ```
+
+   - `[H]` のヒット行に付く節（`§`）を読んで、重複かどうかを判定する
+   - **`[K]` が 0 件でも「重複なし」とは限らない**（表記揺れ、装飾記号をまたぐ語など）。表記を変えた語でも試す。0 件になる原因の一覧: `.claude/skills/kaizen-reflect-learning/CRITERIA.md § knowledge/ の検索方法`
+   - `status=partial`（終了コード 1）は、走査できなかった場所がある。`not-scanned:` の行を確認する（`knowledge/` の無いプロジェクトでは、この重複チェック自体を省く）。`status=error` は検索が実行されていないので、0 件と読まない
 3. 結果別処理:
 
    | 結果 | 処理 |
