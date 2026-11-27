@@ -103,7 +103,7 @@ Run `/kaizen-reflect-learning` at the end of a session. It analyzes friction enc
 - Records and corrects technical misconceptions
 - Detects knowledge gaps from inefficient information searches
 
-An important rule: **Any information involving failures or retries during a session is unconditionally captured**. You do not need to judge whether something is "worth recording" — the fact that friction occurred is reason enough.
+An important rule: **a record is kept when having it written down will save time or prevent a mistake next time**. A failure, a retry, or a correction from you is a strong signal, but not a reason in itself. If the lesson was already written and simply did not reach the work, writing it again changes nothing — the proposal is to make the existing note reachable instead. Every failure and every correction is either kept or set aside with a stated reason, and an independent verifier re-judges both.
 
 Reflected knowledge becomes instantly available across all your projects through the symlink — and feeds directly into the next cycle's Suggest.
 
