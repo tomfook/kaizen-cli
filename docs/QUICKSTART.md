@@ -254,6 +254,7 @@ With each cycle, knowledge/ grows, and repeated explanations, rework, and known 
 - **Removing a project from the registry**: Run `/kaizen-unregister-project <project-id>` to remove the registry entry. Symlinks and project files are not deleted — clean them up manually if needed
 - **Auditing knowledge quality**: Run `/kaizen-audit-knowledge` periodically. It runs two passes — one trims redundancy / SSOT violations / stale content inside `knowledge/`, the other scans every project's `docs/LEARNINGS.md` for lessons worth promoting to shared `knowledge/`. Both proposals require your approval before anything is modified
 - **Marking promoted lessons**: When a lesson in `docs/LEARNINGS.md` has been moved into `knowledge/`, add a trailing `- **Promoted**: → knowledge/<path>.md § <section>` bullet to the original entry. The cross-project auditor reads this marker and skips the entry on later runs (otherwise the same lesson keeps re-surfacing as a candidate)
+- **Lessons waiting to be promoted**: When `/kaizen-update-docs` finds a lesson that belongs in `knowledge/` and is not there yet, it adds a `- **Promotion candidate**: <why>` bullet to the entry. The next `/kaizen-reflect-learning` receives every such line, so the finding is not lost when reflect runs in a later session. To put a candidate off, append `(deferred until: <condition>)`; a candidate without a condition keeps the inventory open
 
 ---
 

@@ -69,6 +69,8 @@ criteria_headings() {
   cat <<'EOF'
 ## 何を残すか
 ## 抽出カテゴリ（9カテゴリ）
+## 手順から外れた箇所の読み方
+## 昇格候補の扱い
 ## データ主張を含む知見の粒度分離
 ## ファイル反映のルール
 ## knowledge/ の検索方法
@@ -172,7 +174,7 @@ test_verifier_input() {
 test_criteria_flow_split() {
   local test_name="reflect: criteria live in CRITERIA.md, the flow in SKILL.md"
   setup_test_env "$test_name"
-  local ok=0 heading
+  local ok=0 heading f
 
   while IFS= read -r heading; do
     assert_has_heading "$CRITERIA_MD" "$heading" || ok=1
@@ -188,9 +190,12 @@ test_criteria_flow_split() {
   assert_file_contains "$SKILL_MD" "### Step 9:" || ok=1
 
   # The payload spec is the contract between the three files.
-  assert_file_contains "$SKILL_MD" "#### 必須ペイロード（5項目）" || ok=1
-  assert_file_contains "$REFLECTOR" "必須5項目" || ok=1
-  assert_file_contains "$VERIFIER" "必須5項目" || ok=1
+  assert_file_contains "$SKILL_MD" "#### 必須ペイロード（7項目）" || ok=1
+  assert_file_contains "$REFLECTOR" "必須7項目" || ok=1
+  assert_file_contains "$VERIFIER" "必須7項目" || ok=1
+  for f in "$SKILL_MD" "$REFLECTOR" "$VERIFIER"; do
+    assert_file_lacks "$f" "5項目" "$(basename "$f") still counts five payload items" || ok=1
+  done
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -424,6 +429,93 @@ test_claims_and_size() {
   teardown_test_env
 }
 
+# --- Test 11: steps that were not followed, and candidates left by update-docs ---
+
+test_offscript_and_candidates() {
+  local test_name="reflect: the payload carries off-script steps and the candidates update-docs left"
+  setup_test_env "$test_name"
+  local ok=0 f prep kind
+  local UPDATE_DOCS="$DIST/commands/kaizen-update-docs.md"
+  local INV='framework/bin/kaizen-learnings-inventory.sh'
+
+  prep="$(bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-extract-section.sh" "$SKILL_MD" '必須ペイロード（7項目）' 2>/dev/null)" || {
+    echo "  FAIL: SKILL.md should have the payload spec"
+    prep=""
+    ok=1
+  }
+
+  # Item 6: the four kinds, each asked for by name (an item that is not asked for is not reported).
+  assert_output_contains "$prep" '6. **呼び出したスキル・コマンドの手順から外れた箇所の全列挙**' || ok=1
+  for kind in '**(a) 従わなかった項目**' '**(b) 自主的に足した確認**' '**(c) 書き換えた箇所**' '**(d) 回避した箇所**'; do
+    assert_output_contains "$prep" "$kind" || ok=1
+  done
+  assert_output_contains "$prep" '(a)〜(d) のそれぞれに「なし」か件を書く' || ok=1
+  for kind in '| 従わなかった項目 |' '| 自主的に足した確認 |' '| 書き換えた箇所 |' '| 回避した箇所 |'; do
+    assert_file_contains "$CRITERIA_MD" "$kind" || ok=1
+  done
+  assert_output_contains "$prep" "\`$CRITERIA_PATH § 手順から外れた箇所の読み方\`" || ok=1
+
+  # Item 7: read by the script, pasted whole, and "not checked" is not "none".
+  assert_output_contains "$prep" '7. **未消化の昇格候補マーカー**' || ok=1
+  assert_output_contains "$prep" "$INV" || ok=1
+  assert_output_contains "$prep" '**全件、そのまま**' || ok=1
+  assert_output_contains "$prep" '「未確認」と書く（「なし」と書かない）' || ok=1
+  assert_output_contains "$prep" 'エントリの本文も貼る' || ok=1
+  assert_file_lacks "$SKILL_MD" "grep -n '昇格候補'" "the candidates are read by the script, not by a grep recipe" || ok=1
+
+  # Both items reach the verifier as written, and either one keeps the verifier on.
+  assert_file_contains "$SKILL_MD" "項目 6（手順から外れた箇所）と項目 7（昇格候補）が原文に残っていることを確かめる" || ok=1
+  assert_file_contains "$SKILL_MD" "項目 6〜7（手順から外れた箇所／昇格候補マーカー）がすべて「なし」" \
+    "the verifier must not be skipped when item 6 or 7 has content" || ok=1
+  assert_file_contains "$SKILL_MD" "（該当箇所と直し方は渡さない）" || ok=1
+
+  # The agents: both read the two items, account for every open candidate, and open the procedure.
+  for f in "$REFLECTOR" "$VERIFIER"; do
+    assert_file_contains "$f" "⑥ 呼び出したスキル・コマンドの手順から外れた箇所" || ok=1
+    assert_file_contains "$f" "⑦ 未消化の昇格候補マーカー" || ok=1
+    assert_file_contains "$f" "\`$CRITERIA_PATH § 手順から外れた箇所の読み方\`" || ok=1
+    assert_file_contains "$f" "\`$CRITERIA_PATH § 昇格候補の扱い\`" || ok=1
+    assert_file_contains "$f" "### 手順から外れた箇所の読み（ペイロードの ⑥ に件があるときだけ）" || ok=1
+    assert_file_contains "$f" "Read で開いて確かめる" || ok=1
+  done
+  assert_file_contains "$REFLECTOR" "**⑦ の \`[open]\` の候補も、1 件ずつ、通過か不通過のどちらかに必ず置く**" || ok=1
+  assert_file_contains "$VERIFIER" "**⑦ の \`[open]\` の候補が、1 件ずつ一覧に置かれているか**" || ok=1
+  assert_file_contains "$VERIFIER" "### 4. 手順から外れた箇所の再判定" || ok=1
+  assert_file_contains "$VERIFIER" "手順の読みの食い違い: N件" || ok=1
+  assert_file_contains "$CRITERIA_MD" "**判定を引き継がない**" || ok=1
+  assert_file_contains "$CRITERIA_MD" "**「手順の不備」は、knowledge/ に書いても直らない**" || ok=1
+
+  # Routing stays with the main flow: a procedure is not fixed through knowledge/,
+  # and reflect does not rewrite the project's markers.
+  assert_file_contains "$SKILL_MD" "| **手順から外れた箇所**（項目 6）: reflector / verifier の読みが「手順の不備」 | **knowledge/ に書かない**" || ok=1
+  assert_file_contains "$SKILL_MD" "kaizen-cli のリポジトリへの報告、プロジェクト独自のスキル・コマンドなら修正案" || ok=1
+  assert_file_contains "$SKILL_MD" "\`docs/LEARNINGS.md\` のマーカーは本スキルでは書き換えない" || ok=1
+  assert_file_contains "$SKILL_MD" "- 昇格候補の結果:" "Step 8 should report what became of each candidate" || ok=1
+
+  # update-docs: the writer of the markers. Same script, same labels, and an
+  # inventory with an open candidate is not finished.
+  assert_file_contains "$UPDATE_DOCS" "$INV" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "**昇格候補の処理（棚卸しの完了条件）**" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "\`[open]\` の候補が残っている間は、棚卸しを完了としない" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "このあと \`/kaizen-reflect-learning\` を実行する予定でも書く" || ok=1
+  assert_file_contains "$UPDATE_DOCS" '`- **昇格候補**: <横断で残す理由を 1 行>`' || ok=1
+  assert_file_contains "$UPDATE_DOCS" '`（先送り: <再検出条件>）`' || ok=1
+  assert_file_contains "$UPDATE_DOCS" '- **棚卸し**: <record= の値> — ' || ok=1
+  assert_file_contains "$UPDATE_DOCS" '`- **昇格先**: → knowledge/<path>.md § <節>`' || ok=1
+  assert_file_contains "$UPDATE_DOCS" '`Promotion candidate`（先送りは `(deferred until: <condition>)`、棚卸しの記録は `Inventory`）' \
+    "update-docs should name the English labels for an English LEARNINGS.md" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "**書いたあとで、スクリプトをもう一度実行する**" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "**卒業の判定だけ**" "only the graduation check may be narrowed" || ok=1
+  assert_file_contains "$UPDATE_DOCS" "### 昇格候補（\`candidate:\` の行が 1 件でもあれば、全件を表示）" || ok=1
+
+  # The cross-project auditor reads the same labels and does not treat a candidate as covered.
+  assert_file_contains "$DIST/agents/kaizen-learning-auditor.md" '`- **Promotion candidate**:` / `- **昇格候補**:`' || ok=1
+  assert_file_contains "$DIST/agents/kaizen-learning-auditor.md" "カバー済みではないので除外しない" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run ---
 
 echo "=== reflect-learning structure tests ==="
@@ -437,5 +529,6 @@ test_migration_from_command
 test_purpose_criteria
 test_deliberate_lane
 test_claims_and_size
+test_offscript_and_candidates
 
 print_results

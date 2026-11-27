@@ -91,6 +91,7 @@ Run `/kaizen-update-docs` after finishing your work to bring project-side docume
 
 - Updates CLAUDE.md and docs/ based on changes during work
 - Syncs PROJECT_SUMMARY.md with the project registry (`knowledge/projects/INDEX.md`)
+- Reviews `docs/LEARNINGS.md`, and marks a lesson that belongs in `knowledge/` so that the next Reflect receives it
 
 This keeps project context accurate for future sessions and for `/kaizen-suggest-next` when run from other projects.
 
