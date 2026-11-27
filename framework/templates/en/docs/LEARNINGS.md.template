@@ -4,6 +4,12 @@ Project-specific lessons. Record failures, constraints, and pitfalls discovered 
 
 > **Distribution criteria**: If a lesson is a general pattern applicable across projects, promote it to `knowledge/` using `/kaizen-reflect-learning`. Keep only project-specific lessons here.
 
+## Inventory Log
+
+Written by `/kaizen-update-docs`: one line per day an inventory was made, newest first, three days at most. A promotion candidate that has no entry (one that comes from auto memory, for example) is also placed here. The format is under "Markers" below.
+
+(No inventory yet)
+
 ## Entry Format
 
 ```markdown
@@ -12,10 +18,20 @@ Project-specific lessons. Record failures, constraints, and pitfalls discovered 
 - **Situation**: What you were trying to do
 - **Problem**: What went wrong or what constraint was discovered
 - **Lesson**: What to do differently next time
-- **Promoted**: → knowledge/path.md § Section  <!-- optional -->
+- **Promotion candidate**: One line on why it belongs in knowledge/  <!-- optional: it should be in knowledge/ and is not yet -->
+- **Promoted**: → knowledge/path.md § Section  <!-- optional: once promoted, the candidate line becomes this -->
 ```
 
-If a lesson has been promoted to `knowledge/`, add a trailing `- **Promoted**:` bullet so future cross-project audits (`/kaizen-audit-knowledge`) skip it as already covered.
+## Markers
+
+Read by the label at the start of the line (`kaizen-learnings-inventory.sh`). Do not change the labels.
+
+| Line | Meaning |
+|---|---|
+| `- **Promotion candidate**: <why>` | It should be in `knowledge/` and is not yet. The next `/kaizen-reflect-learning` receives it |
+| `- **Promotion candidate**: <why> (deferred until: <condition>)` | Not handed over now. Reviewed again when the condition occurs |
+| `- **Promoted**: → knowledge/<path>.md § <section>` | Promoted. The cross-project audit of `/kaizen-audit-knowledge` skips the entry |
+| `- **Inventory**: YYYY-MM-DD (knowledge@<commit>) — <result>` | The record of an inventory (written in the section above). `knowledge@<commit>` is what the next inventory narrows its scope from |
 
 ## Lessons
 

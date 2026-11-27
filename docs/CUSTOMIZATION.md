@@ -145,11 +145,12 @@ Use these as reference material when customizing for your own domain.
 
 ## Bundled Skills
 
-Kaizen-CLI ships three skills, symlinked into `.claude/skills/` by `/kaizen-init-project`. The two `auto` skills are not invoked explicitly — Claude Code activates them automatically when the corresponding operation occurs.
+Kaizen-CLI ships four skills, symlinked into `.claude/skills/` by `/kaizen-init-project`. The two `auto` skills are not invoked explicitly — Claude Code activates them automatically when the corresponding operation occurs.
 
 | Skill | Invocation | Purpose |
 |-------|-----------|---------|
 | `kaizen-init-project` | `/kaizen-init-project` (manual) | Project initialization — see [QUICKSTART.md](./QUICKSTART.md) |
+| `kaizen-reflect-learning` | `/kaizen-reflect-learning` (manual) | Reflecting a session's learnings into `knowledge/` — a skill directory, so that its two subagents read the judgment criteria without the main flow |
 | `kaizen-editing-knowledge` | auto (when editing `knowledge/` or `.claude/skills/`) | Guardrails for editing in a symlinked environment (reference checks, SSOT) |
 | `kaizen-committing-project` | auto (on commit requests) | Commit quality checks — Conventional Commits, secret scanning, symlink-safe staging, registry sync and drift check |
 

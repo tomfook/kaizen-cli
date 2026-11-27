@@ -322,6 +322,31 @@ When a project-specific lesson in `docs/LEARNINGS.md` is promoted to a cross-pro
 
 **Multiple markers**: An entry may carry more than one `- **Promoted**:` line if it was split across several knowledge files. Each is treated as a covered target.
 
+### Promotion Candidate Marker (waiting)
+
+A lesson that was judged to belong in `knowledge/` and is not there yet carries a promotion candidate marker. The inventory of `/kaizen-update-docs` writes it, and the next `/kaizen-reflect-learning` receives it. Without the marker, a candidate found by the inventory is gone by the end of that run (reflect reads the conversation of its own run only).
+
+```markdown
+- **Promotion candidate**: <one line on why it belongs in knowledge/>
+- **Promotion candidate**: <why> (deferred until: <condition>)
+```
+
+- **Placement**: Last bullet of the entry. Once promoted, the line becomes the `- **Promoted**:` line. A candidate that has no entry (one that comes from auto memory, for example) goes into the "Inventory Log" section
+- **Deferral**: A candidate that is not handed over now names the event that should bring it back. A candidate without a condition counts as open, and the inventory is not finished
+- **No `→` and no `§`**: reflect decides the destination. A reference that starts with `→` is checked as a promotion marker
+- **How it is read**: `kaizen-learnings-inventory.sh` reads the label at the start of the line (an example inside a code fence, or a sentence that only mentions the label, is not counted). Do not change the labels
+
+### Inventory Log
+
+The "Inventory Log" section of `docs/LEARNINGS.md` keeps one line per day an inventory was made.
+
+```markdown
+- **Inventory**: YYYY-MM-DD (knowledge@<commit>) — <scope. graduated N / candidates N / deferred N>
+```
+
+- **`knowledge@<commit>`**: the commit of the knowledge repository the lessons were compared with. The next inventory narrows the entries it judges again by the changes since that commit (whether a lesson has graduated is a comparison with `knowledge/`, so the answer changes when `knowledge/` changes). Copy the value of `record=` from the script; do not edit it by hand
+- **Newest first, three days at most.** One line per day (a rerun on the same day rewrites that day's line). Only the newest line keeps the detail; older lines are cut down to the date and a one-line result (the history is in git)
+
 ---
 
-**Last updated**: 2026-11-24
+**Last updated**: 2026-11-27

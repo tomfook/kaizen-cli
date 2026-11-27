@@ -25,6 +25,7 @@ $KAIZEN_KNOWLEDGE_DIR/             <- Where user knowledge is accumulated
     projects/                      <- Project registry
       INDEX.md                     <- Metadata table (auto-synced)
       details/                     <- Full project summaries (auto-synced)
+      learnings/                   <- Copies of each project's LEARNINGS.md (auto-synced)
     (domain-specific files)        <- Destination for reflect-learning output
   work/                            <- Additional registry (user-created)
     meta/
@@ -133,6 +134,7 @@ The solution is **context separation**: delegate verification to a separate suba
 - **The criteria state a purpose, not a rule keyed on failure.** A record is kept when having it written will save time or prevent a mistake next time. "Every failure is recorded" was the earlier rule; it also passed lessons that were already written and had simply not reached the work, and those are not fixed by writing more. What the rule protected is kept in another form: the reflector must place each failure and each correction under "keep" or "set aside, with a reason", and the verifier sends back any "already written, so nothing to do"
 - **Not every proposal is written at once.** A lesson that recurred although it was already written, or a proposal that adds a script or makes a step mandatory, is not written to `knowledge/` on the spot. The main agent drafts an entry for the project's `docs/NEXT_STEPS.md` and `/kaizen-update-docs` files it, so that existing implementations and earlier decisions are checked first. When in doubt, a proposal goes to this lane: a wrong call here costs a delay, while a wrong call the other way is a wrong record in the knowledge every project reads
 - **A cause is written only after it is isolated.** "Changing X fixed it" is a derived claim whenever more than one thing changed. Without one rerun that changes X alone, the record states the symptom and everything that changed, and no cause
+- **Steps that were not followed are part of the payload.** The main agent lists where it left the procedure of a skill or command it invoked — an item it skipped, a check it added, a step it rewrote, a guard it went around — one kind at a time, because a deviation that is not asked for is not reported. Each one says that either the procedure or the work needs fixing. A fault in a procedure is not written to `knowledge/` (skills are static, and a note there does not change the step): it goes to the same lane as above, as a report to the kaizen-cli repository for a distributed file or as a proposed fix for the project's own skill
 
 ---
 
@@ -190,6 +192,10 @@ Keep CLAUDE.md under 200 lines as a guideline. If it exceeds 300 lines, move det
 | **Internalized** | The lesson is already embedded in the design/code | Remove entry |
 
 This lifecycle prevents lessons from accumulating indefinitely and ensures each entry remains actionable. General patterns flow upward to `knowledge/` via `/kaizen-reflect-learning`, while project-specific lessons stay in `docs/LEARNINGS.md` until they are no longer relevant.
+
+**What the inventory finds has to outlive the run that found it.** Reflect reads the conversation of its own run, so a lesson the inventory judged to be cross-project used to be lost unless reflect happened to follow in the same session. `/kaizen-update-docs` now writes a `- **Promotion candidate**:` line on the entry, and `/kaizen-reflect-learning` puts every such line into its payload. An inventory with an open candidate is not finished: each candidate is handed to reflect, deferred with the condition that brings it back, or withdrawn. Reflect still writes only `knowledge/`; the marker is rewritten by the next inventory, which finds the lesson in `knowledge/` and turns the line into the `- **Promoted**:` marker.
+
+**How far an inventory looks is decided by what changed, not by how recently it ran.** Whether a lesson has graduated is a comparison with `knowledge/`, so the verdict is stale as soon as `knowledge/` changes — which is nearly every session — and "nothing last time, so nothing now" is never a valid shortcut. Each inventory leaves one line with the commit of the knowledge repository it compared against. The next one re-judges graduation only for the entries that the files changed since that commit could cover, and judges everything when the commit is missing, the directory is not a git repository, or half of the files have changed. A commit is recorded rather than a date because a date-based diff starts at the current time of day unless a time is given, and a commit pulled from another machine can be older than the day it arrived. Both markers are read by `kaizen-learnings-inventory.sh` by the label at the start of the line, not by a search for the word, so the example in the entry format and a sentence that mentions a candidate are not counted.
 
 ### Knowledge Quality: Accumulation and Pruning
 

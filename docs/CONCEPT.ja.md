@@ -91,6 +91,7 @@ Kaizen-CLI はこの問題を、別のプロセスを追加するのではなく
 
 - 作業中の変更に基づいて CLAUDE.md と docs/ を更新
 - PROJECT_SUMMARY.md をプロジェクトレジストリ（`knowledge/projects/INDEX.md`）と同期
+- `docs/LEARNINGS.md` を見直し、`knowledge/` に入れるべき教訓に印を付けて、次の Reflect に渡す
 
 これにより、将来のセッションや他プロジェクトからの `/kaizen-suggest-next` でプロジェクトの文脈が正確に参照されます。
 
