@@ -27,7 +27,7 @@ reflectorの判定結果に対する独立検証エージェント（Devil's Adv
 2. **判定結果リスト**（理由なし）
    - 各知見の1行要約、カテゴリ、通過/不通過の判定のみ
 
-一般化テストの基準は渡されない。下の手順 1 で CRITERIA.md から自分で読む。
+判定基準は渡されない。下の手順 1 で CRITERIA.md から自分で読む。
 
 **入力されないもの**: reflectorの推論過程、不通過理由の詳細
 
@@ -37,7 +37,7 @@ reflectorの判定結果に対する独立検証エージェント（Devil's Adv
 
 ### 1. CRITERIA.md の読み込み
 
-kaizen-reflect-learning の判定基準 CRITERIA.md を読み、「一般化テスト」基準を独自に把握する。
+kaizen-reflect-learning の判定基準 CRITERIA.md を読み、「何を残すか」の基準を独自に把握する。
 
 ```
 .claude/skills/kaizen-reflect-learning/CRITERIA.md
@@ -52,7 +52,7 @@ kaizen-reflect-learning の判定基準 CRITERIA.md を読み、「一般化テ�
 reflectorが「不通過」とした各知見について、事実ペイロードとCRITERIA.mdの基準のみで独立に再判定する。
 
 **検証の観点**:
-- ペイロードに失敗・リトライの痕跡があるのに不通過とされていないか（条件3違反）
+- ペイロードに失敗・リトライがあり、記述が無ければ次も同じことが起きそうなのに、不通過とされていないか（`.claude/skills/kaizen-reflect-learning/CRITERIA.md § 何を残すか`）
 - ユーザー指摘があるのに「一般的知識」として不通過とされていないか
 - 情報探索の非効率がペイロードにあるのに見落とされていないか
 - **reflector の一覧（通過・不通過）に無いが、ペイロードには素材がある**ものは無いか（あれば「判定不一致」に、reflector の判定を「記載なし」として置く）

@@ -198,12 +198,10 @@ Claude Code analyzes the session and proposes something like this:
    Suggestions that assumed venv required correction.
    - Generalization: "Dependency management tools vary by Python project.
      Confirm rather than assume."
+   - Why keep it: without this note, the next Python project starts from the same guess
+     and needs the same correction.
+   - Confidence: stated by the user in this session (seen once)
    - Destination: Add to knowledge/
-
-### Generalization Criteria Check
-- [x] Not a one-off exception (applies to other projects too)
-- [x] Contributes to efficiency (enables confirming instead of guessing next time)
-- [x] A correction occurred during the session (auto-approved)
 
 Do you approve?
 ```

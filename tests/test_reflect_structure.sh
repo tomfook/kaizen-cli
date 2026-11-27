@@ -12,6 +12,8 @@
 #   - the verifier is given the main agent's fact payload verbatim
 #   - criteria and flow each live in one file
 #   - every section the three files point to in CRITERIA.md exists
+#   - the criteria say what a record is for, and no file falls back to "a failure
+#     is always recorded"
 
 source "$(cd "$(dirname "$0")" && pwd)/helper.sh"
 
@@ -63,7 +65,7 @@ assert_no_heading() {
 # Headings of CRITERIA.md that the flow and the agents point to by name.
 criteria_headings() {
   cat <<'EOF'
-## 一般化テスト
+## 何を残すか
 ## 抽出カテゴリ（9カテゴリ）
 ## データ主張を含む知見の粒度分離
 ## ファイル反映のルール
@@ -276,9 +278,61 @@ test_migration_from_command() {
     ok=1
   fi
   # The path the agents read must resolve from inside the project.
-  assert_file_contains "$project/$CRITERIA_PATH" "## 一般化テスト" \
+  assert_file_contains "$project/$CRITERIA_PATH" "## 何を残すか" \
     "CRITERIA.md should be readable through the project link" || ok=1
   assert_file_exists "$project/.claude/skills/kaizen-reflect-learning/SKILL.md" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 8: the criteria state a purpose, not a rule keyed on failure ---
+
+test_purpose_criteria() {
+  local test_name="reflect: the criteria say what a record is for, in all three files"
+  setup_test_env "$test_name"
+  local ok=0 f hits
+
+  assert_file_contains "$CRITERIA_MD" "これが書いてあれば、次は時間を失わない・誤らない" || ok=1
+  assert_file_contains "$CRITERIA_MD" "それだけでは採用の理由にしない" || ok=1
+  # What the old condition 3 guarded stays: written already, and it still went wrong.
+  assert_file_contains "$CRITERIA_MD" "「記載済みだから不要」で終えない" || ok=1
+  assert_file_contains "$VERIFIER" "「既存ゆえ記録不要」の差し戻し" || ok=1
+  # The categories are a lookup table. "Check all of them" is the fixed rule again.
+  assert_file_contains "$CRITERIA_MD" "全カテゴリを埋めるチェックリストではない" || ok=1
+  assert_file_lacks "$CRITERIA_MD" "漏れなく確認" || ok=1
+  assert_file_lacks "$REFLECTOR" "漏れなくスキャン" || ok=1
+
+  for f in "$REFLECTOR" "$VERIFIER"; do
+    assert_file_contains "$f" "\`$CRITERIA_PATH § 何を残すか\`" \
+      "$(basename "$f") should point at the purpose section" || ok=1
+  done
+  # The reflector accounts for every failure and correction, without having to adopt it.
+  assert_file_contains "$REFLECTOR" "通過か不通過のどちらかに必ず置く" || ok=1
+  assert_file_contains "$REFLECTOR" "残す理由:" || ok=1
+  assert_file_contains "$REFLECTOR" "確度:" || ok=1
+  assert_file_lacks "$REFLECTOR" "通過条件:" || ok=1
+  # The reflector's reason is reasoning: it does not go to the verifier.
+  assert_file_contains "$SKILL_MD" "通過とした理由（「残す理由」「確度」）" || ok=1
+
+  # No distributed file or public doc still describes the fixed rule.
+  # (CRITERIA.md names the old section once, to say what replaced it.)
+  hits="$(grep -rnE '条件 ?3|無条件採用|無条件で採用されます|禁止フィルタ|unconditionally captured|auto-approved|[Gg]eneralization ([Tt]est|[Cc]riteria)|一般化条件' \
+    "$KAIZEN_CLI_DIR/framework" "$KAIZEN_CLI_DIR"/docs/*.md \
+    "$KAIZEN_CLI_DIR/README.md" "$KAIZEN_CLI_DIR/README.ja.md" 2>/dev/null \
+    | grep -v '/CRITERIA.md:.*この節は以前「一般化テスト」' || true)"
+  if [ -n "$hits" ]; then
+    echo "  FAIL: the fixed rule is still described in:"
+    echo "$hits" | sed 's/^/    | /'
+    ok=1
+  fi
+  hits="$(grep -rnF '一般化テスト' "$KAIZEN_CLI_DIR/framework" "$KAIZEN_CLI_DIR"/docs/*.md \
+    | grep -v '/CRITERIA.md:.*この節は以前「一般化テスト」' || true)"
+  if [ -n "$hits" ]; then
+    echo "  FAIL: the old section name is still used in:"
+    echo "$hits" | sed 's/^/    | /'
+    ok=1
+  fi
 
   record_result "$test_name" "$ok"
   teardown_test_env
@@ -294,5 +348,6 @@ test_verifier_input
 test_criteria_flow_split
 test_section_references
 test_migration_from_command
+test_purpose_criteria
 
 print_results
