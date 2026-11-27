@@ -14,6 +14,8 @@
 #   - every section the three files point to in CRITERIA.md exists
 #   - the criteria say what a record is for, and no file falls back to "a failure
 #     is always recorded"
+#   - routing (the four choices, the lane that is not written at once) stays in
+#     the main flow, out of what the subagents read
 
 source "$(cd "$(dirname "$0")" && pwd)/helper.sh"
 
@@ -338,6 +340,90 @@ test_purpose_criteria() {
   teardown_test_env
 }
 
+# --- Test 9: four choices; the lane that is not written at once ---
+
+test_deliberate_lane() {
+  local test_name="reflect: four choices, and the deliberate lane goes to NEXT_STEPS through update-docs"
+  setup_test_env "$test_name"
+  local ok=0 f lane
+
+  assert_file_contains "$SKILL_MD" "④ 要熟考" || ok=1
+  assert_file_contains "$SKILL_MD" "の4択で提示する" || ok=1
+  assert_file_lacks "$SKILL_MD" "の3択で提示する" || ok=1
+  assert_file_contains "$SKILL_MD" "| **要熟考** ＝" "the routing table should have the lane" || ok=1
+  assert_file_contains "$SKILL_MD" "| **判定一致（通過）／反映先だけが食い違う**" || ok=1
+  assert_file_contains "$SKILL_MD" "**verifier が持ち帰った新しい事実**" || ok=1
+
+  # Where the lane leads, and who writes there.
+  lane="$(bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-extract-section.sh" "$SKILL_MD" '要熟考の行き先' 2>/dev/null)" || {
+    echo "  FAIL: SKILL.md should have the section '要熟考の行き先'"
+    lane=""
+    ok=1
+  }
+  assert_output_contains "$lane" 'docs/NEXT_STEPS.md' || ok=1
+  assert_output_contains "$lane" '/kaizen-update-docs' || ok=1
+  assert_output_contains "$lane" '書き込まない' "reflect itself must not write the project's NEXT_STEPS" || ok=1
+  assert_output_contains "$lane" '迷ったら要熟考に倒す' || ok=1
+  assert_file_contains "$SKILL_MD" "| 要熟考 | 起票文を示し、\`/kaizen-update-docs\` を案内する" || ok=1
+  # update-docs is the writer of NEXT_STEPS: it must know this source.
+  assert_file_contains "$DIST/commands/kaizen-update-docs.md" "要熟考" \
+    "kaizen-update-docs should pick up what reflect set aside" || ok=1
+
+  # Routing is the main agent's. A subagent that reads it judges toward it.
+  for f in "$CRITERIA_MD" "$REFLECTOR" "$VERIFIER"; do
+    assert_file_lacks "$f" "要熟考" || ok=1
+    assert_file_lacks "$f" "NEXT_STEPS" || ok=1
+  done
+  # The verifier supplies the signal the lane is keyed on, in its own words.
+  assert_file_contains "$VERIFIER" "記述の追加では止まらない" || ok=1
+  assert_file_contains "$VERIFIER" "反映先の候補:" || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
+# --- Test 10: causal claims, counts, and size ---
+
+test_claims_and_size() {
+  local test_name="reflect: causal claims and counts are separated; size is no reason to drop or defer"
+  setup_test_env "$test_name"
+  local ok=0 fix
+
+  assert_has_heading "$CRITERIA_MD" "### 因果の主張にも同じ分離が要る" || ok=1
+  assert_has_heading "$CRITERIA_MD" "### 回数・時間・件数は数え直す" || ok=1
+  assert_file_contains "$CRITERIA_MD" "1 つだけを変えた再現を 1 回" || ok=1
+  assert_file_contains "$SKILL_MD" "**因果の主張と数も、同じ節に従う**" || ok=1
+  assert_file_contains "$SKILL_MD" "**未検証の主張への対応**" || ok=1
+  assert_file_contains "$SKILL_MD" "棄却の経緯ごと Step 5 で報告する" || ok=1
+  assert_file_contains "$REFLECTOR" "未検証の派生主張・因果:" || ok=1
+  assert_file_contains "$VERIFIER" "### 未検証の主張（因果・数）" || ok=1
+  assert_file_contains "$VERIFIER" "未検証の主張: N件" || ok=1
+
+  # Size: compress wording, keep content, never defer.
+  assert_file_lacks "$CRITERIA_MD" "ファイルサイズ管理（800行以内）を遵守" || ok=1
+  assert_file_contains "$CRITERIA_MD" "| 圧縮してよい（表現） | 削ってはいけない（内容） |" || ok=1
+  assert_file_contains "$CRITERIA_MD" "**サイズを反映先の決定理由にしない**" || ok=1
+  assert_file_contains "$CRITERIA_MD" "**追記先の節の、既存の規約と衝突しないか確かめる**" || ok=1
+  assert_file_contains "$REFLECTOR" "反映を保留する案は出さない" || ok=1
+  assert_file_contains "$SKILL_MD" "**書き込む前に、追記先の節を通読する**" || ok=1
+  assert_file_contains "$SKILL_MD" "**サイズを理由に、反映を保留しない・別テーマの節へ移さない**" || ok=1
+
+  # Correcting a promoted claim: one search, the shortest needle, the origin, the heading.
+  fix="$(bash "$KAIZEN_CLI_DIR/framework/bin/kaizen-extract-section.sh" "$SKILL_MD" '昇格済み知見の誤認発覚時の修正フロー' 2>/dev/null)" || {
+    echo "  FAIL: SKILL.md should have the correction flow"
+    fix=""
+    ok=1
+  }
+  assert_output_contains "$fix" 'framework/bin/kaizen-search-knowledge.sh' || ok=1
+  assert_output_not_contains "$fix" 'grep -rn' || ok=1
+  assert_output_contains "$fix" '最短の語に切る' || ok=1
+  assert_output_contains "$fix" 'log -S' || ok=1
+  assert_output_contains "$fix" '見出し・症状・対策の主張も、同じ回に見直す' || ok=1
+
+  record_result "$test_name" "$ok"
+  teardown_test_env
+}
+
 # --- Run ---
 
 echo "=== reflect-learning structure tests ==="
@@ -349,5 +435,7 @@ test_criteria_flow_split
 test_section_references
 test_migration_from_command
 test_purpose_criteria
+test_deliberate_lane
+test_claims_and_size
 
 print_results
